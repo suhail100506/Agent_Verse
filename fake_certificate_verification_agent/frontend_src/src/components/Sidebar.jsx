@@ -15,7 +15,8 @@ export const agentTypes = [
   {id: "agent-incident", icon: "🚨", label: "Incident Response Agent", subtitle: "SOC Playbooks & Containment", inputLabel: "Incident Title Required"},
   {id: "node-mongodb", icon: "🍃", label: "MongoDB Audit Logs", subtitle: "Persistent Database Store", inputLabel: "Database Persistence"},
   {id: "node-user-upload", icon: "📄", label: "User Payload Ingest", subtitle: "Payload Trigger Input", inputLabel: "User Query Required"},
-  {id: "node-final-report", icon: "📋", label: "Final Security Report", subtitle: "JSON & PDF SOC Exporter", inputLabel: "Report Generator"}
+  {id: "node-final-report", icon: "📋", label: "Final Security Report", subtitle: "JSON & PDF SOC Exporter", inputLabel: "Report Generator"},
+  {id: "node-text-box", icon: "📝", label: "Test Text Box", subtitle: "Custom input payload", inputLabel: "Testing Node", isTextBox: true}
 ];
 
 export default function Sidebar() {

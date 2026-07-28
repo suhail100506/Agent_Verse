@@ -15,10 +15,20 @@ export default function AgentNode({ data, selected }) {
         <span className="tracking-wide">{data.label}</span>
       </div>
       
-      {data.subtitle && (
-        <div className="text-[10px] text-slate-400 mt-1 font-medium truncate">
-          {data.subtitle}
+      {data.isTextBox ? (
+        <div className="mt-2">
+          <input 
+            type="text" 
+            placeholder="Type here..." 
+            className="w-full bg-slate-900/50 border border-slate-700 rounded p-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 nodrag"
+          />
         </div>
+      ) : (
+        data.subtitle && (
+          <div className="text-[10px] text-slate-400 mt-1 font-medium truncate">
+            {data.subtitle}
+          </div>
+        )
       )}
       
       {isRunning && (
