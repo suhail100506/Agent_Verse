@@ -43,7 +43,7 @@ export default function UploadPage() {
           Certificate Authenticity Verification
         </h1>
         <p className="text-slate-600 text-sm max-w-2xl mx-auto leading-relaxed">
-          Upload any degree, marksheet, government ID, or professional certification. PramaanSetu executes an 18-stage forensic pipeline inspecting layout, seals, signatures, EXIF metadata, and ELA tampering indicators.
+          Upload any degree, marksheet, government ID, or professional certification. Fake Certificate Verification executes an 18-stage forensic pipeline inspecting layout, seals, signatures, EXIF metadata, and ELA tampering indicators.
         </p>
       </div>
 

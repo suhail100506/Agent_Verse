@@ -9,12 +9,12 @@ from app.templates_library.seed_data import seed_template_library
 from app.api.routes import auth, certificates, verification, reports, history
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("pramaansetu")
+logger = logging.getLogger("fake_certificate_verification")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    logger.info("PramaanSetu Service Initializing...")
+    logger.info("Fake Certificate Verification Service Initializing...")
     await connect_to_mongo()
     db = get_database()
     await seed_template_library(db)
@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
     yield
     # Shutdown
     await close_mongo_connection()
-    logger.info("PramaanSetu Service Shutting Down...")
+    logger.info("Fake Certificate Verification Service Shutting Down...")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

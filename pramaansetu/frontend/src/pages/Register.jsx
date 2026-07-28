@@ -41,7 +41,7 @@ export default function Register({ onLoginSuccess }) {
             <Shield className="w-8 h-8 text-blue-400" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-mono">
-            Register for Pramaan<span className="text-brand-600">Setu</span>
+            Register for Fake Certificate <span className="text-brand-600">Verification</span>
           </h2>
           <p className="mt-2 text-xs text-slate-500 font-medium">
             Create an account for certificate upload and authenticity verification

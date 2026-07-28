@@ -24,7 +24,7 @@ export default function Layout({ children, user, onLogout }) {
             </div>
             <div>
               <span className="text-xl font-bold tracking-tight text-slate-900 font-mono">
-                Pramaan<span className="text-brand-600">Setu</span>
+                Fake Cert <span className="text-brand-600">Verification</span>
               </span>
               <span className="hidden sm:inline-block text-[10px] uppercase font-mono px-2 py-0.5 ml-2 rounded bg-slate-100 border border-slate-300 text-slate-600 font-semibold">
                 Forensic Engine v1.0
@@ -93,7 +93,7 @@ export default function Layout({ children, user, onLogout }) {
 
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 font-mono">
-        <p className="font-semibold text-slate-600">PramaanSetu — AI-Powered Multi-Stage Certificate Verification Engine</p>
+        <p className="font-semibold text-slate-600">Fake Certificate Verification — AI-Powered Multi-Stage Certificate Verification Engine</p>
         <p className="mt-1">India-First Architecture: Anna University • VTU • IIT/NIT • CBSE • UGC • GoI</p>
       </footer>
     </div>

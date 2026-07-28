@@ -59,7 +59,7 @@ def generate_pdf_report(verification_doc: dict, output_dir: str) -> str:
     story = []
 
     # Header Title
-    story.append(Paragraph("PramaanSetu — Certificate Authenticity Forensic Report", title_style))
+    story.append(Paragraph("Fake Certificate Verification — Certificate Authenticity Forensic Report", title_style))
     story.append(Paragraph(f"Audit Record ID: {report_id} | Timestamp: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}", subtitle_style))
     story.append(Spacer(1, 10))
     story.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor('#0B132B'), spaceAfter=12))
@@ -170,7 +170,7 @@ def generate_pdf_report(verification_doc: dict, output_dir: str) -> str:
     # Footer notice
     story.append(Spacer(1, 15))
     story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor('#CBD5E1'), spaceAfter=8))
-    story.append(Paragraph("PramaanSetu Append-Only Audit Integrity System — Document reference immutable.", subtitle_style))
+    story.append(Paragraph("Fake Certificate Verification Append-Only Audit Integrity System — Document reference immutable.", subtitle_style))
 
     doc.build(story)
     return file_path

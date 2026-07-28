@@ -8,13 +8,13 @@ except ImportError:
         from pydantic.v1 import BaseSettings
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "PramaanSetu"
+    PROJECT_NAME: str = "Fake Certificate Verification"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api"
     
     # Database & Cache
-    MONGO_URI: str = os.getenv("MONGO_URI", "mongodb://localhost:27017/pramaansetu")
-    MONGO_DB_NAME: str = os.getenv("MONGO_DB_NAME", "pramaansetu")
+    MONGO_URI: str = os.getenv("MONGO_URI", "mongodb://localhost:27017/fake_certificate_verification")
+    MONGO_DB_NAME: str = os.getenv("MONGO_DB_NAME", "fake_certificate_verification")
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     
     # Authentication

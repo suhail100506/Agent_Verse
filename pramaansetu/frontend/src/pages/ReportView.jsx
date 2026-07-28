@@ -75,7 +75,7 @@ export default function ReportView() {
       <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-100 pb-6">
           <div>
-            <span className="text-xs font-mono font-semibold text-slate-500">PramaanSetu Audit ID: {id}</span>
+            <span className="text-xs font-mono font-semibold text-slate-500">Audit Record ID: {id}</span>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
               Certificate Authenticity Report
             </h1>

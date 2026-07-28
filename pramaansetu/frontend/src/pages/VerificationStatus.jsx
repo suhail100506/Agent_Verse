@@ -43,7 +43,7 @@ export default function VerificationStatus() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <Loader2 className="w-10 h-10 text-brand-600 animate-spin" />
-        <p className="text-sm font-mono text-slate-600 font-medium">Connecting to PramaanSetu Verification Orchestrator...</p>
+        <p className="text-sm font-mono text-slate-600 font-medium">Connecting to Verification Orchestrator...</p>
       </div>
     );
   }

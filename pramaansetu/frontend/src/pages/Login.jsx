@@ -40,7 +40,7 @@ export default function Login({ onLoginSuccess }) {
             <Shield className="w-8 h-8 text-blue-400" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-mono">
-            Pramaan<span className="text-brand-600">Setu</span> Portal
+            Fake Certificate <span className="text-brand-600">Verification</span>
           </h2>
           <p className="mt-2 text-xs text-slate-500 font-medium">
             Sign in to access AI-powered multi-stage certificate verification
@@ -89,7 +89,7 @@ export default function Login({ onLoginSuccess }) {
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm transition-all shadow-xs active:scale-[0.98] disabled:opacity-50"
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <span>Sign In to PramaanSetu</span>}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <span>Sign In to Verification System</span>}
             {!loading && <ArrowRight className="w-4 h-4 text-white" />}
           </button>
         </form>
