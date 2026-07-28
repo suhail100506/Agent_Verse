@@ -1,5 +1,315 @@
 [
   {
+    "report_id": "PHISH-3658CBAD",
+    "created_at": "2026-07-28T21:08:27.432250+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://github.com/kavuinkumar1603",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "checks": {
+      "url_typosquatting": "Passed - Domain matches verified official brand whitelist.",
+      "ssl_certificate": "Passed - Valid Extended Validation (EV) SSL certificate issued by DigiCert.",
+      "email_header_dkim": "Passed - SPF, DKIM, and DMARC alignment verified.",
+      "credential_harvesting": "Passed - No hidden login forms or suspicious external data sinks."
+    },
+    "summary": "Phishing analysis for 'http://github.com/kavuinkumar1603' confirmed legitimate domain structure and valid SSL.",
+    "recommendation": "Safe to visit link and authenticate.",
+    "next_action": "Mark link as safe in email filter.",
+    "email_delivery_status": "skipped",
+    "email_delivery_error": null
+  },
+  {
+    "report_id": "PHISH-5E18B0BC",
+    "created_at": "2026-07-28T21:06:47.000706+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway.",
+    "email_delivery_status": "success",
+    "email_delivery_error": null
+  },
+  {
+    "report_id": "PHISH-0A47E48C",
+    "created_at": "2026-07-28T21:02:46.553748+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "https://github.com/security-update",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "checks": {
+      "url_typosquatting": "Passed - Domain matches verified official brand whitelist.",
+      "ssl_certificate": "Passed - Valid Extended Validation (EV) SSL certificate issued by DigiCert.",
+      "email_header_dkim": "Passed - SPF, DKIM, and DMARC alignment verified.",
+      "credential_harvesting": "Passed - No hidden login forms or suspicious external data sinks."
+    },
+    "summary": "Phishing analysis for 'https://github.com/security-update' confirmed legitimate domain structure and valid SSL.",
+    "recommendation": "Safe to visit link and authenticate.",
+    "next_action": "Mark link as safe in email filter.",
+    "email_delivery_status": "skipped",
+    "email_delivery_error": null
+  },
+  {
+    "report_id": "PHISH-7000CC8F",
+    "created_at": "2026-07-28T21:00:10.879734+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway.",
+    "email_delivery_status": "success",
+    "email_delivery_error": null
+  },
+  {
+    "report_id": "PHISH-664B8ECE",
+    "created_at": "2026-07-28T20:55:08.929050+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-4AB91623",
+    "created_at": "2026-07-28T20:53:24.869821+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-F00CFE7F",
+    "created_at": "2026-07-28T20:50:48.027560+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway.",
+    "email_delivery_status": "failed",
+    "email_delivery_error": "SMTP credentials not configured."
+  },
+  {
+    "report_id": "PHISH-26FBAA37",
+    "created_at": "2026-07-28T20:50:19.350096+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-7BE2EA82",
+    "created_at": "2026-07-28T20:48:32.450685+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-74D3BEA2",
+    "created_at": "2026-07-28T20:47:18.947593+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-C9C66D79",
+    "created_at": "2026-07-28T20:46:21.564907+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-7769945C",
+    "created_at": "2026-07-28T20:45:33.952789+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-41E4BFEC",
+    "created_at": "2026-07-28T20:42:32.395781+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-8C22B4D5",
+    "created_at": "2026-07-28T20:41:51.078260+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-F70D1139",
+    "created_at": "2026-07-28T20:35:16.512683+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
     "report_id": "PHISH-15658C43",
     "created_at": "2026-07-28T16:58:09.975771+00:00",
     "agent": "Phishing Detection Agent",

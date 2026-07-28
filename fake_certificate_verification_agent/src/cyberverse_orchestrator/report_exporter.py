@@ -60,7 +60,7 @@ def generate_report_html(report: Dict[str, Any]) -> str:
       <div class="meta-box"><span class="meta-label">Report ID</span><span class="meta-val">{report_id}</span></div>
       <div class="meta-box"><span class="meta-label">Score</span><span class="meta-val">{score} / 100</span></div>
       <div class="meta-box"><span class="meta-label">Audit Date</span><span class="meta-val">{created_at[:10]}</span></div>
-      <div class="meta-box"><span class="meta-label">Platform</span><span class="meta-val">CyberVerse AI</span></div>
+      <div class="meta-box"><span class="meta-label">Email Alert</span><span class="meta-val">{str(report.get('email_delivery_status', 'N/A')).title()}</span></div>
     </div>
 
     <div class="summary-box">

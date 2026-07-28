@@ -5,6 +5,11 @@ import datetime
 import re
 from typing import Dict, Any, Optional
 from pathlib import Path
+import logging
+
+from src.utils.email_service import send_alert
+
+logger = logging.getLogger(__name__)
 
 PHISHING_REPORTS_DB_PATH = Path(__file__).parent / "phishing_reports_db.json"
 
@@ -78,8 +83,19 @@ def run_phishing_flow(url_or_text: str) -> Dict[str, Any]:
         "checks": checks,
         "summary": summary,
         "recommendation": recommendation,
-        "next_action": next_action
+        "next_action": next_action,
+        "email_delivery_status": "skipped",
+        "email_delivery_error": None
     }
+
+    if status == "Fake":
+        email_match = re.search(r"[\w\.-]+@[\w\.-]+\.\w+", url_or_text)
+        recipient_email = email_match.group(0) if email_match else os.getenv("EMAIL_USER", "kavin88701@gmail.com")
+        
+        logger.info(f"Phishing detected! Triggering email alert to {recipient_email}")
+        email_result = send_alert(recipient_email, final_report)
+        final_report["email_delivery_status"] = email_result["status"]
+        final_report["email_delivery_error"] = email_result["error"]
 
     save_local_phishing_report(final_report)
 

@@ -73,12 +73,12 @@ function WorkflowCanvas() {
 
   const displayEdges = edges.map(edge => ({
     ...edge,
-    type: 'default', // Always keep it curved
-    animated: !edge.selected,
+    type: 'default', 
+    animated: edge.animated !== undefined ? edge.animated : !edge.selected,
     style: {
       ...edge.style,
-      stroke: edge.selected ? '#0ea5e9' : '#38bdf8',
-      strokeWidth: edge.selected ? 3 : 2
+      stroke: edge.selected ? '#0ea5e9' : (edge.style?.stroke || '#38bdf8'),
+      strokeWidth: edge.selected ? 3 : (edge.style?.strokeWidth || 2)
     }
   }));
 
