@@ -406,7 +406,7 @@
           "agents": {
             "report_generator": {
               "llm": {
-                "model": "openai/gpt-5.4"
+                "model": "openai/gpt-4o-mini"
               },
               "goal": "Produce a complete structured JSON verification report based on all evidence gathered by the verification expert.",
               "role": "Structured Verification Report Generator",
@@ -415,7 +415,7 @@
             },
             "verification_expert": {
               "llm": {
-                "model": "openai/gpt-5.4"
+                "model": "openai/gpt-4o-mini"
               },
               "goal": "Verify uploaded certificates using multiple verification methods and generate an explainable authenticity report.",
               "role": "Certificate Verification Expert",

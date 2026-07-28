@@ -1,5 +1,27 @@
 [
   {
+    "report_id": "PHISH-BA93151A",
+    "created_at": "2026-07-28T21:39:03.392133+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://github.com/kavuinkumar1603",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "checks": {
+      "url_typosquatting": "Passed - Domain matches verified official brand whitelist.",
+      "ssl_certificate": "Passed - Valid Extended Validation (EV) SSL certificate issued by DigiCert.",
+      "email_header_dkim": "Passed - SPF, DKIM, and DMARC alignment verified.",
+      "credential_harvesting": "Passed - No hidden login forms or suspicious external data sinks."
+    },
+    "summary": "Phishing analysis for 'http://github.com/kavuinkumar1603' confirmed legitimate domain structure and valid SSL.",
+    "recommendation": "Safe to visit link and authenticate.",
+    "next_action": "Mark link as safe in email filter.",
+    "email_delivery_status": "skipped",
+    "email_delivery_error": null
+  },
+  {
     "report_id": "PHISH-B94B8D0E",
     "created_at": "2026-07-28T21:18:15.266339+00:00",
     "agent": "Phishing Detection Agent",

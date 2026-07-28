@@ -74,7 +74,7 @@ function WorkflowCanvas() {
   const displayEdges = edges.map(edge => ({
     ...edge,
     type: 'default', 
-    animated: edge.animated !== undefined ? edge.animated : !edge.selected,
+    animated: !edge.selected,
     style: {
       ...edge.style,
       stroke: edge.selected ? '#0ea5e9' : (edge.style?.stroke || '#38bdf8'),

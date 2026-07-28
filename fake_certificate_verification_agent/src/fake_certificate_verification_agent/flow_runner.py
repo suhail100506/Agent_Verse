@@ -1,10 +1,16 @@
+from typing import Dict, Any, Tuple
+from pathlib import Path
 import os
 import json
 import uuid
 import datetime
 import re
-from typing import Dict, Any, Tuple
-from pathlib import Path
+
+try:
+    from litellm import completion
+    HAS_LITELLM = True
+except ImportError:
+    HAS_LITELLM = False
 
 # PDF Extraction
 try:
@@ -144,8 +150,11 @@ def smart_parse_certificate_fields(raw_text: str, metadata: Dict[str, Any], file
     if not extracted_name and metadata.get("author") and len(metadata["author"].strip()) > 3:
         extracted_name = metadata["author"].strip()
 
+    fallback_used = False
+
     if not extracted_name:
         extracted_name = parse_filename_fallback(filename)
+        fallback_used = True
 
     fields["candidate_name"] = extracted_name
 
@@ -165,6 +174,7 @@ def smart_parse_certificate_fields(raw_text: str, metadata: Dict[str, Any], file
     if not extracted_cert:
         hash_suffix = uuid.uuid5(uuid.NAMESPACE_DNS, filename).hex[:6].upper()
         extracted_cert = f"CERT-{datetime.date.today().year}-{hash_suffix}"
+        fallback_used = True
 
     fields["certificate_number"] = extracted_cert
 
@@ -182,11 +192,14 @@ def smart_parse_certificate_fields(raw_text: str, metadata: Dict[str, Any], file
 
     if not extracted_inst:
         extracted_inst = "Global Accredited Institution"
+        fallback_used = True
 
     fields["institution"] = extracted_inst
 
     date_match = re.search(r"\b(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4})\b", raw_text, re.I)
     fields["issue_date"] = date_match.group(1) if date_match else "2024-05-15"
+    
+    fields["fallback_used"] = fallback_used
 
     return fields
 
@@ -199,10 +212,54 @@ def run_certificate_flow(file_path: str, file_type: str = "pdf") -> Dict[str, An
     candidate_name = fields["candidate_name"]
     cert_number = fields["certificate_number"]
     institution = fields["institution"]
+    fallback_used = fields.get("fallback_used", False)
 
     filename_lower = filename.lower()
+    
+    # Check for explicitly fake files or keywords in extracted text
     is_fake = "fake" in filename_lower or "tampered" in filename_lower or "forged" in filename_lower
-    is_suspicious = "suspicious" in filename_lower or "mod" in filename_lower or len(suspicious_flags) > 0
+    if raw_text:
+        if "fake" in raw_text.lower() or "forged" in raw_text.lower():
+            is_fake = True
+            
+    # Filter out harmless flags like low resolution from triggering a suspicious alert
+    serious_flags = [f for f in suspicious_flags if "Low image resolution" not in f and "read error" not in f]
+    
+    is_suspicious = "suspicious" in filename_lower or "mod" in filename_lower or len(serious_flags) > 0
+
+    # CRT LLM Verification
+    if HAS_LITELLM and (os.getenv("GROQ_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("GROK_API_KEY") or os.getenv("XAI_API_KEY")):
+        try:
+            prompt = f"""
+            You are a forensic certificate verification expert.
+            Analyze this extracted text and metadata from a document to determine if it is a genuine certificate, suspicious, or a fake/forgery.
+            
+            Rules:
+            - If it has obvious red flags (e.g., words like 'fake', 'template', bizarre text, or completely empty text), respond with 'Fake'.
+            - If it's ambiguous or lacks standard certificate details (Name, Institution, ID), respond with 'Suspicious'.
+            - If it looks like a valid certificate with a proper name, institution, and ID, respond with 'Verified'.
+            
+            Filename: {filename}
+            OCR Text: {raw_text}
+            Metadata: {metadata}
+            
+            Respond with ONLY one word: Verified, Suspicious, or Fake.
+            """
+            model = "groq/llama3-8b-8192" if os.getenv("GROQ_API_KEY") else "openai/gpt-4o-mini"
+            res = completion(model=model, messages=[{"role": "user", "content": prompt}], max_tokens=10)
+            llm_decision = res.choices[0].message.content.strip().title()
+            
+            if "Fake" in llm_decision:
+                is_fake = True
+                is_suspicious = False
+            elif "Suspicious" in llm_decision:
+                is_suspicious = True
+                is_fake = False
+            elif "Verified" in llm_decision:
+                is_fake = False
+                is_suspicious = False
+        except Exception as e:
+            pass # Fall back to heuristics if LLM fails
 
     if is_fake:
         status = "Fake"

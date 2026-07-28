@@ -23,7 +23,7 @@ export default function AgentNode({ id, data, selected }) {
         <div className="mt-2 text-left flex flex-col gap-2">
           <input 
             type="text" 
-            placeholder="Enter payload here..." 
+            placeholder="Enter payload text here..." 
             id={`test-input-${data.id}`}
             onKeyDown={async (e) => {
               if (e.key === 'Enter' && e.target.value) {
@@ -32,22 +32,37 @@ export default function AgentNode({ id, data, selected }) {
             }}
             className="w-full bg-slate-900/50 border border-slate-700 rounded p-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 nodrag"
           />
+          <div className="text-[9px] text-slate-500 font-bold text-center">- OR UPLOAD FILE -</div>
+          <input
+            type="file"
+            id={`test-file-${data.id}`}
+            className="w-full bg-slate-900/50 border border-slate-700 rounded p-1 text-[10px] text-slate-300 focus:outline-none focus:border-sky-500 nodrag file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-sky-500/20 file:text-sky-400 hover:file:bg-sky-500/30 cursor-pointer"
+          />
           <button
             id={`test-btn-${data.id}`}
             disabled={loading}
             onClick={async () => {
-              const val = document.getElementById(`test-input-${data.id}`)?.value;
-              if (!val) return;
+              const val = document.getElementById(`test-input-${data.id}`)?.value || '';
+              const fileInput = document.getElementById(`test-file-${data.id}`);
+              const fileVal = fileInput?.files?.[0];
+              
+              if (!val && !fileVal) return;
               
               setLoading(true);
               setResult(null);
               
               const allEdges = getEdges();
               const outEdge = allEdges.find(e => e.source === id);
-              let targetNodeId = null;
+              
+              if (!outEdge) {
+                setResult({ error: 'Please connect the Test Text Box to a target agent first (drag from the bottom dot to the top of an agent).' });
+                setLoading(false);
+                return;
+              }
+
+              let targetNodeId = outEdge.target;
 
               if (outEdge) {
-                targetNodeId = outEdge.target;
                 setEdges(eds => eds.map(e => e.id === outEdge.id ? { ...e, animated: true, style: { stroke: '#f97316', strokeWidth: 4 } } : e));
                 setNodes(nds => nds.map(n => n.id === targetNodeId ? { ...n, data: { ...n.data, status: 'running' } } : n));
                 
@@ -55,9 +70,60 @@ export default function AgentNode({ id, data, selected }) {
               }
               
               try {
+                let apiUrl = 'http://localhost:8001/api/analyze/phishing';
                 const formData = new FormData();
-                formData.append('url_or_text', val);
-                const res = await fetch('http://localhost:8001/api/analyze/phishing', {
+
+                // Dynamic routing based on the target agent connected
+                if (targetNodeId) {
+                  const targetNode = getNodes().find(n => n.id === targetNodeId);
+                  if (targetNode) {
+                    const tId = targetNode.data.id;
+                    if (['agent-doc-ext', 'agent-auth-ver', 'agent-vis-forensics', 'agent-decision'].includes(tId)) {
+                      apiUrl = 'http://localhost:8001/api/verify/certificate';
+                      if (fileVal) {
+                        formData.append('file', fileVal);
+                      } else {
+                        const blob = new Blob([val], { type: 'text/plain' });
+                        formData.append('file', blob, 'test_certificate.txt');
+                      }
+                    } else if (tId === 'agent-malware') {
+                      apiUrl = 'http://localhost:8001/api/analyze/malware';
+                      if (fileVal) {
+                        formData.append('file', fileVal);
+                      } else {
+                        const blob = new Blob([val], { type: 'application/octet-stream' });
+                        formData.append('file', blob, 'suspicious.exe');
+                      }
+                    } else if (tId === 'agent-threat') {
+                      apiUrl = 'http://localhost:8001/api/analyze/threat';
+                      formData.append('query', val);
+                    } else if (tId === 'agent-privacy') {
+                      apiUrl = 'http://localhost:8001/api/audit/privacy';
+                      if (fileVal) {
+                         // Some endpoints might take files in future, but API expects string currently. 
+                         // Just fallback to text
+                      }
+                      formData.append('text_content', val || fileVal?.name);
+                    } else if (tId === 'agent-password') {
+                      apiUrl = 'http://localhost:8001/api/advise/password';
+                      formData.append('password', val);
+                    } else if (tId === 'agent-fraud') {
+                      apiUrl = 'http://localhost:8001/api/detect/fraud';
+                      formData.append('amount', '2500');
+                      formData.append('location', val);
+                    } else if (tId === 'agent-incident') {
+                      apiUrl = 'http://localhost:8001/api/incident/generate';
+                      formData.append('title', val);
+                    } else {
+                      // default to phishing
+                      formData.append('url_or_text', val);
+                    }
+                  } else {
+                    formData.append('url_or_text', val);
+                  }
+                }
+
+                const res = await fetch(apiUrl, {
                   method: 'POST',
                   body: formData
                 });
@@ -72,15 +138,73 @@ export default function AgentNode({ id, data, selected }) {
                   const targetNode = getNodes().find(n => n.id === targetNodeId);
                   if (targetNode) {
                     const alertNodeId = `alert-${Date.now()}`;
-                    const isFake = json.status === 'Fake';
+                    
+                    // Customize alert based on agent type
+                    let alertType = 'safe'; // 'safe', 'warning', 'danger'
+                    let alertTitle = "Check Complete";
+                    let alertSubtitle = "Analysis finished";
+                    let strokeColor = '#10b981'; // green
+
+                    const tId = targetNode.data.id;
+                    if (['agent-doc-ext', 'agent-auth-ver', 'agent-vis-forensics', 'agent-decision'].includes(tId)) {
+                        if (json.status === 'Fake' || json.status === 'Fraudulent') alertType = 'danger';
+                        else if (json.status === 'Suspicious') alertType = 'warning';
+                        else alertType = 'safe';
+                        
+                        alertTitle = alertType === 'danger' ? "Fake Certificate Detected" : (alertType === 'warning' ? "Suspicious Certificate Flagged" : "Certificate Verified");
+                        alertSubtitle = json.summary || `Risk: ${json.risk_level}`;
+                        strokeColor = alertType === 'danger' ? '#f43f5e' : (alertType === 'warning' ? '#f59e0b' : '#10b981');
+                    } else if (tId === 'agent-malware') {
+                        if (json.status === 'Malicious') alertType = 'danger';
+                        alertTitle = alertType === 'danger' ? "Malware Detected" : "File Clean";
+                        alertSubtitle = json.summary || `Score: ${json.threat_score}/100`;
+                        strokeColor = alertType === 'danger' ? '#f43f5e' : '#10b981';
+                    } else if (tId === 'agent-threat') {
+                        if (json.status === 'Malicious') alertType = 'danger';
+                        else if (json.status === 'Suspicious') alertType = 'warning';
+                        alertTitle = alertType === 'danger' ? "Threat Found" : (alertType === 'warning' ? "Suspicious Target" : "Safe Target");
+                        alertSubtitle = json.summary || "No active threats detected";
+                        strokeColor = alertType === 'danger' ? '#f43f5e' : (alertType === 'warning' ? '#f59e0b' : '#10b981');
+                    } else if (tId === 'agent-phishing') {
+                        if (json.status === 'Fake') alertType = 'danger';
+                        alertTitle = alertType === 'danger' ? "Suspicious Email Found" : "Email Verified Safe";
+                        alertSubtitle = alertType === 'danger' ? `Email Alert: ${json.email_delivery_status}` : 'No alert dispatched';
+                        strokeColor = alertType === 'danger' ? '#f43f5e' : '#10b981';
+                    } else if (tId === 'agent-privacy') {
+                        if (json.status === 'Non-Compliant') alertType = 'danger';
+                        alertTitle = alertType === 'danger' ? "Privacy Violation" : "Compliant";
+                        alertSubtitle = json.summary || "No PII found";
+                        strokeColor = alertType === 'danger' ? '#f43f5e' : '#10b981';
+                    } else if (tId === 'agent-password') {
+                        if (json.status === 'Weak' || json.status === 'Vulnerable') alertType = 'danger';
+                        alertTitle = alertType === 'danger' ? "Weak Password" : "Strong Password";
+                        alertSubtitle = json.summary || "Password is secure";
+                        strokeColor = alertType === 'danger' ? '#f43f5e' : '#10b981';
+                    } else if (tId === 'agent-fraud') {
+                        if (json.status === 'Fraudulent') alertType = 'danger';
+                        else if (json.status === 'Suspicious') alertType = 'warning';
+                        alertTitle = alertType === 'danger' ? "Fraud Detected" : (alertType === 'warning' ? "Suspicious Transaction" : "Transaction Safe");
+                        alertSubtitle = json.summary || "No anomalies";
+                        strokeColor = alertType === 'danger' ? '#f43f5e' : (alertType === 'warning' ? '#f59e0b' : '#10b981');
+                    } else if (tId === 'agent-incident') {
+                        alertType = 'warning'; 
+                        alertTitle = "Incident Created";
+                        alertSubtitle = json.summary || "Playbook active";
+                        strokeColor = '#f97316'; // orange
+                    }
+                    
+                    let nodeIcon = "✅";
+                    if (alertType === 'danger') nodeIcon = "🚨";
+                    else if (alertType === 'warning') nodeIcon = "⚠️";
+
                     const alertNode = {
                       id: alertNodeId,
                       type: 'agentNode',
                       position: { x: targetNode.position.x, y: targetNode.position.y + 150 },
                       data: {
-                        icon: isFake ? "🚨" : "✅",
-                        label: isFake ? "Suspicious Email Found" : "Email Verified Safe",
-                        subtitle: isFake ? `Email Alert: ${json.email_delivery_status}` : 'No alert dispatched',
+                        icon: nodeIcon,
+                        label: alertTitle,
+                        subtitle: alertSubtitle,
                         status: 'completed'
                       }
                     };
@@ -90,7 +214,7 @@ export default function AgentNode({ id, data, selected }) {
                       source: targetNodeId,
                       target: alertNodeId,
                       animated: true,
-                      style: { stroke: isFake ? '#f43f5e' : '#10b981', strokeWidth: 3 }
+                      style: { stroke: strokeColor, strokeWidth: 3 }
                     }));
                   }
                 }
