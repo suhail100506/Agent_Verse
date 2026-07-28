@@ -12,10 +12,8 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import AgentNode from './AgentNode';
-import CustomEdge from './CustomEdge';
 
 const nodeTypes = { agentNode: AgentNode };
-const edgeTypes = { customEdge: CustomEdge };
 
 const initialNodes = [
   { id: "node-user-upload", type: "agentNode", data: { icon: "📄", label: "User Payload Ingest", subtitle: "Payload Trigger Input" }, position: { x: 300, y: 20 } },
@@ -23,8 +21,10 @@ const initialNodes = [
 ];
 
 const initialEdges = [
-  { id: "e1-2", source: "node-user-upload", target: "node-doc-ext", type: 'customEdge', animated: true, style: { stroke: "#38bdf8", strokeWidth: 2 } }
+  { id: "e1-2", source: "node-user-upload", target: "node-doc-ext", animated: true, style: { stroke: "#38bdf8", strokeWidth: 2 } }
 ];
+
+import { reconnectEdge } from '@xyflow/react';
 
 function WorkflowCanvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -32,7 +32,12 @@ function WorkflowCanvas() {
   const { screenToFlowPosition } = useReactFlow();
 
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge({ ...params, type: 'customEdge', animated: true, style: { stroke: "#38bdf8", strokeWidth: 2 } }, eds)),
+    (params) => setEdges((eds) => addEdge({ ...params, animated: true, style: { stroke: "#38bdf8", strokeWidth: 2 } }, eds)),
+    [setEdges],
+  );
+
+  const onReconnect = useCallback(
+    (oldEdge, newConnection) => setEdges((els) => reconnectEdge(oldEdge, newConnection, els)),
     [setEdges],
   );
 
@@ -66,19 +71,30 @@ function WorkflowCanvas() {
     [screenToFlowPosition, setNodes],
   );
 
+  const displayEdges = edges.map(edge => ({
+    ...edge,
+    type: 'default', // Always keep it curved
+    animated: !edge.selected,
+    style: {
+      ...edge.style,
+      stroke: edge.selected ? '#0ea5e9' : '#38bdf8',
+      strokeWidth: edge.selected ? 3 : 2
+    }
+  }));
+
   return (
     <div className="flex-1 relative w-full h-full bg-[#07090e]" onDragOver={onDragOver} onDrop={onDrop}>
       <ReactFlow
         nodes={nodes}
-        edges={edges}
+        edges={displayEdges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onReconnect={onReconnect}
         nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
         fitView
         fitViewOptions={{ padding: 0.2 }}
-        deleteKeyCode={["Backspace", "Delete"]} // Natively ensures selection deletion!
+        deleteKeyCode={["Backspace", "Delete"]}
         className="react-flow-custom"
       >
         <Background color="#1e293b" gap={24} size={1} />
