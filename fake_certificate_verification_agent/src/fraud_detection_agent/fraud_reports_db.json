@@ -1,0 +1,254 @@
+[
+  {
+    "report_id": "FRD-90406CAD",
+    "created_at": "2026-07-28T16:58:10.270420+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 7500.0,
+    "location": "Seychelles",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 25,
+    "checks": {
+      "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+      "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+      "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+      "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from Seychelles within 10 minutes of primary region."
+    },
+    "summary": "FRAUD ALERT: Transaction of $7500.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team."
+  },
+  {
+    "report_id": "FRD-2BC3F6B9",
+    "created_at": "2026-07-28T16:58:10.235646+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 250.0,
+    "location": "Home Region",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.97,
+    "overall_score": 96,
+    "checks": {
+      "behavioral_analytics": "Passed - Transaction pattern matches user historical baseline.",
+      "device_fingerprint": "Passed - Known trusted device ID verified.",
+      "velocity_check": "Passed - Velocity check 1 transaction in last 60 minutes.",
+      "geolocation_anomaly": "Passed - Transaction IP geolocation aligns with primary home region."
+    },
+    "summary": "Fraud detection engine verified transaction of $250.00 as legitimate.",
+    "recommendation": "Approve financial transaction.",
+    "next_action": "Complete payment processing."
+  },
+  {
+    "report_id": "FRD-E1080972",
+    "created_at": "2026-07-28T15:20:21.854997+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 7500.0,
+    "location": "Seychelles",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 25,
+    "checks": {
+      "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+      "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+      "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+      "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from Seychelles within 10 minutes of primary region."
+    },
+    "summary": "FRAUD ALERT: Transaction of $7500.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team."
+  },
+  {
+    "report_id": "FRD-58454843",
+    "created_at": "2026-07-28T15:20:21.837989+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 250.0,
+    "location": "Home Region",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.97,
+    "overall_score": 96,
+    "checks": {
+      "behavioral_analytics": "Passed - Transaction pattern matches user historical baseline.",
+      "device_fingerprint": "Passed - Known trusted device ID verified.",
+      "velocity_check": "Passed - Velocity check 1 transaction in last 60 minutes.",
+      "geolocation_anomaly": "Passed - Transaction IP geolocation aligns with primary home region."
+    },
+    "summary": "Fraud detection engine verified transaction of $250.00 as legitimate.",
+    "recommendation": "Approve financial transaction.",
+    "next_action": "Complete payment processing."
+  },
+  {
+    "report_id": "FRD-96C3FB5C",
+    "created_at": "2026-07-28T15:20:05.992369+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 7500.0,
+    "location": "Seychelles",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 25,
+    "checks": {
+      "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+      "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+      "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+      "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from Seychelles within 10 minutes of primary region."
+    },
+    "summary": "FRAUD ALERT: Transaction of $7500.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team."
+  },
+  {
+    "report_id": "FRD-AEB38FC2",
+    "created_at": "2026-07-28T15:20:05.959548+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 250.0,
+    "location": "Home Region",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.97,
+    "overall_score": 96,
+    "checks": {
+      "behavioral_analytics": "Passed - Transaction pattern matches user historical baseline.",
+      "device_fingerprint": "Passed - Known trusted device ID verified.",
+      "velocity_check": "Passed - Velocity check 1 transaction in last 60 minutes.",
+      "geolocation_anomaly": "Passed - Transaction IP geolocation aligns with primary home region."
+    },
+    "summary": "Fraud detection engine verified transaction of $250.00 as legitimate.",
+    "recommendation": "Approve financial transaction.",
+    "next_action": "Complete payment processing."
+  },
+  {
+    "report_id": "FRD-79DAA2C1",
+    "created_at": "2026-07-28T15:19:53.844232+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 7500.0,
+    "location": "Seychelles",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 25,
+    "checks": {
+      "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+      "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+      "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+      "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from Seychelles within 10 minutes of primary region."
+    },
+    "summary": "FRAUD ALERT: Transaction of $7500.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team."
+  },
+  {
+    "report_id": "FRD-E4E3EE45",
+    "created_at": "2026-07-28T15:19:53.828558+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 250.0,
+    "location": "Home Region",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.97,
+    "overall_score": 96,
+    "checks": {
+      "behavioral_analytics": "Passed - Transaction pattern matches user historical baseline.",
+      "device_fingerprint": "Passed - Known trusted device ID verified.",
+      "velocity_check": "Passed - Velocity check 1 transaction in last 60 minutes.",
+      "geolocation_anomaly": "Passed - Transaction IP geolocation aligns with primary home region."
+    },
+    "summary": "Fraud detection engine verified transaction of $250.00 as legitimate.",
+    "recommendation": "Approve financial transaction.",
+    "next_action": "Complete payment processing."
+  },
+  {
+    "report_id": "FRD-0414DA5D",
+    "created_at": "2026-07-28T15:18:55.563395+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 7500.0,
+    "location": "Seychelles",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 25,
+    "checks": {
+      "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+      "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+      "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+      "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from Seychelles within 10 minutes of primary region."
+    },
+    "summary": "FRAUD ALERT: Transaction of $7500.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team."
+  },
+  {
+    "report_id": "FRD-556C5820",
+    "created_at": "2026-07-28T15:18:55.517591+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 250.0,
+    "location": "Home Region",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 25,
+    "checks": {
+      "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+      "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+      "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+      "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from Home Region within 10 minutes of primary region."
+    },
+    "summary": "FRAUD ALERT: Transaction of $250.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team."
+  },
+  {
+    "report_id": "FRD-F298B6A4",
+    "created_at": "2026-07-28T14:11:03.010654+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 7500.0,
+    "location": "Seychelles",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 25,
+    "checks": {
+      "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+      "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+      "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+      "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from Seychelles within 10 minutes of primary region."
+    },
+    "summary": "FRAUD ALERT: Transaction of $7500.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team."
+  },
+  {
+    "report_id": "FRD-FFE169FC",
+    "created_at": "2026-07-28T13:41:31.247654+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 7500.0,
+    "location": "Seychelles",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 25,
+    "checks": {
+      "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+      "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+      "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+      "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from Seychelles within 10 minutes of primary region."
+    },
+    "summary": "FRAUD ALERT: Transaction of $7500.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team."
+  }
+]

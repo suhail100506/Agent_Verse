@@ -1,0 +1,212 @@
+[
+  {
+    "report_id": "INC-7F1A9DF7",
+    "created_at": "2026-07-28T16:58:10.349123+00:00",
+    "agent": "Incident Response Agent",
+    "type": "incident_response",
+    "title": "Ransomware Outbreak & Active Data Exfiltration",
+    "severity": "HIGH",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 28,
+    "checks": {
+      "containment_phase": "Failed - Active C2 outbound traffic and data exfiltration detected.",
+      "eradication_phase": "Warning - Ransomware payload active across host nodes.",
+      "recovery_phase": "Failed - Isolated offline backup restoration required.",
+      "post_incident_audit": "Failed - High severity cyber incident triggered."
+    },
+    "summary": "CRITICAL INCIDENT ALERT: Ransomware outbreak & exfiltration flagged for 'Ransomware Outbreak & Active Data Exfiltration'.",
+    "recommendation": "Initiate emergency isolation and dispatch Incident Response Team.",
+    "next_action": "Execute Playbook #INC-CRITICAL-99."
+  },
+  {
+    "report_id": "INC-EB6FDC85",
+    "created_at": "2026-07-28T16:58:10.319263+00:00",
+    "agent": "Incident Response Agent",
+    "type": "incident_response",
+    "title": "Routine Firewall Maintenance",
+    "severity": "HIGH",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 92,
+    "checks": {
+      "containment_phase": "Passed - Host network interface isolated. C2 outbound traffic blocked.",
+      "eradication_phase": "Passed - Malicious artifacts and registry persistence keys purged.",
+      "recovery_phase": "Passed - System image restored from verified gold master backup.",
+      "post_incident_audit": "Passed - Complete SOC timeline and forensic evidence logged to MongoDB Atlas."
+    },
+    "summary": "Incident Response Playbook executed successfully for 'Routine Firewall Maintenance'. Containment, Eradication, and Recovery completed.",
+    "recommendation": "Maintain enhanced monitoring on affected VLAN for 72 hours.",
+    "next_action": "Close incident ticket and submit final Post-Mortem Report to CISO."
+  },
+  {
+    "report_id": "INC-A3F24D4C",
+    "created_at": "2026-07-28T15:20:21.892097+00:00",
+    "agent": "Incident Response Agent",
+    "type": "incident_response",
+    "title": "Ransomware Outbreak & Active Data Exfiltration",
+    "severity": "HIGH",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 28,
+    "checks": {
+      "containment_phase": "Failed - Active C2 outbound traffic and data exfiltration detected.",
+      "eradication_phase": "Warning - Ransomware payload active across host nodes.",
+      "recovery_phase": "Failed - Isolated offline backup restoration required.",
+      "post_incident_audit": "Failed - High severity cyber incident triggered."
+    },
+    "summary": "CRITICAL INCIDENT ALERT: Ransomware outbreak & exfiltration flagged for 'Ransomware Outbreak & Active Data Exfiltration'.",
+    "recommendation": "Initiate emergency isolation and dispatch Incident Response Team.",
+    "next_action": "Execute Playbook #INC-CRITICAL-99."
+  },
+  {
+    "report_id": "INC-A8FB818D",
+    "created_at": "2026-07-28T15:20:21.872671+00:00",
+    "agent": "Incident Response Agent",
+    "type": "incident_response",
+    "title": "Routine Firewall Maintenance",
+    "severity": "HIGH",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 92,
+    "checks": {
+      "containment_phase": "Passed - Host network interface isolated. C2 outbound traffic blocked.",
+      "eradication_phase": "Passed - Malicious artifacts and registry persistence keys purged.",
+      "recovery_phase": "Passed - System image restored from verified gold master backup.",
+      "post_incident_audit": "Passed - Complete SOC timeline and forensic evidence logged to MongoDB Atlas."
+    },
+    "summary": "Incident Response Playbook executed successfully for 'Routine Firewall Maintenance'. Containment, Eradication, and Recovery completed.",
+    "recommendation": "Maintain enhanced monitoring on affected VLAN for 72 hours.",
+    "next_action": "Close incident ticket and submit final Post-Mortem Report to CISO."
+  },
+  {
+    "report_id": "INC-418EF028",
+    "created_at": "2026-07-28T15:20:06.042016+00:00",
+    "agent": "Incident Response Agent",
+    "type": "incident_response",
+    "title": "Ransomware Outbreak & Active Data Exfiltration",
+    "severity": "HIGH",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 28,
+    "checks": {
+      "containment_phase": "Failed - Active C2 outbound traffic and data exfiltration detected.",
+      "eradication_phase": "Warning - Ransomware payload active across host nodes.",
+      "recovery_phase": "Failed - Isolated offline backup restoration required.",
+      "post_incident_audit": "Failed - High severity cyber incident triggered."
+    },
+    "summary": "CRITICAL INCIDENT ALERT: Ransomware outbreak & exfiltration flagged for 'Ransomware Outbreak & Active Data Exfiltration'.",
+    "recommendation": "Initiate emergency isolation and dispatch Incident Response Team.",
+    "next_action": "Execute Playbook #INC-CRITICAL-99."
+  },
+  {
+    "report_id": "INC-7A3CC355",
+    "created_at": "2026-07-28T15:20:06.025056+00:00",
+    "agent": "Incident Response Agent",
+    "type": "incident_response",
+    "title": "Routine Firewall Maintenance",
+    "severity": "HIGH",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 92,
+    "checks": {
+      "containment_phase": "Passed - Host network interface isolated. C2 outbound traffic blocked.",
+      "eradication_phase": "Passed - Malicious artifacts and registry persistence keys purged.",
+      "recovery_phase": "Passed - System image restored from verified gold master backup.",
+      "post_incident_audit": "Passed - Complete SOC timeline and forensic evidence logged to MongoDB Atlas."
+    },
+    "summary": "Incident Response Playbook executed successfully for 'Routine Firewall Maintenance'. Containment, Eradication, and Recovery completed.",
+    "recommendation": "Maintain enhanced monitoring on affected VLAN for 72 hours.",
+    "next_action": "Close incident ticket and submit final Post-Mortem Report to CISO."
+  },
+  {
+    "report_id": "INC-BBEDD044",
+    "created_at": "2026-07-28T15:18:55.655336+00:00",
+    "agent": "Incident Response Agent",
+    "type": "incident_response",
+    "title": "Ransomware Outbreak & Active Data Exfiltration",
+    "severity": "HIGH",
+    "status": "Verified",
+    "risk_level": "HIGH SEVERITY",
+    "confidence": 0.98,
+    "overall_score": 92,
+    "checks": {
+      "containment_phase": "Passed - Host network interface isolated. C2 outbound traffic blocked.",
+      "eradication_phase": "Passed - Malicious artifacts and registry persistence keys purged.",
+      "recovery_phase": "Passed - System image restored from verified gold master backup.",
+      "post_incident_audit": "Passed - Complete SOC timeline and forensic evidence logged to MongoDB Atlas."
+    },
+    "summary": "Incident Response Playbook executed successfully for 'Ransomware Outbreak & Active Data Exfiltration'. Containment, Eradication, and Recovery completed.",
+    "recommendation": "Maintain enhanced monitoring on affected VLAN for 72 hours.",
+    "next_action": "Close incident ticket and submit final Post-Mortem Report to CISO."
+  },
+  {
+    "report_id": "INC-6132F285",
+    "created_at": "2026-07-28T15:18:55.599561+00:00",
+    "agent": "Incident Response Agent",
+    "type": "incident_response",
+    "title": "Routine Firewall Maintenance",
+    "severity": "HIGH",
+    "status": "Verified",
+    "risk_level": "HIGH SEVERITY",
+    "confidence": 0.98,
+    "overall_score": 92,
+    "checks": {
+      "containment_phase": "Passed - Host network interface isolated. C2 outbound traffic blocked.",
+      "eradication_phase": "Passed - Malicious artifacts and registry persistence keys purged.",
+      "recovery_phase": "Passed - System image restored from verified gold master backup.",
+      "post_incident_audit": "Passed - Complete SOC timeline and forensic evidence logged to MongoDB Atlas."
+    },
+    "summary": "Incident Response Playbook executed successfully for 'Routine Firewall Maintenance'. Containment, Eradication, and Recovery completed.",
+    "recommendation": "Maintain enhanced monitoring on affected VLAN for 72 hours.",
+    "next_action": "Close incident ticket and submit final Post-Mortem Report to CISO."
+  },
+  {
+    "report_id": "INC-4E24640C",
+    "created_at": "2026-07-28T14:11:04.531053+00:00",
+    "agent": "Incident Response Agent",
+    "type": "incident_response",
+    "title": "SOC Audit",
+    "severity": "HIGH",
+    "status": "Verified",
+    "risk_level": "HIGH SEVERITY",
+    "confidence": 0.98,
+    "overall_score": 92,
+    "checks": {
+      "containment_phase": "Passed - Host network interface isolated. C2 outbound traffic blocked.",
+      "eradication_phase": "Passed - Malicious artifacts and registry persistence keys purged.",
+      "recovery_phase": "Passed - System image restored from verified gold master backup.",
+      "post_incident_audit": "Passed - Complete SOC timeline and forensic evidence logged to MongoDB Atlas."
+    },
+    "summary": "Incident Response Playbook executed successfully for 'SOC Audit'. Containment, Eradication, and Recovery completed.",
+    "recommendation": "Maintain enhanced monitoring on affected VLAN for 72 hours.",
+    "next_action": "Close incident ticket and submit final Post-Mortem Report to CISO."
+  },
+  {
+    "report_id": "INC-3320504F",
+    "created_at": "2026-07-28T13:41:32.785865+00:00",
+    "agent": "Incident Response Agent",
+    "type": "incident_response",
+    "title": "SOC Audit",
+    "severity": "HIGH",
+    "status": "Verified",
+    "risk_level": "HIGH SEVERITY",
+    "confidence": 0.98,
+    "overall_score": 92,
+    "checks": {
+      "containment_phase": "Passed - Host network interface isolated. C2 outbound traffic blocked.",
+      "eradication_phase": "Passed - Malicious artifacts and registry persistence keys purged.",
+      "recovery_phase": "Passed - System image restored from verified gold master backup.",
+      "post_incident_audit": "Passed - Complete SOC timeline and forensic evidence logged to MongoDB Atlas."
+    },
+    "summary": "Incident Response Playbook executed successfully for 'SOC Audit'. Containment, Eradication, and Recovery completed.",
+    "recommendation": "Maintain enhanced monitoring on affected VLAN for 72 hours.",
+    "next_action": "Close incident ticket and submit final Post-Mortem Report to CISO."
+  }
+]

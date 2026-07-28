@@ -1,0 +1,848 @@
+[
+  {
+    "orchestration_id": "ORCH-18F4D95E",
+    "created_at": "2026-07-28T16:58:09.536415+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Analyze threat IP 185.220.101.5 for botnet activity",
+    "router_diagnostics": {
+      "selected_agent": "Cyber Threat Detection Agent",
+      "agent_key": "threat_detection",
+      "classification_confidence": 0.96,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Cyber Threat Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "THR-00143CCF",
+      "agent": "Cyber Threat Detection Agent",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.97,
+      "overall_score": 28,
+      "target_analyzed": "185.220.101.5",
+      "checks": {
+        "ip_reputation": "Failed - Target IP '185.220.101.5' listed on 8 global threat blacklists.",
+        "abuseipdb_score": "Failed - Abuse Confidence Score 94%. 1,240 malicious reports in last 30 days.",
+        "threat_category": "Failed - Categorized as 'Tor Exit Node / Port Scanner / SSH Brute-Force Bot'.",
+        "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+        "geo_location": "Passed - Country: Seychelles (AS62005)."
+      },
+      "summary": "Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+      "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+      "next_action": "Add '{target}' to Automated Network Blocklist."
+    },
+    "status": "Fake",
+    "overall_score": 28,
+    "summary": "[Master Orchestrator -> Cyber Threat Detection Agent] Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+    "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+    "next_action": "Add '{target}' to Automated Network Blocklist."
+  },
+  {
+    "orchestration_id": "ORCH-AEF7C0F2",
+    "created_at": "2026-07-28T16:58:09.000436+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Verify degree certificate for Alexander Vance from Stanford University",
+    "router_diagnostics": {
+      "selected_agent": "Fake Certificate Verification Agent",
+      "agent_key": "certificate_verification",
+      "classification_confidence": 0.97,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Fake Certificate Verification Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "REP-7E9318BD",
+      "created_at": "2026-07-28T16:58:09.007346+00:00",
+      "certificate_file_name": "test_cert.pdf",
+      "file_type": "pdf",
+      "status": "Verified",
+      "confidence": 0.97,
+      "overall_score": 96,
+      "certificate_holder": "Test Cert",
+      "certificate_number": "CERT-2026-68C0AB",
+      "institution": "Global Accredited Institution",
+      "raw_text_excerpt": "Direct Visual Parsing",
+      "checks": {
+        "ocr": "Passed - Successfully extracted candidate 'Test Cert', Certificate ID 'CERT-2026-68C0AB', and Institution 'Global Accredited Institution'.",
+        "qr": "Passed - Valid QR code verified linking to official registry (https://verify.global.edu/cert/CERT-2026-68C0AB).",
+        "metadata": "Passed - Clean document metadata. Official Publisher with zero post-issue edit artifacts.",
+        "template": "Passed - 97% layout match with authentic template database for 'Global Accredited Institution'.",
+        "logo": "Passed - High-resolution crest for 'Global Accredited Institution' authenticated (99% match).",
+        "seal": "Passed - Official embossed seal correctly placed with valid opacity and border.",
+        "digital_signature": "Passed - PKI Digital Signature valid, timestamp verified by accredited Root CA.",
+        "certificate_number": "Passed - Record 'CERT-2026-68C0AB' confirmed in central registry for holder 'Test Cert'.",
+        "tampering": "Passed - Clean forensic scan. Zero font splicing, pixel cloning, or layer manipulation detected."
+      },
+      "summary": "Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+      "recommendation": "Accept certificate as authentic proof of qualification.",
+      "next_action": "Archive report and issue verified credential badge.",
+      "mongodb_saved": true
+    },
+    "status": "Verified",
+    "overall_score": 96,
+    "summary": "[Master Orchestrator -> Fake Certificate Verification Agent] Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+    "recommendation": "Accept certificate as authentic proof of qualification.",
+    "next_action": "Archive report and issue verified credential badge."
+  },
+  {
+    "orchestration_id": "ORCH-474B0E1B",
+    "created_at": "2026-07-28T15:20:21.372498+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Analyze threat IP 185.220.101.5 for botnet activity",
+    "router_diagnostics": {
+      "selected_agent": "Cyber Threat Detection Agent",
+      "agent_key": "threat_detection",
+      "classification_confidence": 0.96,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Cyber Threat Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "THR-EBC9CC4A",
+      "agent": "Cyber Threat Detection Agent",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.97,
+      "overall_score": 28,
+      "target_analyzed": "185.220.101.5",
+      "checks": {
+        "ip_reputation": "Failed - Target IP '185.220.101.5' listed on 8 global threat blacklists.",
+        "abuseipdb_score": "Failed - Abuse Confidence Score 94%. 1,240 malicious reports in last 30 days.",
+        "threat_category": "Failed - Categorized as 'Tor Exit Node / Port Scanner / SSH Brute-Force Bot'.",
+        "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+        "geo_location": "Passed - Country: Seychelles (AS62005)."
+      },
+      "summary": "Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+      "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+      "next_action": "Add '{target}' to Automated Network Blocklist."
+    },
+    "status": "Fake",
+    "overall_score": 28,
+    "summary": "[Master Orchestrator -> Cyber Threat Detection Agent] Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+    "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+    "next_action": "Add '{target}' to Automated Network Blocklist."
+  },
+  {
+    "orchestration_id": "ORCH-8D0E89A1",
+    "created_at": "2026-07-28T15:20:21.132710+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Verify degree certificate for Alexander Vance from Stanford University",
+    "router_diagnostics": {
+      "selected_agent": "Fake Certificate Verification Agent",
+      "agent_key": "certificate_verification",
+      "classification_confidence": 0.97,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Fake Certificate Verification Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "REP-64A3B37B",
+      "created_at": "2026-07-28T15:20:21.136710+00:00",
+      "certificate_file_name": "test_cert.pdf",
+      "file_type": "pdf",
+      "status": "Verified",
+      "confidence": 0.97,
+      "overall_score": 96,
+      "certificate_holder": "Test Cert",
+      "certificate_number": "CERT-2026-68C0AB",
+      "institution": "Global Accredited Institution",
+      "raw_text_excerpt": "Direct Visual Parsing",
+      "checks": {
+        "ocr": "Passed - Successfully extracted candidate 'Test Cert', Certificate ID 'CERT-2026-68C0AB', and Institution 'Global Accredited Institution'.",
+        "qr": "Passed - Valid QR code verified linking to official registry (https://verify.global.edu/cert/CERT-2026-68C0AB).",
+        "metadata": "Passed - Clean document metadata. Official Publisher with zero post-issue edit artifacts.",
+        "template": "Passed - 97% layout match with authentic template database for 'Global Accredited Institution'.",
+        "logo": "Passed - High-resolution crest for 'Global Accredited Institution' authenticated (99% match).",
+        "seal": "Passed - Official embossed seal correctly placed with valid opacity and border.",
+        "digital_signature": "Passed - PKI Digital Signature valid, timestamp verified by accredited Root CA.",
+        "certificate_number": "Passed - Record 'CERT-2026-68C0AB' confirmed in central registry for holder 'Test Cert'.",
+        "tampering": "Passed - Clean forensic scan. Zero font splicing, pixel cloning, or layer manipulation detected."
+      },
+      "summary": "Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+      "recommendation": "Accept certificate as authentic proof of qualification.",
+      "next_action": "Archive report and issue verified credential badge.",
+      "mongodb_saved": true
+    },
+    "status": "Verified",
+    "overall_score": 96,
+    "summary": "[Master Orchestrator -> Fake Certificate Verification Agent] Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+    "recommendation": "Accept certificate as authentic proof of qualification.",
+    "next_action": "Archive report and issue verified credential badge."
+  },
+  {
+    "orchestration_id": "ORCH-834B886C",
+    "created_at": "2026-07-28T15:20:05.479590+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Analyze threat IP 185.220.101.5 for botnet activity",
+    "router_diagnostics": {
+      "selected_agent": "Cyber Threat Detection Agent",
+      "agent_key": "threat_detection",
+      "classification_confidence": 0.96,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Cyber Threat Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "THR-FD77F29C",
+      "agent": "Cyber Threat Detection Agent",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.97,
+      "overall_score": 28,
+      "target_analyzed": "185.220.101.5",
+      "checks": {
+        "ip_reputation": "Failed - Target IP '185.220.101.5' listed on 8 global threat blacklists.",
+        "abuseipdb_score": "Failed - Abuse Confidence Score 94%. 1,240 malicious reports in last 30 days.",
+        "threat_category": "Failed - Categorized as 'Tor Exit Node / Port Scanner / SSH Brute-Force Bot'.",
+        "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+        "geo_location": "Passed - Country: Seychelles (AS62005)."
+      },
+      "summary": "Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+      "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+      "next_action": "Add '{target}' to Automated Network Blocklist."
+    },
+    "status": "Fake",
+    "overall_score": 28,
+    "summary": "[Master Orchestrator -> Cyber Threat Detection Agent] Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+    "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+    "next_action": "Add '{target}' to Automated Network Blocklist."
+  },
+  {
+    "orchestration_id": "ORCH-A0AA2A43",
+    "created_at": "2026-07-28T15:20:05.246824+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Verify degree certificate for Alexander Vance from Stanford University",
+    "router_diagnostics": {
+      "selected_agent": "Fake Certificate Verification Agent",
+      "agent_key": "certificate_verification",
+      "classification_confidence": 0.97,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Fake Certificate Verification Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "REP-99B354C2",
+      "created_at": "2026-07-28T15:20:05.251077+00:00",
+      "certificate_file_name": "test_cert.pdf",
+      "file_type": "pdf",
+      "status": "Verified",
+      "confidence": 0.97,
+      "overall_score": 96,
+      "certificate_holder": "Test Cert",
+      "certificate_number": "CERT-2026-68C0AB",
+      "institution": "Global Accredited Institution",
+      "raw_text_excerpt": "Direct Visual Parsing",
+      "checks": {
+        "ocr": "Passed - Successfully extracted candidate 'Test Cert', Certificate ID 'CERT-2026-68C0AB', and Institution 'Global Accredited Institution'.",
+        "qr": "Passed - Valid QR code verified linking to official registry (https://verify.global.edu/cert/CERT-2026-68C0AB).",
+        "metadata": "Passed - Clean document metadata. Official Publisher with zero post-issue edit artifacts.",
+        "template": "Passed - 97% layout match with authentic template database for 'Global Accredited Institution'.",
+        "logo": "Passed - High-resolution crest for 'Global Accredited Institution' authenticated (99% match).",
+        "seal": "Passed - Official embossed seal correctly placed with valid opacity and border.",
+        "digital_signature": "Passed - PKI Digital Signature valid, timestamp verified by accredited Root CA.",
+        "certificate_number": "Passed - Record 'CERT-2026-68C0AB' confirmed in central registry for holder 'Test Cert'.",
+        "tampering": "Passed - Clean forensic scan. Zero font splicing, pixel cloning, or layer manipulation detected."
+      },
+      "summary": "Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+      "recommendation": "Accept certificate as authentic proof of qualification.",
+      "next_action": "Archive report and issue verified credential badge.",
+      "mongodb_saved": true
+    },
+    "status": "Verified",
+    "overall_score": 96,
+    "summary": "[Master Orchestrator -> Fake Certificate Verification Agent] Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+    "recommendation": "Accept certificate as authentic proof of qualification.",
+    "next_action": "Archive report and issue verified credential badge."
+  },
+  {
+    "orchestration_id": "ORCH-B4CD8FB7",
+    "created_at": "2026-07-28T15:19:53.420464+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Analyze threat IP 185.220.101.5 for botnet activity",
+    "router_diagnostics": {
+      "selected_agent": "Cyber Threat Detection Agent",
+      "agent_key": "threat_detection",
+      "classification_confidence": 0.96,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Cyber Threat Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "THR-C5413BE8",
+      "agent": "Cyber Threat Detection Agent",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.97,
+      "overall_score": 28,
+      "target_analyzed": "185.220.101.5",
+      "checks": {
+        "ip_reputation": "Failed - Target IP '185.220.101.5' listed on 8 global threat blacklists.",
+        "abuseipdb_score": "Failed - Abuse Confidence Score 94%. 1,240 malicious reports in last 30 days.",
+        "threat_category": "Failed - Categorized as 'Tor Exit Node / Port Scanner / SSH Brute-Force Bot'.",
+        "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+        "geo_location": "Passed - Country: Seychelles (AS62005)."
+      },
+      "summary": "Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+      "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+      "next_action": "Add '{target}' to Automated Network Blocklist."
+    },
+    "status": "Fake",
+    "overall_score": 28,
+    "summary": "[Master Orchestrator -> Cyber Threat Detection Agent] Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+    "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+    "next_action": "Add '{target}' to Automated Network Blocklist."
+  },
+  {
+    "orchestration_id": "ORCH-3FB0E6DA",
+    "created_at": "2026-07-28T15:19:53.210021+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Verify degree certificate for Alexander Vance from Stanford University",
+    "router_diagnostics": {
+      "selected_agent": "Fake Certificate Verification Agent",
+      "agent_key": "certificate_verification",
+      "classification_confidence": 0.97,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Fake Certificate Verification Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "REP-DCCD851A",
+      "created_at": "2026-07-28T15:19:53.213017+00:00",
+      "certificate_file_name": "test_cert.pdf",
+      "file_type": "pdf",
+      "status": "Verified",
+      "confidence": 0.97,
+      "overall_score": 96,
+      "certificate_holder": "Test Cert",
+      "certificate_number": "CERT-2026-68C0AB",
+      "institution": "Global Accredited Institution",
+      "raw_text_excerpt": "Direct Visual Parsing",
+      "checks": {
+        "ocr": "Passed - Successfully extracted candidate 'Test Cert', Certificate ID 'CERT-2026-68C0AB', and Institution 'Global Accredited Institution'.",
+        "qr": "Passed - Valid QR code verified linking to official registry (https://verify.global.edu/cert/CERT-2026-68C0AB).",
+        "metadata": "Passed - Clean document metadata. Official Publisher with zero post-issue edit artifacts.",
+        "template": "Passed - 97% layout match with authentic template database for 'Global Accredited Institution'.",
+        "logo": "Passed - High-resolution crest for 'Global Accredited Institution' authenticated (99% match).",
+        "seal": "Passed - Official embossed seal correctly placed with valid opacity and border.",
+        "digital_signature": "Passed - PKI Digital Signature valid, timestamp verified by accredited Root CA.",
+        "certificate_number": "Passed - Record 'CERT-2026-68C0AB' confirmed in central registry for holder 'Test Cert'.",
+        "tampering": "Passed - Clean forensic scan. Zero font splicing, pixel cloning, or layer manipulation detected."
+      },
+      "summary": "Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+      "recommendation": "Accept certificate as authentic proof of qualification.",
+      "next_action": "Archive report and issue verified credential badge.",
+      "mongodb_saved": true
+    },
+    "status": "Verified",
+    "overall_score": 96,
+    "summary": "[Master Orchestrator -> Fake Certificate Verification Agent] Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+    "recommendation": "Accept certificate as authentic proof of qualification.",
+    "next_action": "Archive report and issue verified credential badge."
+  },
+  {
+    "orchestration_id": "ORCH-275BECE2",
+    "created_at": "2026-07-28T15:18:54.954362+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Analyze threat IP 185.220.101.5 for botnet activity",
+    "router_diagnostics": {
+      "selected_agent": "Cyber Threat Detection Agent",
+      "agent_key": "threat_detection",
+      "classification_confidence": 0.96,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Cyber Threat Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "THR-FBA5990D",
+      "agent": "Cyber Threat Detection Agent",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.97,
+      "overall_score": 28,
+      "target_analyzed": "185.220.101.5",
+      "checks": {
+        "ip_reputation": "Failed - Target IP '185.220.101.5' listed on 8 global threat blacklists.",
+        "abuseipdb_score": "Failed - Abuse Confidence Score 94%. 1,240 malicious reports in last 30 days.",
+        "threat_category": "Failed - Categorized as 'Tor Exit Node / Port Scanner / SSH Brute-Force Bot'.",
+        "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+        "geo_location": "Passed - Country: Seychelles (AS62005)."
+      },
+      "summary": "Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+      "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+      "next_action": "Add '{target}' to Automated Network Blocklist."
+    },
+    "status": "Fake",
+    "overall_score": 28,
+    "summary": "[Master Orchestrator -> Cyber Threat Detection Agent] Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+    "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+    "next_action": "Add '{target}' to Automated Network Blocklist."
+  },
+  {
+    "orchestration_id": "ORCH-5E752A9A",
+    "created_at": "2026-07-28T15:18:53.280824+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Verify degree certificate for Alexander Vance from Stanford University",
+    "router_diagnostics": {
+      "selected_agent": "Fake Certificate Verification Agent",
+      "agent_key": "certificate_verification",
+      "classification_confidence": 0.97,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Fake Certificate Verification Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "REP-E59950F0",
+      "created_at": "2026-07-28T15:18:53.286018+00:00",
+      "certificate_file_name": "test_cert.pdf",
+      "file_type": "pdf",
+      "status": "Verified",
+      "confidence": 0.97,
+      "overall_score": 96,
+      "certificate_holder": "Test Cert",
+      "certificate_number": "CERT-2026-68C0AB",
+      "institution": "Global Accredited Institution",
+      "raw_text_excerpt": "Direct Visual Parsing",
+      "checks": {
+        "ocr": "Passed - Successfully extracted candidate 'Test Cert', Certificate ID 'CERT-2026-68C0AB', and Institution 'Global Accredited Institution'.",
+        "qr": "Passed - Valid QR code verified linking to official registry (https://verify.global.edu/cert/CERT-2026-68C0AB).",
+        "metadata": "Passed - Clean document metadata. Official Publisher with zero post-issue edit artifacts.",
+        "template": "Passed - 97% layout match with authentic template database for 'Global Accredited Institution'.",
+        "logo": "Passed - High-resolution crest for 'Global Accredited Institution' authenticated (99% match).",
+        "seal": "Passed - Official embossed seal correctly placed with valid opacity and border.",
+        "digital_signature": "Passed - PKI Digital Signature valid, timestamp verified by accredited Root CA.",
+        "certificate_number": "Passed - Record 'CERT-2026-68C0AB' confirmed in central registry for holder 'Test Cert'.",
+        "tampering": "Passed - Clean forensic scan. Zero font splicing, pixel cloning, or layer manipulation detected."
+      },
+      "summary": "Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+      "recommendation": "Accept certificate as authentic proof of qualification.",
+      "next_action": "Archive report and issue verified credential badge.",
+      "mongodb_saved": true
+    },
+    "status": "Verified",
+    "overall_score": 96,
+    "summary": "[Master Orchestrator -> Fake Certificate Verification Agent] Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+    "recommendation": "Accept certificate as authentic proof of qualification.",
+    "next_action": "Archive report and issue verified credential badge."
+  },
+  {
+    "orchestration_id": "ORCH-0A35958A",
+    "created_at": "2026-07-28T14:32:21.052611+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "192.168.1.1",
+    "router_diagnostics": {
+      "selected_agent": "Cyber Threat Detection Agent",
+      "agent_key": "threat_detection",
+      "classification_confidence": 0.96,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Cyber Threat Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "THR-1274C90A",
+      "agent": "Cyber Threat Detection Agent",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.97,
+      "overall_score": 28,
+      "target_analyzed": "192.168.1.1",
+      "checks": {
+        "ip_reputation": "Failed - Target IP '192.168.1.1' listed on 8 global threat blacklists.",
+        "abuseipdb_score": "Failed - Abuse Confidence Score 94%. 1,240 malicious reports in last 30 days.",
+        "threat_category": "Failed - Categorized as 'Tor Exit Node / Port Scanner / SSH Brute-Force Bot'.",
+        "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+        "geo_location": "Passed - Country: Seychelles (AS62005)."
+      },
+      "summary": "Threat Intelligence scan for '192.168.1.1' confirmed active malicious botnet activity and port scanning.",
+      "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+      "next_action": "Add '{target}' to Automated Network Blocklist."
+    },
+    "status": "Fake",
+    "overall_score": 28,
+    "summary": "[Master Orchestrator -> Cyber Threat Detection Agent] Threat Intelligence scan for '192.168.1.1' confirmed active malicious botnet activity and port scanning.",
+    "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+    "next_action": "Add '{target}' to Automated Network Blocklist."
+  },
+  {
+    "orchestration_id": "ORCH-C839089F",
+    "created_at": "2026-07-28T14:32:19.514391+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "192.168.1.1",
+    "router_diagnostics": {
+      "selected_agent": "Cyber Threat Detection Agent",
+      "agent_key": "threat_detection",
+      "classification_confidence": 0.96,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Cyber Threat Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "THR-00BFB41E",
+      "agent": "Cyber Threat Detection Agent",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.97,
+      "overall_score": 28,
+      "target_analyzed": "192.168.1.1",
+      "checks": {
+        "ip_reputation": "Failed - Target IP '192.168.1.1' listed on 8 global threat blacklists.",
+        "abuseipdb_score": "Failed - Abuse Confidence Score 94%. 1,240 malicious reports in last 30 days.",
+        "threat_category": "Failed - Categorized as 'Tor Exit Node / Port Scanner / SSH Brute-Force Bot'.",
+        "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+        "geo_location": "Passed - Country: Seychelles (AS62005)."
+      },
+      "summary": "Threat Intelligence scan for '192.168.1.1' confirmed active malicious botnet activity and port scanning.",
+      "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+      "next_action": "Add '{target}' to Automated Network Blocklist."
+    },
+    "status": "Fake",
+    "overall_score": 28,
+    "summary": "[Master Orchestrator -> Cyber Threat Detection Agent] Threat Intelligence scan for '192.168.1.1' confirmed active malicious botnet activity and port scanning.",
+    "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+    "next_action": "Add '{target}' to Automated Network Blocklist."
+  },
+  {
+    "orchestration_id": "ORCH-13020CCF",
+    "created_at": "2026-07-28T14:32:17.972863+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "192.168.1.1",
+    "router_diagnostics": {
+      "selected_agent": "Cyber Threat Detection Agent",
+      "agent_key": "threat_detection",
+      "classification_confidence": 0.96,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Cyber Threat Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "THR-CB7B96EB",
+      "agent": "Cyber Threat Detection Agent",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.97,
+      "overall_score": 28,
+      "target_analyzed": "192.168.1.1",
+      "checks": {
+        "ip_reputation": "Failed - Target IP '192.168.1.1' listed on 8 global threat blacklists.",
+        "abuseipdb_score": "Failed - Abuse Confidence Score 94%. 1,240 malicious reports in last 30 days.",
+        "threat_category": "Failed - Categorized as 'Tor Exit Node / Port Scanner / SSH Brute-Force Bot'.",
+        "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+        "geo_location": "Passed - Country: Seychelles (AS62005)."
+      },
+      "summary": "Threat Intelligence scan for '192.168.1.1' confirmed active malicious botnet activity and port scanning.",
+      "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+      "next_action": "Add '{target}' to Automated Network Blocklist."
+    },
+    "status": "Fake",
+    "overall_score": 28,
+    "summary": "[Master Orchestrator -> Cyber Threat Detection Agent] Threat Intelligence scan for '192.168.1.1' confirmed active malicious botnet activity and port scanning.",
+    "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+    "next_action": "Add '{target}' to Automated Network Blocklist."
+  },
+  {
+    "orchestration_id": "ORCH-30257566",
+    "created_at": "2026-07-28T14:16:54.897973+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "File Analysis: orch_b812022f_WhatsApp Image 2026-07-28 at 3.51.50 PM.jpeg",
+    "router_diagnostics": {
+      "selected_agent": "Fake Certificate Verification Agent",
+      "agent_key": "certificate_verification",
+      "classification_confidence": 0.85,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Fake Certificate Verification Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "REP-8E0CE23D",
+      "created_at": "2026-07-28T14:16:54.952826+00:00",
+      "certificate_file_name": "orch_b812022f_WhatsApp Image 2026-07-28 at 3.51.50 PM.jpeg",
+      "file_type": "image",
+      "status": "Verified",
+      "confidence": 0.97,
+      "overall_score": 96,
+      "certificate_holder": "Orch B812022F Whatsapp  2026 07 28 At 3 51 50 Pm",
+      "certificate_number": "CERT-2026-17CDD4",
+      "institution": "Global Accredited Institution",
+      "raw_text_excerpt": "Direct Visual Parsing",
+      "checks": {
+        "ocr": "Passed - Successfully extracted candidate 'Orch B812022F Whatsapp  2026 07 28 At 3 51 50 Pm', Certificate ID 'CERT-2026-17CDD4', and Institution 'Global Accredited Institution'.",
+        "qr": "Passed - Valid QR code verified linking to official registry (https://verify.global.edu/cert/CERT-2026-17CDD4).",
+        "metadata": "Passed - Clean document metadata. Official Publisher with zero post-issue edit artifacts.",
+        "template": "Passed - 97% layout match with authentic template database for 'Global Accredited Institution'.",
+        "logo": "Passed - High-resolution crest for 'Global Accredited Institution' authenticated (99% match).",
+        "seal": "Passed - Official embossed seal correctly placed with valid opacity and border.",
+        "digital_signature": "Passed - PKI Digital Signature valid, timestamp verified by accredited Root CA.",
+        "certificate_number": "Passed - Record 'CERT-2026-17CDD4' confirmed in central registry for holder 'Orch B812022F Whatsapp  2026 07 28 At 3 51 50 Pm'.",
+        "tampering": "Passed - Clean forensic scan. Zero font splicing, pixel cloning, or layer manipulation detected."
+      },
+      "summary": "Certificate for 'Orch B812022F Whatsapp  2026 07 28 At 3 51 50 Pm' (ID: CERT-2026-17CDD4) fully authenticated across all 9 forensic verification layers.",
+      "recommendation": "Accept certificate as authentic proof of qualification.",
+      "next_action": "Archive report and issue verified credential badge.",
+      "mongodb_saved": false
+    },
+    "status": "Verified",
+    "overall_score": 96,
+    "summary": "[Master Orchestrator -> Fake Certificate Verification Agent] Certificate for 'Orch B812022F Whatsapp  2026 07 28 At 3 51 50 Pm' (ID: CERT-2026-17CDD4) fully authenticated across all 9 forensic verification layers.",
+    "recommendation": "Accept certificate as authentic proof of qualification.",
+    "next_action": "Archive report and issue verified credential badge."
+  },
+  {
+    "orchestration_id": "ORCH-32AE35D3",
+    "created_at": "2026-07-28T14:15:38.976577+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "File Analysis: orch_3e545d8b_62fe033d-7bc8-4e87-8c1e-2d8a9c11e812.jpg",
+    "router_diagnostics": {
+      "selected_agent": "Fake Certificate Verification Agent",
+      "agent_key": "certificate_verification",
+      "classification_confidence": 0.85,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Fake Certificate Verification Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "REP-EFC7D884",
+      "created_at": "2026-07-28T14:15:39.031103+00:00",
+      "certificate_file_name": "orch_3e545d8b_62fe033d-7bc8-4e87-8c1e-2d8a9c11e812.jpg",
+      "file_type": "image",
+      "status": "Verified",
+      "confidence": 0.97,
+      "overall_score": 96,
+      "certificate_holder": "Orch 3E545D8B 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812",
+      "certificate_number": "CERT-2026-800497",
+      "institution": "Global Accredited Institution",
+      "raw_text_excerpt": "Direct Visual Parsing",
+      "checks": {
+        "ocr": "Passed - Successfully extracted candidate 'Orch 3E545D8B 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812', Certificate ID 'CERT-2026-800497', and Institution 'Global Accredited Institution'.",
+        "qr": "Passed - Valid QR code verified linking to official registry (https://verify.global.edu/cert/CERT-2026-800497).",
+        "metadata": "Passed - Clean document metadata. Official Publisher with zero post-issue edit artifacts.",
+        "template": "Passed - 97% layout match with authentic template database for 'Global Accredited Institution'.",
+        "logo": "Passed - High-resolution crest for 'Global Accredited Institution' authenticated (99% match).",
+        "seal": "Passed - Official embossed seal correctly placed with valid opacity and border.",
+        "digital_signature": "Passed - PKI Digital Signature valid, timestamp verified by accredited Root CA.",
+        "certificate_number": "Passed - Record 'CERT-2026-800497' confirmed in central registry for holder 'Orch 3E545D8B 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812'.",
+        "tampering": "Passed - Clean forensic scan. Zero font splicing, pixel cloning, or layer manipulation detected."
+      },
+      "summary": "Certificate for 'Orch 3E545D8B 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812' (ID: CERT-2026-800497) fully authenticated across all 9 forensic verification layers.",
+      "recommendation": "Accept certificate as authentic proof of qualification.",
+      "next_action": "Archive report and issue verified credential badge.",
+      "mongodb_saved": false
+    },
+    "status": "Verified",
+    "overall_score": 96,
+    "summary": "[Master Orchestrator -> Fake Certificate Verification Agent] Certificate for 'Orch 3E545D8B 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812' (ID: CERT-2026-800497) fully authenticated across all 9 forensic verification layers.",
+    "recommendation": "Accept certificate as authentic proof of qualification.",
+    "next_action": "Archive report and issue verified credential badge."
+  },
+  {
+    "orchestration_id": "ORCH-C6E50D48",
+    "created_at": "2026-07-28T14:15:13.685678+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "File Analysis: orch_d341e11d_download.jpg",
+    "router_diagnostics": {
+      "selected_agent": "Fake Certificate Verification Agent",
+      "agent_key": "certificate_verification",
+      "classification_confidence": 0.85,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Fake Certificate Verification Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "REP-81F854DF",
+      "created_at": "2026-07-28T14:15:13.765838+00:00",
+      "certificate_file_name": "orch_d341e11d_download.jpg",
+      "file_type": "image",
+      "status": "Suspicious",
+      "confidence": 0.82,
+      "overall_score": 68,
+      "certificate_holder": "Orch D341E11D Download",
+      "certificate_number": "CERT-2026-A1EB8E",
+      "institution": "Global Accredited Institution",
+      "raw_text_excerpt": "Direct Visual Parsing",
+      "checks": {
+        "ocr": "Passed - Extracted candidate name 'Orch D341E11D Download', Certificate ID 'CERT-2026-A1EB8E'.",
+        "qr": "Warning - QR code present but verification server returned connection timeout.",
+        "metadata": "Warning - Low image resolution (potential screenshot or compression artifact)",
+        "template": "Passed - Layout matches 84% of official design guidelines for 'Global Accredited Institution'.",
+        "logo": "Passed - Logo detected with 89% visual match score.",
+        "seal": "Passed - Seal detected, placement valid.",
+        "digital_signature": "Warning - Self-signed PKI certificate; chain cannot be verified against Root CA.",
+        "certificate_number": "Passed - Certificate ID 'CERT-2026-A1EB8E' found in external registry.",
+        "tampering": "Warning - Compression artifacts near issue date require manual confirmation."
+      },
+      "summary": "Document for 'Orch D341E11D Download' shows minor metadata variances requiring human registrar review.",
+      "recommendation": "Perform secondary verification with issuing institution registrar.",
+      "next_action": "Queue document for manual human registrar review.",
+      "mongodb_saved": false
+    },
+    "status": "Suspicious",
+    "overall_score": 68,
+    "summary": "[Master Orchestrator -> Fake Certificate Verification Agent] Document for 'Orch D341E11D Download' shows minor metadata variances requiring human registrar review.",
+    "recommendation": "Perform secondary verification with issuing institution registrar.",
+    "next_action": "Queue document for manual human registrar review."
+  },
+  {
+    "orchestration_id": "ORCH-97BDF61A",
+    "created_at": "2026-07-28T14:11:06.068693+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Verify degree for Alexander Vance",
+    "router_diagnostics": {
+      "selected_agent": "Fake Certificate Verification Agent",
+      "agent_key": "certificate_verification",
+      "classification_confidence": 0.97,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Fake Certificate Verification Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "REP-07B9167A",
+      "created_at": "2026-07-28T14:11:06.068693+00:00",
+      "certificate_file_name": "test_cert.pdf",
+      "file_type": "pdf",
+      "status": "Verified",
+      "confidence": 0.97,
+      "overall_score": 96,
+      "certificate_holder": "Test Cert",
+      "certificate_number": "CERT-2026-68C0AB",
+      "institution": "Global Accredited Institution",
+      "raw_text_excerpt": "Direct Visual Parsing",
+      "checks": {
+        "ocr": "Passed - Successfully extracted candidate 'Test Cert', Certificate ID 'CERT-2026-68C0AB', and Institution 'Global Accredited Institution'.",
+        "qr": "Passed - Valid QR code verified linking to official registry (https://verify.global.edu/cert/CERT-2026-68C0AB).",
+        "metadata": "Passed - Clean document metadata. Official Publisher with zero post-issue edit artifacts.",
+        "template": "Passed - 97% layout match with authentic template database for 'Global Accredited Institution'.",
+        "logo": "Passed - High-resolution crest for 'Global Accredited Institution' authenticated (99% match).",
+        "seal": "Passed - Official embossed seal correctly placed with valid opacity and border.",
+        "digital_signature": "Passed - PKI Digital Signature valid, timestamp verified by accredited Root CA.",
+        "certificate_number": "Passed - Record 'CERT-2026-68C0AB' confirmed in central registry for holder 'Test Cert'.",
+        "tampering": "Passed - Clean forensic scan. Zero font splicing, pixel cloning, or layer manipulation detected."
+      },
+      "summary": "Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+      "recommendation": "Accept certificate as authentic proof of qualification.",
+      "next_action": "Archive report and issue verified credential badge.",
+      "mongodb_saved": false
+    },
+    "status": "Verified",
+    "overall_score": 96,
+    "summary": "[Master Orchestrator -> Fake Certificate Verification Agent] Certificate for 'Test Cert' (ID: CERT-2026-68C0AB) fully authenticated across all 9 forensic verification layers.",
+    "recommendation": "Accept certificate as authentic proof of qualification.",
+    "next_action": "Archive report and issue verified credential badge."
+  },
+  {
+    "orchestration_id": "ORCH-23A0D8F7",
+    "created_at": "2026-07-28T13:41:18.744378+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Check malware payload",
+    "router_diagnostics": {
+      "selected_agent": "Malware Analyzer Agent",
+      "agent_key": "malware_analysis",
+      "classification_confidence": 0.98,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Malware Analyzer Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "MAL-A3B5E907",
+      "agent": "Malware Analyzer Agent",
+      "status": "Suspicious",
+      "risk_level": "HIGH RISK",
+      "confidence": 0.94,
+      "overall_score": 42,
+      "file_name": "test.exe",
+      "checks": {
+        "static_pe_header": "Warning - Suspicious PE Section '.text' contains packed code entropy 7.82.",
+        "yara_rules": "Failed - Matched YARA rule 'SUSP_XOR_OBFUSCATED_PAYLOAD_GENERIC'.",
+        "virus_total_reputation": "Failed - Flagged by 14 / 72 Antivirus engines on VirusTotal.",
+        "network_c2_callbacks": "Warning - Hardcoded fallback C2 domain 'cnc-control.tmp:8443' detected.",
+        "digital_signature": "Failed - Unsigned binary; no valid Authenticode signature present."
+      },
+      "summary": "Malware analysis for 'test.exe' identified packed executable code, high entropy, and C2 callback indicators.",
+      "recommendation": "Isolate file in sandbox, block C2 IPs in firewall, and perform endpoint cleanup.",
+      "next_action": "Quarantine file and notify SOC Threat Hunting Team."
+    },
+    "status": "Suspicious",
+    "overall_score": 42,
+    "summary": "[Master Orchestrator -> Malware Analyzer Agent] Malware analysis for 'test.exe' identified packed executable code, high entropy, and C2 callback indicators.",
+    "recommendation": "Isolate file in sandbox, block C2 IPs in firewall, and perform endpoint cleanup.",
+    "next_action": "Quarantine file and notify SOC Threat Hunting Team."
+  },
+  {
+    "orchestration_id": "ORCH-6A28BB35",
+    "created_at": "2026-07-28T13:32:31.436260+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Analyze suspicious payload",
+    "router_diagnostics": {
+      "selected_agent": "Malware Analyzer Agent",
+      "agent_key": "malware_analysis",
+      "classification_confidence": 0.98,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Malware Analyzer Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "MAL-F08C2056",
+      "agent": "Malware Analyzer Agent",
+      "status": "Suspicious",
+      "risk_level": "HIGH RISK",
+      "confidence": 0.94,
+      "overall_score": 42,
+      "file_name": "suspicious_payload.exe",
+      "checks": {
+        "static_pe_header": "Warning - Suspicious PE Section '.text' contains packed code entropy 7.82.",
+        "yara_rules": "Failed - Matched YARA rule 'SUSP_XOR_OBFUSCATED_PAYLOAD_GENERIC'.",
+        "virus_total_reputation": "Failed - Flagged by 14 / 72 Antivirus engines on VirusTotal.",
+        "network_c2_callbacks": "Warning - Hardcoded fallback C2 domain 'cnc-control.tmp:8443' detected.",
+        "digital_signature": "Failed - Unsigned binary; no valid Authenticode signature present."
+      },
+      "summary": "Malware analysis for 'suspicious_payload.exe' identified packed executable code, high entropy, and C2 callback indicators.",
+      "recommendation": "Isolate file in sandbox, block C2 IPs in firewall, and perform endpoint cleanup.",
+      "next_action": "Quarantine file and notify SOC Threat Hunting Team."
+    },
+    "status": "Suspicious",
+    "overall_score": 42,
+    "summary": "[Master Orchestrator -> Malware Analyzer Agent] Malware analysis for 'suspicious_payload.exe' identified packed executable code, high entropy, and C2 callback indicators.",
+    "recommendation": "Isolate file in sandbox, block C2 IPs in firewall, and perform endpoint cleanup.",
+    "next_action": "Quarantine file and notify SOC Threat Hunting Team."
+  },
+  {
+    "orchestration_id": "ORCH-F88FAE30",
+    "created_at": "2026-07-28T13:32:29.902547+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Analyze IP 185.220.101.5 for malicious botnet activity",
+    "router_diagnostics": {
+      "selected_agent": "Cyber Threat Detection Agent",
+      "agent_key": "threat_detection",
+      "classification_confidence": 0.96,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Cyber Threat Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "THR-3DCE43A5",
+      "agent": "Cyber Threat Detection Agent",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.97,
+      "overall_score": 28,
+      "target_analyzed": "185.220.101.5",
+      "checks": {
+        "ip_reputation": "Failed - Target IP '185.220.101.5' listed on 8 global threat blacklists.",
+        "abuseipdb_score": "Failed - Abuse Confidence Score 94%. 1,240 malicious reports in last 30 days.",
+        "threat_category": "Failed - Categorized as 'Tor Exit Node / Port Scanner / SSH Brute-Force Bot'.",
+        "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+        "geo_location": "Passed - Country: Seychelles (AS62005)."
+      },
+      "summary": "Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+      "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+      "next_action": "Add '{target}' to Automated Network Blocklist."
+    },
+    "status": "Fake",
+    "overall_score": 28,
+    "summary": "[Master Orchestrator -> Cyber Threat Detection Agent] Threat Intelligence scan for '185.220.101.5' confirmed active malicious botnet activity and port scanning.",
+    "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
+    "next_action": "Add '{target}' to Automated Network Blocklist."
+  },
+  {
+    "orchestration_id": "ORCH-F42AFE6D",
+    "created_at": "2026-07-28T13:32:26.505336+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "Verify degree for Alexander Vance",
+    "router_diagnostics": {
+      "selected_agent": "Fake Certificate Verification Agent",
+      "agent_key": "certificate_verification",
+      "classification_confidence": 0.97,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Fake Certificate Verification Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "REP-7C75926A",
+      "created_at": "2026-07-28T13:32:26.546519+00:00",
+      "certificate_file_name": "stanford_cert.pdf",
+      "file_type": "pdf",
+      "status": "Verified",
+      "confidence": 0.97,
+      "overall_score": 96,
+      "certificate_holder": "Stanford Cert",
+      "certificate_number": "CERT-2026-489006",
+      "institution": "Global Accredited Institution",
+      "raw_text_excerpt": "Direct Visual Parsing",
+      "checks": {
+        "ocr": "Passed - Successfully extracted candidate 'Stanford Cert', Certificate ID 'CERT-2026-489006', and Institution 'Global Accredited Institution'.",
+        "qr": "Passed - Valid QR code verified linking to official registry (https://verify.global.edu/cert/CERT-2026-489006).",
+        "metadata": "Passed - Clean document metadata. Official Publisher with zero post-issue edit artifacts.",
+        "template": "Passed - 97% layout match with authentic template database for 'Global Accredited Institution'.",
+        "logo": "Passed - High-resolution crest for 'Global Accredited Institution' authenticated (99% match).",
+        "seal": "Passed - Official embossed seal correctly placed with valid opacity and border.",
+        "digital_signature": "Passed - PKI Digital Signature valid, timestamp verified by accredited Root CA.",
+        "certificate_number": "Passed - Record 'CERT-2026-489006' confirmed in central registry for holder 'Stanford Cert'.",
+        "tampering": "Passed - Clean forensic scan. Zero font splicing, pixel cloning, or layer manipulation detected."
+      },
+      "summary": "Certificate for 'Stanford Cert' (ID: CERT-2026-489006) fully authenticated across all 9 forensic verification layers.",
+      "recommendation": "Accept certificate as authentic proof of qualification.",
+      "next_action": "Archive report and issue verified credential badge.",
+      "mongodb_saved": false
+    },
+    "status": "Verified",
+    "overall_score": 96,
+    "summary": "[Master Orchestrator -> Fake Certificate Verification Agent] Certificate for 'Stanford Cert' (ID: CERT-2026-489006) fully authenticated across all 9 forensic verification layers.",
+    "recommendation": "Accept certificate as authentic proof of qualification.",
+    "next_action": "Archive report and issue verified credential badge."
+  }
+]

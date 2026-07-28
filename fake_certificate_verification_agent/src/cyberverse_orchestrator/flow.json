@@ -1,0 +1,54 @@
+{
+  "name": "CyberVerseMasterOrchestrator",
+  "description": "Master Orchestrator Agent for CyberVerse multi-agent platform. Dynamically analyzes incoming prompts, file artifacts, and security requests, then dispatches execution to specialized sub-agents (Certificate Verification, Identity Verification, Malware Analysis, Threat Intelligence, Phishing Detection, Incident Response).",
+  "schema": "crewai.flow/v1",
+  "state": {
+    "type": "json_schema",
+    "json_schema": {
+      "type": "object",
+      "required": [
+        "user_query"
+      ],
+      "properties": {
+        "user_query": {
+          "type": "string",
+          "description": "User natural language request or prompt"
+        },
+        "file_path": {
+          "type": "string",
+          "description": "Uploaded file path (optional)"
+        },
+        "target_agent": {
+          "type": "string",
+          "description": "Selected target agent name"
+        },
+        "orchestration_result": {
+          "type": "object"
+        }
+      }
+    }
+  },
+  "methods": {
+    "classify_and_route": {
+      "start": true,
+      "router": true,
+      "emit": [
+        "certificate_verification",
+        "identity_verification",
+        "malware_analysis",
+        "threat_detection",
+        "phishing_detection",
+        "incident_response"
+      ],
+      "do": {
+        "call": "agent",
+        "with": {
+          "role": "CyberVerse Master Security Orchestrator",
+          "goal": "Analyze user input: ${state.user_query} and file: ${state.file_path}. Return exactly one bare value: certificate_verification, identity_verification, malware_analysis, threat_detection, phishing_detection, or incident_response. Do not include explanation.",
+          "backstory": "You are the central intelligence router of CyberVerse. You evaluate security queries and file artifacts to dispatch tasks to the single best specialized AI agent.",
+          "input": "Query: ${state.user_query}; File: ${state.file_path}"
+        }
+      }
+    }
+  }
+}

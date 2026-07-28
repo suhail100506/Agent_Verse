@@ -1,0 +1,94 @@
+{
+  "name": "IdentityVerificationAgent",
+  "description": "An AI-powered identity document and face verification agent. It processes an uploaded ID document and selfie image across 9 verification layers (OCR extraction, face matching, liveness detection, QR/barcode decoding, document tampering, layout authenticity, blacklist lookup, EXIF metadata analysis, and report generation) and persists reports to database.",
+  "schema": "crewai.flow/v1",
+  "state": {
+    "type": "json_schema",
+    "json_schema": {
+      "type": "object",
+      "required": [
+        "document_file_path",
+        "selfie_file_path",
+        "file_type"
+      ],
+      "properties": {
+        "document_file_path": {
+          "type": "string",
+          "description": "Path or URL to the uploaded identity document (PDF or image)"
+        },
+        "selfie_file_path": {
+          "type": "string",
+          "description": "Path or URL to the uploaded selfie image"
+        },
+        "file_type": {
+          "type": "string",
+          "description": "Type of the uploaded document: pdf or image"
+        },
+        "user_name": {
+          "type": "string"
+        },
+        "ocr_result": {
+          "type": "object",
+          "properties": {
+            "full_name": { "type": "string" },
+            "id_number": { "type": "string" },
+            "date_of_birth": { "type": "string" },
+            "gender": { "type": "string" },
+            "expiry_date": { "type": "string" },
+            "issuing_authority": { "type": "string" },
+            "address": { "type": "string" },
+            "raw_text": { "type": "string" }
+          }
+        },
+        "face_match_result": {
+          "type": "object",
+          "properties": {
+            "match_percentage": { "type": "number" },
+            "verdict": { "type": "string" }
+          }
+        },
+        "liveness_result": {
+          "type": "object",
+          "properties": {
+            "is_live": { "type": "boolean" },
+            "liveness_status": { "type": "string" }
+          }
+        },
+        "qr_barcode_result": {
+          "type": "object",
+          "properties": {
+            "qr_valid": { "type": "boolean" },
+            "barcode_detected": { "type": "boolean" },
+            "decoded_data": { "type": "string" }
+          }
+        },
+        "tampering_result": {
+          "type": "object",
+          "properties": {
+            "tampering_detected": { "type": "boolean" },
+            "confidence_score": { "type": "number" },
+            "artifacts_found": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "blacklist_result": {
+          "type": "object",
+          "properties": {
+            "is_blacklisted": { "type": "boolean" },
+            "blacklist_match": { "type": "string" }
+          }
+        },
+        "verification_report": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string" },
+            "confidence_score": { "type": "number" },
+            "risk_level": { "type": "string" },
+            "summary": { "type": "string" },
+            "recommendation": { "type": "string" },
+            "next_action": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

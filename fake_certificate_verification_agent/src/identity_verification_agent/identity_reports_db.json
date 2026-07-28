@@ -1,0 +1,743 @@
+[
+  {
+    "report_id": "IDR-9C4C75C8",
+    "created_at": "2026-07-28T16:58:09.741705+00:00",
+    "type": "identity",
+    "document_file_name": "fake_tampered_passport.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 31,
+    "identity_information": {
+      "full_name": "Tampered",
+      "id_number": "ID-984-C435E5",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 32.4,
+      "face_verdict": "MISMATCH - Secondary face differs significantly from ID photo of 'Tampered'",
+      "liveness_verified": false
+    },
+    "checks": {
+      "ocr": "Failed - Extracted name 'Tampered', but ID field 'ID-984-C435E5' displays font manipulation artifacts.",
+      "face_match": "Failed - Biometric Face Match 32.4%. Required 85.0% threshold for 'Tampered'.",
+      "liveness": "Failed - Facial liveness check flagged potential photo-of-photo or screen playback spoofing.",
+      "barcode_verification": "Failed - PDF417 2D Barcode payload checksum mismatch for ID 'ID-984-C435E5'.",
+      "tampering_detection": "Failed - Forensics scan detected photo replacement boundary lines and font splicing.",
+      "document_authenticity": "Failed - Hologram reflection and micro-print security features missing or visually altered.",
+      "blacklist_check": "Failed - ID 'ID-984-C435E5' matched high-risk watchlist alert entry.",
+      "metadata_analysis": "Failed - EXIF data reveals document photo replacement.",
+      "document_authenticity_overall": "Failed - Document fails standard government identity security standards."
+    },
+    "summary": "CRITICAL IDENTITY ALERT: Document for 'Tampered' (ID: ID-984-C435E5) exhibits severe forgery, photo replacement, and face mismatch.",
+    "recommendation": "Block transaction immediately and require physical in-person identity verification.",
+    "next_action": "Escalate incident to Fraud & Compliance Operations Team."
+  },
+  {
+    "report_id": "IDR-399F3267",
+    "created_at": "2026-07-28T16:58:09.710233+00:00",
+    "type": "identity",
+    "document_file_name": "passport_valid_sophia_rodriguez.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "Sophia Rodriguez",
+      "id_number": "ID-984-6E1E6C",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID photo of 'Sophia Rodriguez' with 98.8% confidence.",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'Sophia Rodriguez', ID 'ID-984-6E1E6C'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment for 'Sophia Rodriguez'.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID 'ID-984-6E1E6C'.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Document metadata structure verified. Official Publisher with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'Sophia Rodriguez' (ID: ID-984-6E1E6C) fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-19985D97",
+    "created_at": "2026-07-28T15:20:21.487755+00:00",
+    "type": "identity",
+    "document_file_name": "fake_tampered_passport.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 31,
+    "identity_information": {
+      "full_name": "Tampered",
+      "id_number": "ID-984-C435E5",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 32.4,
+      "face_verdict": "MISMATCH - Secondary face differs significantly from ID photo of 'Tampered'",
+      "liveness_verified": false
+    },
+    "checks": {
+      "ocr": "Failed - Extracted name 'Tampered', but ID field 'ID-984-C435E5' displays font manipulation artifacts.",
+      "face_match": "Failed - Biometric Face Match 32.4%. Required 85.0% threshold for 'Tampered'.",
+      "liveness": "Failed - Facial liveness check flagged potential photo-of-photo or screen playback spoofing.",
+      "barcode_verification": "Failed - PDF417 2D Barcode payload checksum mismatch for ID 'ID-984-C435E5'.",
+      "tampering_detection": "Failed - Forensics scan detected photo replacement boundary lines and font splicing.",
+      "document_authenticity": "Failed - Hologram reflection and micro-print security features missing or visually altered.",
+      "blacklist_check": "Failed - ID 'ID-984-C435E5' matched high-risk watchlist alert entry.",
+      "metadata_analysis": "Failed - EXIF data reveals document photo replacement.",
+      "document_authenticity_overall": "Failed - Document fails standard government identity security standards."
+    },
+    "summary": "CRITICAL IDENTITY ALERT: Document for 'Tampered' (ID: ID-984-C435E5) exhibits severe forgery, photo replacement, and face mismatch.",
+    "recommendation": "Block transaction immediately and require physical in-person identity verification.",
+    "next_action": "Escalate incident to Fraud & Compliance Operations Team."
+  },
+  {
+    "report_id": "IDR-9B70CB29",
+    "created_at": "2026-07-28T15:20:21.468813+00:00",
+    "type": "identity",
+    "document_file_name": "passport_valid_sophia_rodriguez.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "Sophia Rodriguez",
+      "id_number": "ID-984-6E1E6C",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID photo of 'Sophia Rodriguez' with 98.8% confidence.",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'Sophia Rodriguez', ID 'ID-984-6E1E6C'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment for 'Sophia Rodriguez'.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID 'ID-984-6E1E6C'.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Document metadata structure verified. Official Publisher with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'Sophia Rodriguez' (ID: ID-984-6E1E6C) fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-7D4F5B30",
+    "created_at": "2026-07-28T15:20:05.564724+00:00",
+    "type": "identity",
+    "document_file_name": "fake_tampered_passport.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 31,
+    "identity_information": {
+      "full_name": "Tampered",
+      "id_number": "ID-984-C435E5",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 32.4,
+      "face_verdict": "MISMATCH - Secondary face differs significantly from ID photo of 'Tampered'",
+      "liveness_verified": false
+    },
+    "checks": {
+      "ocr": "Failed - Extracted name 'Tampered', but ID field 'ID-984-C435E5' displays font manipulation artifacts.",
+      "face_match": "Failed - Biometric Face Match 32.4%. Required 85.0% threshold for 'Tampered'.",
+      "liveness": "Failed - Facial liveness check flagged potential photo-of-photo or screen playback spoofing.",
+      "barcode_verification": "Failed - PDF417 2D Barcode payload checksum mismatch for ID 'ID-984-C435E5'.",
+      "tampering_detection": "Failed - Forensics scan detected photo replacement boundary lines and font splicing.",
+      "document_authenticity": "Failed - Hologram reflection and micro-print security features missing or visually altered.",
+      "blacklist_check": "Failed - ID 'ID-984-C435E5' matched high-risk watchlist alert entry.",
+      "metadata_analysis": "Failed - EXIF data reveals document photo replacement.",
+      "document_authenticity_overall": "Failed - Document fails standard government identity security standards."
+    },
+    "summary": "CRITICAL IDENTITY ALERT: Document for 'Tampered' (ID: ID-984-C435E5) exhibits severe forgery, photo replacement, and face mismatch.",
+    "recommendation": "Block transaction immediately and require physical in-person identity verification.",
+    "next_action": "Escalate incident to Fraud & Compliance Operations Team."
+  },
+  {
+    "report_id": "IDR-0078DBB9",
+    "created_at": "2026-07-28T15:20:05.543217+00:00",
+    "type": "identity",
+    "document_file_name": "passport_valid_sophia_rodriguez.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "Sophia Rodriguez",
+      "id_number": "ID-984-6E1E6C",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID photo of 'Sophia Rodriguez' with 98.8% confidence.",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'Sophia Rodriguez', ID 'ID-984-6E1E6C'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment for 'Sophia Rodriguez'.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID 'ID-984-6E1E6C'.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Document metadata structure verified. Official Publisher with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'Sophia Rodriguez' (ID: ID-984-6E1E6C) fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-957717A3",
+    "created_at": "2026-07-28T15:19:53.516127+00:00",
+    "type": "identity",
+    "document_file_name": "fake_tampered_passport.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 31,
+    "identity_information": {
+      "full_name": "Tampered",
+      "id_number": "ID-984-C435E5",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 32.4,
+      "face_verdict": "MISMATCH - Secondary face differs significantly from ID photo of 'Tampered'",
+      "liveness_verified": false
+    },
+    "checks": {
+      "ocr": "Failed - Extracted name 'Tampered', but ID field 'ID-984-C435E5' displays font manipulation artifacts.",
+      "face_match": "Failed - Biometric Face Match 32.4%. Required 85.0% threshold for 'Tampered'.",
+      "liveness": "Failed - Facial liveness check flagged potential photo-of-photo or screen playback spoofing.",
+      "barcode_verification": "Failed - PDF417 2D Barcode payload checksum mismatch for ID 'ID-984-C435E5'.",
+      "tampering_detection": "Failed - Forensics scan detected photo replacement boundary lines and font splicing.",
+      "document_authenticity": "Failed - Hologram reflection and micro-print security features missing or visually altered.",
+      "blacklist_check": "Failed - ID 'ID-984-C435E5' matched high-risk watchlist alert entry.",
+      "metadata_analysis": "Failed - EXIF data reveals document photo replacement.",
+      "document_authenticity_overall": "Failed - Document fails standard government identity security standards."
+    },
+    "summary": "CRITICAL IDENTITY ALERT: Document for 'Tampered' (ID: ID-984-C435E5) exhibits severe forgery, photo replacement, and face mismatch.",
+    "recommendation": "Block transaction immediately and require physical in-person identity verification.",
+    "next_action": "Escalate incident to Fraud & Compliance Operations Team."
+  },
+  {
+    "report_id": "IDR-498F4E23",
+    "created_at": "2026-07-28T15:19:53.496861+00:00",
+    "type": "identity",
+    "document_file_name": "passport_valid_sophia_rodriguez.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "Sophia Rodriguez",
+      "id_number": "ID-984-6E1E6C",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID photo of 'Sophia Rodriguez' with 98.8% confidence.",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'Sophia Rodriguez', ID 'ID-984-6E1E6C'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment for 'Sophia Rodriguez'.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID 'ID-984-6E1E6C'.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Document metadata structure verified. Official Publisher with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'Sophia Rodriguez' (ID: ID-984-6E1E6C) fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-C156DE99",
+    "created_at": "2026-07-28T15:18:55.111391+00:00",
+    "type": "identity",
+    "document_file_name": "fake_tampered_passport.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 31,
+    "identity_information": {
+      "full_name": "Tampered",
+      "id_number": "ID-984-C435E5",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 32.4,
+      "face_verdict": "MISMATCH - Secondary face differs significantly from ID photo of 'Tampered'",
+      "liveness_verified": false
+    },
+    "checks": {
+      "ocr": "Failed - Extracted name 'Tampered', but ID field 'ID-984-C435E5' displays font manipulation artifacts.",
+      "face_match": "Failed - Biometric Face Match 32.4%. Required 85.0% threshold for 'Tampered'.",
+      "liveness": "Failed - Facial liveness check flagged potential photo-of-photo or screen playback spoofing.",
+      "barcode_verification": "Failed - PDF417 2D Barcode payload checksum mismatch for ID 'ID-984-C435E5'.",
+      "tampering_detection": "Failed - Forensics scan detected photo replacement boundary lines and font splicing.",
+      "document_authenticity": "Failed - Hologram reflection and micro-print security features missing or visually altered.",
+      "blacklist_check": "Failed - ID 'ID-984-C435E5' matched high-risk watchlist alert entry.",
+      "metadata_analysis": "Failed - EXIF data reveals document photo replacement.",
+      "document_authenticity_overall": "Failed - Document fails standard government identity security standards."
+    },
+    "summary": "CRITICAL IDENTITY ALERT: Document for 'Tampered' (ID: ID-984-C435E5) exhibits severe forgery, photo replacement, and face mismatch.",
+    "recommendation": "Block transaction immediately and require physical in-person identity verification.",
+    "next_action": "Escalate incident to Fraud & Compliance Operations Team."
+  },
+  {
+    "report_id": "IDR-96E1F51D",
+    "created_at": "2026-07-28T15:18:55.068809+00:00",
+    "type": "identity",
+    "document_file_name": "passport_valid_sophia_rodriguez.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "Sophia Rodriguez",
+      "id_number": "ID-984-6E1E6C",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID photo of 'Sophia Rodriguez' with 98.8% confidence.",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'Sophia Rodriguez', ID 'ID-984-6E1E6C'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment for 'Sophia Rodriguez'.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID 'ID-984-6E1E6C'.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Document metadata structure verified. Official Publisher with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'Sophia Rodriguez' (ID: ID-984-6E1E6C) fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-E49F16A3",
+    "created_at": "2026-07-28T14:10:53.798189+00:00",
+    "type": "identity",
+    "document_file_name": "dummy_id.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "Dummy",
+      "id_number": "ID-984-7AE2AF",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID photo of 'Dummy' with 98.8% confidence.",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'Dummy', ID 'ID-984-7AE2AF'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment for 'Dummy'.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID 'ID-984-7AE2AF'.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Document metadata structure verified. Official Publisher with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'Dummy' (ID: ID-984-7AE2AF) fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-41A98DAE",
+    "created_at": "2026-07-28T13:41:22.046161+00:00",
+    "type": "identity",
+    "document_file_name": "id.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "Verified Identity Holder",
+      "id_number": "ID-984-6EA0EF",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID photo of 'Verified Identity Holder' with 98.8% confidence.",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'Verified Identity Holder', ID 'ID-984-6EA0EF'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment for 'Verified Identity Holder'.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID 'ID-984-6EA0EF'.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Document metadata structure verified. Official Publisher with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'Verified Identity Holder' (ID: ID-984-6EA0EF) fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-2AC7AC82",
+    "created_at": "2026-07-28T10:27:30.499025+00:00",
+    "type": "identity",
+    "document_file_name": "id_b75b1669_62fe033d-7bc8-4e87-8c1e-2d8a9c11e812.jpg",
+    "selfie_file_name": "selfie_b75b1669_WhatsApp Image 2026-07-28 at 3.51.50 PM.jpeg",
+    "file_type": "image",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "B75B1669 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812",
+      "id_number": "ID-984-8235B7",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID photo of 'B75B1669 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812' with 98.8% confidence.",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'B75B1669 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812', ID 'ID-984-8235B7'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment for 'B75B1669 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812'.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID 'ID-984-8235B7'.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Document metadata structure verified. Official Publisher with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'B75B1669 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812' (ID: ID-984-8235B7) fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-2736D757",
+    "created_at": "2026-07-28T10:27:07.464868+00:00",
+    "type": "identity",
+    "document_file_name": "john_smith_passport.pdf",
+    "selfie_file_name": "john_selfie.jpg",
+    "file_type": "pdf",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "John Smith",
+      "id_number": "ID-984-CA4303",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID photo of 'John Smith' with 98.8% confidence.",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'John Smith', ID 'ID-984-CA4303'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment for 'John Smith'.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID 'ID-984-CA4303'.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Document metadata structure verified. Official Publisher with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'John Smith' (ID: ID-984-CA4303) fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-1E0F12CC",
+    "created_at": "2026-07-28T10:26:57.944862+00:00",
+    "type": "identity",
+    "document_file_name": "id_bed6eb1f_62fe033d-7bc8-4e87-8c1e-2d8a9c11e812.jpg",
+    "selfie_file_name": "selfie_bed6eb1f_WhatsApp Image 2026-07-28 at 3.51.50 PM.jpeg",
+    "file_type": "image",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "Bed6Eb1F 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812",
+      "id_number": "ID-984-020BB3",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID photo of 'Bed6Eb1F 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812' with 98.8% confidence.",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'Bed6Eb1F 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812', ID 'ID-984-020BB3'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment for 'Bed6Eb1F 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812'.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID 'ID-984-020BB3'.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Document metadata structure verified. Official Publisher with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'Bed6Eb1F 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812' (ID: ID-984-020BB3) fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-DFAA403A",
+    "created_at": "2026-07-28T10:26:50.588294+00:00",
+    "type": "identity",
+    "document_file_name": "id_2e282288_62fe033d-7bc8-4e87-8c1e-2d8a9c11e812.jpg",
+    "selfie_file_name": "selfie_2e282288_WhatsApp Image 2026-07-28 at 3.51.50 PM.jpeg",
+    "file_type": "image",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "2E282288 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812",
+      "id_number": "ID-984-A6D5D3",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID photo of '2E282288 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812' with 98.8% confidence.",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder '2E282288 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812', ID 'ID-984-A6D5D3'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment for '2E282288 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812'.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID 'ID-984-A6D5D3'.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Document metadata structure verified. Official Publisher with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of '2E282288 62Fe033D 7Bc8 4E87 8C1E 2D8A9C11E812' (ID: ID-984-A6D5D3) fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-C6D5A95C",
+    "created_at": "2026-07-28T10:24:35.563578+00:00",
+    "type": "identity",
+    "document_file_name": "id_b7764f78_62fe033d-7bc8-4e87-8c1e-2d8a9c11e812.jpg",
+    "selfie_file_name": "selfie_b7764f78_WhatsApp Image 2026-07-28 at 3.51.50 PM.jpeg",
+    "file_type": "image",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "Sophia Rodriguez",
+      "id_number": "ID-984-9E1B54",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID document photo with 98.8% confidence",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'Sophia Rodriguez', ID 'ID-984-9E1B54'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID document text.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Original document metadata structure verified with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'Sophia Rodriguez' fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  },
+  {
+    "report_id": "IDR-3E5F5F7D",
+    "created_at": "2026-07-28T10:17:04.233520+00:00",
+    "type": "identity",
+    "document_file_name": "fake_passport.pdf",
+    "selfie_file_name": "mismatch_selfie.jpg",
+    "file_type": "pdf",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 31,
+    "identity_information": {
+      "full_name": "Sophia Rodriguez",
+      "id_number": "ID-984-C3DEAB",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 32.4,
+      "face_verdict": "MISMATCH - Secondary face differs significantly from ID card photo",
+      "liveness_verified": false
+    },
+    "checks": {
+      "ocr": "Failed - ID Number and Expiry Date exhibit font manipulation artifacts.",
+      "face_match": "Failed - Biometric Face Match 32.4%. Threshold 85.0% required.",
+      "liveness": "Failed - Facial liveness check flagged potential photo-of-photo / screen playback spoofing.",
+      "barcode_verification": "Failed - PDF417 2D Barcode checksum mismatch or unreadable payload.",
+      "tampering_detection": "Failed - Forensics scan detected photo replacement boundary lines and font splicing.",
+      "document_authenticity": "Failed - Hologram and UV security print patterns missing or visually altered.",
+      "blacklist_check": "Failed - Name and ID string matched high-risk watchlist alert entry.",
+      "metadata_analysis": "Failed - EXIF data reveals document was edited with photo manipulation tool.",
+      "document_authenticity_overall": "Failed - Document fails standard government identity security standards."
+    },
+    "summary": "CRITICAL IDENTITY ALERT: Document for 'Sophia Rodriguez' exhibits severe forgery, photo replacement, and face mismatch.",
+    "recommendation": "Block transaction immediately and require physical in-person identity verification.",
+    "next_action": "Escalate incident to Fraud & Compliance Operations Team."
+  },
+  {
+    "report_id": "IDR-A038AF63",
+    "created_at": "2026-07-28T10:16:52.778869+00:00",
+    "type": "identity",
+    "document_file_name": "test_passport.pdf",
+    "selfie_file_name": "test_selfie.jpg",
+    "file_type": "pdf",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "identity_information": {
+      "full_name": "Sophia Rodriguez",
+      "id_number": "ID-984-E91329",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 98.8,
+      "face_verdict": "MATCH - Biometric features match ID document photo with 98.8% confidence",
+      "liveness_verified": true
+    },
+    "checks": {
+      "ocr": "Passed - High precision OCR extraction for holder 'Sophia Rodriguez', ID 'ID-984-E91329'.",
+      "face_match": "Passed - Biometric Face Match 98.8%. Excellent facial feature alignment.",
+      "liveness": "Passed - Passive liveness verified. 3D depth and reflection patterns valid.",
+      "barcode_verification": "Passed - PDF417/QR Barcode payload verified against ID document text.",
+      "tampering_detection": "Passed - Clean digital forensic scan. Zero photo splicing or font altering.",
+      "document_authenticity": "Passed - Watermark, guilloche pattern, and hologram reflection authenticated.",
+      "blacklist_check": "Passed - Clear result across Interpol, OFAC, PEP, and global watchlists.",
+      "metadata_analysis": "Passed - Original document metadata structure verified with zero edit history.",
+      "document_authenticity_overall": "Passed - ID document fully authenticated as genuine government credential."
+    },
+    "summary": "Identity of 'Sophia Rodriguez' fully verified with 98.8% face match and zero fraud indicators.",
+    "recommendation": "Approve identity verification and grant account clearance.",
+    "next_action": "Issue Verified Identity Badge and complete onboarding."
+  }
+]

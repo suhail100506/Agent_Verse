@@ -1,0 +1,262 @@
+[
+  {
+    "report_id": "PHISH-15658C43",
+    "created_at": "2026-07-28T16:58:09.975771+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-58924B04",
+    "created_at": "2026-07-28T16:58:09.962374+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "https://google.com",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "checks": {
+      "url_typosquatting": "Passed - Domain matches verified official brand whitelist.",
+      "ssl_certificate": "Passed - Valid Extended Validation (EV) SSL certificate issued by DigiCert.",
+      "email_header_dkim": "Passed - SPF, DKIM, and DMARC alignment verified.",
+      "credential_harvesting": "Passed - No hidden login forms or suspicious external data sinks."
+    },
+    "summary": "Phishing analysis for 'https://google.com' confirmed legitimate domain structure and valid SSL.",
+    "recommendation": "Safe to visit link and authenticate.",
+    "next_action": "Mark link as safe in email filter."
+  },
+  {
+    "report_id": "PHISH-B0AA2537",
+    "created_at": "2026-07-28T15:20:21.683238+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-5014C5B4",
+    "created_at": "2026-07-28T15:20:21.650431+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "https://google.com",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "checks": {
+      "url_typosquatting": "Passed - Domain matches verified official brand whitelist.",
+      "ssl_certificate": "Passed - Valid Extended Validation (EV) SSL certificate issued by DigiCert.",
+      "email_header_dkim": "Passed - SPF, DKIM, and DMARC alignment verified.",
+      "credential_harvesting": "Passed - No hidden login forms or suspicious external data sinks."
+    },
+    "summary": "Phishing analysis for 'https://google.com' confirmed legitimate domain structure and valid SSL.",
+    "recommendation": "Safe to visit link and authenticate.",
+    "next_action": "Mark link as safe in email filter."
+  },
+  {
+    "report_id": "PHISH-043A0943",
+    "created_at": "2026-07-28T15:20:05.751708+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-8573C905",
+    "created_at": "2026-07-28T15:20:05.728615+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "https://google.com",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "checks": {
+      "url_typosquatting": "Passed - Domain matches verified official brand whitelist.",
+      "ssl_certificate": "Passed - Valid Extended Validation (EV) SSL certificate issued by DigiCert.",
+      "email_header_dkim": "Passed - SPF, DKIM, and DMARC alignment verified.",
+      "credential_harvesting": "Passed - No hidden login forms or suspicious external data sinks."
+    },
+    "summary": "Phishing analysis for 'https://google.com' confirmed legitimate domain structure and valid SSL.",
+    "recommendation": "Safe to visit link and authenticate.",
+    "next_action": "Mark link as safe in email filter."
+  },
+  {
+    "report_id": "PHISH-DE146C72",
+    "created_at": "2026-07-28T15:19:53.703514+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-70D37569",
+    "created_at": "2026-07-28T15:19:53.671600+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "https://google.com",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "checks": {
+      "url_typosquatting": "Passed - Domain matches verified official brand whitelist.",
+      "ssl_certificate": "Passed - Valid Extended Validation (EV) SSL certificate issued by DigiCert.",
+      "email_header_dkim": "Passed - SPF, DKIM, and DMARC alignment verified.",
+      "credential_harvesting": "Passed - No hidden login forms or suspicious external data sinks."
+    },
+    "summary": "Phishing analysis for 'https://google.com' confirmed legitimate domain structure and valid SSL.",
+    "recommendation": "Safe to visit link and authenticate.",
+    "next_action": "Mark link as safe in email filter."
+  },
+  {
+    "report_id": "PHISH-C5839275",
+    "created_at": "2026-07-28T15:18:55.327861+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-security-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-security-verify.tmp/l' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-security-verify.tmp/l' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-B92DE174",
+    "created_at": "2026-07-28T15:18:55.286331+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "https://google.com",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.98,
+    "overall_score": 98,
+    "checks": {
+      "url_typosquatting": "Passed - Domain matches verified official brand whitelist.",
+      "ssl_certificate": "Passed - Valid Extended Validation (EV) SSL certificate issued by DigiCert.",
+      "email_header_dkim": "Passed - SPF, DKIM, and DMARC alignment verified.",
+      "credential_harvesting": "Passed - No hidden login forms or suspicious external data sinks."
+    },
+    "summary": "Phishing analysis for 'https://google.com' confirmed legitimate domain structure and valid SSL.",
+    "recommendation": "Safe to visit link and authenticate.",
+    "next_action": "Mark link as safe in email filter."
+  },
+  {
+    "report_id": "PHISH-4E9FC6DD",
+    "created_at": "2026-07-28T14:10:58.406077+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-login.tmp",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-login.tmp' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-login.tmp' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-90376A2C",
+    "created_at": "2026-07-28T13:55:20.676593+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "Check IP 185.220.101.5 and payload.exe",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'Check IP 185.220.101.5 and payload.' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'Check IP 185.220.101.5 and payload.' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  },
+  {
+    "report_id": "PHISH-4497D096",
+    "created_at": "2026-07-28T13:41:26.654137+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-login.tmp",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-login.tmp' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-login.tmp' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
+  }
+]

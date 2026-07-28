@@ -1,0 +1,552 @@
+{
+  "name": "FakeCertificateVerificationAgent",
+  "state": {
+    "type": "json_schema",
+    "json_schema": {
+      "type": "object",
+      "required": [
+        "certificate_file_path",
+        "file_type"
+      ],
+      "properties": {
+        "file_type": {
+          "type": "string",
+          "description": "Type of the uploaded file: pdf or image"
+        },
+        "qr_result": {
+          "type": "object",
+          "properties": {
+            "decoded_url": {
+              "type": "string"
+            },
+            "qr_detected": {
+              "type": "boolean"
+            },
+            "verification_status": {
+              "type": "string"
+            }
+          }
+        },
+        "ocr_result": {
+          "type": "object",
+          "properties": {
+            "grade": {
+              "type": "string"
+            },
+            "course": {
+              "type": "string"
+            },
+            "raw_text": {
+              "type": "string"
+            },
+            "issue_date": {
+              "type": "string"
+            },
+            "institution": {
+              "type": "string"
+            },
+            "candidate_name": {
+              "type": "string"
+            },
+            "certificate_number": {
+              "type": "string"
+            }
+          }
+        },
+        "logo_result": {
+          "type": "object",
+          "properties": {
+            "logo_detected": {
+              "type": "boolean"
+            },
+            "match_percentage": {
+              "type": "number"
+            },
+            "institution_matched": {
+              "type": "string"
+            }
+          }
+        },
+        "seal_result": {
+          "type": "object",
+          "properties": {
+            "seal_detected": {
+              "type": "boolean"
+            },
+            "placement_valid": {
+              "type": "boolean"
+            },
+            "consistency_status": {
+              "type": "string"
+            }
+          }
+        },
+        "metadata_result": {
+          "type": "object",
+          "properties": {
+            "author": {
+              "type": "string"
+            },
+            "producer": {
+              "type": "string"
+            },
+            "creation_date": {
+              "type": "string"
+            },
+            "suspicious_flags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "modification_date": {
+              "type": "string"
+            }
+          }
+        },
+        "template_result": {
+          "type": "object",
+          "properties": {
+            "issues_detected": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "matched_template": {
+              "type": "string"
+            },
+            "similarity_score": {
+              "type": "number"
+            }
+          }
+        },
+        "tampering_result": {
+          "type": "object",
+          "properties": {
+            "artifacts_found": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "confidence_score": {
+              "type": "number"
+            },
+            "tampering_detected": {
+              "type": "boolean"
+            }
+          }
+        },
+        "cert_number_result": {
+          "type": "object",
+          "properties": {
+            "database_record": {
+              "type": "string"
+            },
+            "exists_in_database": {
+              "type": "boolean"
+            },
+            "verification_status": {
+              "type": "string"
+            }
+          }
+        },
+        "verification_report": {
+          "type": "object",
+          "properties": {
+            "checks": {
+              "type": "object",
+              "properties": {
+                "qr": {
+                  "type": "string"
+                },
+                "ocr": {
+                  "type": "string"
+                },
+                "logo": {
+                  "type": "string"
+                },
+                "seal": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "type": "string"
+                },
+                "template": {
+                  "type": "string"
+                },
+                "tampering": {
+                  "type": "string"
+                },
+                "digital_signature": {
+                  "type": "string"
+                },
+                "certificate_number": {
+                  "type": "string"
+                }
+              }
+            },
+            "status": {
+              "type": "string"
+            },
+            "summary": {
+              "type": "string"
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "institution": {
+              "type": "string"
+            },
+            "next_action": {
+              "type": "string"
+            },
+            "overall_score": {
+              "type": "number"
+            },
+            "recommendation": {
+              "type": "string"
+            },
+            "certificate_holder": {
+              "type": "string"
+            },
+            "certificate_number": {
+              "type": "string"
+            }
+          }
+        },
+        "certificate_file_path": {
+          "type": "string",
+          "description": "Path or URL to the uploaded certificate file (PDF or image)"
+        },
+        "digital_signature_result": {
+          "type": "object",
+          "properties": {
+            "signature_valid": {
+              "type": "boolean"
+            },
+            "timestamp_valid": {
+              "type": "boolean"
+            },
+            "signature_present": {
+              "type": "boolean"
+            },
+            "certificate_chain_valid": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schema": "crewai.flow/v1",
+  "methods": {
+    "upload_and_ocr": {
+      "do": {
+        "call": "crew",
+        "with": {
+          "tasks": [
+            {
+              "name": "read_file",
+              "agent": "file_reader",
+              "description": "Read the certificate file at path: {file_path}. The file type is {file_type}. Return the raw file content or confirm the file is accessible.",
+              "expected_output": "Raw file content or confirmation that the certificate file at {file_path} is accessible and ready for OCR processing."
+            },
+            {
+              "name": "extract_text",
+              "agent": "ocr_specialist",
+              "description": "Using OCR, extract all text from the certificate file at {file_path} (type: {file_type}). Return a structured JSON with fields: candidate_name, certificate_number, institution, issue_date, course, grade, and raw_text. If a field is not found, set it to null.",
+              "expected_output": "A JSON object with fields: candidate_name, certificate_number, institution, issue_date, course, grade, raw_text."
+            }
+          ],
+          "agents": {
+            "file_reader": {
+              "goal": "Read the raw content of the uploaded certificate file at {file_path} and prepare it for analysis.",
+              "role": "Certificate File Reader",
+              "tools": [
+                "crewai_tools:FileReadTool"
+              ],
+              "verbose": true,
+              "backstory": "Expert at reading and preprocessing certificate files in PDF or image format before analysis.",
+              "llm": "openai/gpt-4o-mini"
+            },
+            "ocr_specialist": {
+              "goal": "Extract all visible text from the certificate and return structured fields: candidate name, certificate number, institution, issue date, course, grade, and any other detected information.",
+              "role": "OCR Extraction Specialist",
+              "tools": [
+                "crewai_tools:OCRTool",
+                "crewai_tools:VisionTool"
+              ],
+              "verbose": true,
+              "backstory": "You are a highly accurate OCR and document text extraction specialist. You parse certificates precisely and return structured JSON with extracted fields. Never guess - only return what is clearly readable.",
+              "llm": "openai/gpt-4o-mini"
+            }
+          },
+          "inputs": {
+            "file_path": "${state.certificate_file_path}",
+            "file_type": "${state.file_type}"
+          },
+          "verbose": true
+        }
+      },
+      "start": true,
+      "router": false,
+      "description": "Reads the uploaded certificate file and performs OCR to extract structured text fields such as candidate name, certificate number, institution, issue date, course, and grade."
+    },
+    "tampering_detection": {
+      "do": {
+        "call": "agent",
+        "with": {
+          "goal": "Detect all signs of tampering, manipulation, or forgery in the uploaded certificate document.",
+          "role": "Document Tampering Detection Expert",
+          "input": "Perform tampering detection on the certificate at: ${state.certificate_file_path} (type: ${state.file_type}). Previous checks context - OCR result: ${outputs.upload_and_ocr.raw} | QR and metadata result: ${outputs.qr_and_metadata_verification.raw} | Visual verification result: ${outputs.visual_verification.raw}. Analyze for: image editing artifacts, font inconsistencies across the document, cloning or copy-paste patterns, overlay layers, suspicious pixel patterns, inconsistent compression. Return JSON with: tampering_detected (bool), artifacts_found (array of strings), confidence_score (0.0-1.0).\n\nExpected output: JSON with tampering_detected (bool), artifacts_found (array of string descriptions), confidence_score (float 0-1).",
+          "tools": [
+            "crewai_tools:VisionTool",
+            "crewai_tools:FileReadTool"
+          ],
+          "verbose": true,
+          "backstory": "You are a digital forensics expert specializing in document tampering detection. You analyze certificates for image editing artifacts, font inconsistencies, copy-paste cloning, overlays, pixel anomalies, and inconsistent compression. You use visual analysis and file content inspection. Never guess - report only evidence-based findings.",
+          "llm": "openai/gpt-4o-mini"
+        }
+      },
+      "start": false,
+      "listen": "digital_and_number_verification",
+      "router": false,
+      "description": "Scans the certificate for signs of image editing, font inconsistencies, cloning, overlays, and other manipulation artifacts."
+    },
+    "visual_verification": {
+      "do": {
+        "call": "crew",
+        "with": {
+          "tasks": [
+            {
+              "name": "template_check",
+              "agent": "template_verifier",
+              "description": "Analyze the certificate at {file_path}. Using OCR data: {ocr_data}. Compare the layout against known templates for institution: {institution}. Check: logo position, font style, spacing, borders, signature placement, seal position. Return JSON with: similarity_score (0.0-1.0), matched_template (string or null), issues_detected (array of strings).",
+              "expected_output": "JSON with similarity_score (float 0-1), matched_template (string or null), issues_detected (array)."
+            },
+            {
+              "name": "logo_seal_check",
+              "agent": "logo_seal_verifier",
+              "description": "Analyze the certificate at {file_path} for the institution: {institution}. For the logo: detect it, compare against reference logos, return logo_detected (bool), match_percentage (0-100), institution_matched (string). For seals: detect official seals or stamps, verify placement and consistency, return seal_detected (bool), placement_valid (bool), consistency_status (Valid/Suspicious/Not Found). Return all results in a single JSON.",
+              "expected_output": "JSON with logo fields (logo_detected, match_percentage, institution_matched) and seal fields (seal_detected, placement_valid, consistency_status)."
+            }
+          ],
+          "agents": {
+            "template_verifier": {
+              "goal": "Compare the certificate layout against known authentic templates and return a similarity score with detected issues.",
+              "role": "Certificate Template Verification Specialist",
+              "tools": [
+                "crewai_tools:VisionTool"
+              ],
+              "verbose": true,
+              "backstory": "You are an expert in certificate document forensics. You analyze layout elements including logo position, font style, spacing, borders, signature placement, and seal position against known authentic templates for institutions. Base your analysis only on visible evidence from the certificate image.",
+              "llm": "openai/gpt-4o-mini"
+            },
+            "logo_seal_verifier": {
+              "goal": "Detect and authenticate the institutional logo and official seals or stamps on the certificate.",
+              "role": "Logo and Seal Authentication Expert",
+              "tools": [
+                "crewai_tools:VisionTool"
+              ],
+              "verbose": true,
+              "backstory": "You specialize in visual authentication of institutional logos and official seals on certificates. You compare detected logos against known reference images and verify seal placement, consistency, and authenticity. Never guess - report only what is clearly visible.",
+              "llm": "openai/gpt-4o-mini"
+            }
+          },
+          "inputs": {
+            "ocr_data": "${outputs.upload_and_ocr.raw}",
+            "file_path": "${state.certificate_file_path}",
+            "institution": "${outputs.upload_and_ocr.raw}"
+          },
+          "verbose": true
+        }
+      },
+      "start": false,
+      "listen": "qr_and_metadata_verification",
+      "router": false,
+      "description": "Runs template matching, logo verification, and seal verification in one crew. Compares the certificate layout against known templates, checks the institutional logo, and verifies official seals/stamps for consistency and placement."
+    },
+    "save_report_to_mongodb": {
+      "do": {
+        "call": "agent",
+        "with": {
+          "goal": "Save the final certificate verification report to MongoDB Atlas and confirm successful storage.",
+          "role": "MongoDB Atlas Report Persistence Agent",
+          "input": "Save the following certificate verification report to MongoDB Atlas in the 'certificate_verification_reports' collection. Certificate file: ${state.certificate_file_path}. Final verification report: ${outputs.expert_analysis_and_report.raw}. Add the following metadata fields when saving: file_path (${state.certificate_file_path}), file_type (${state.file_type}), created_at (current UTC timestamp). Return a confirmation with the inserted document ID or an error message if storage fails.\n\nExpected output: Confirmation message with the MongoDB document ID of the saved report, or an error message describing why storage failed.",
+          "verbose": true,
+          "backstory": "You are a database integration specialist responsible for persisting structured verification reports to MongoDB Atlas. You receive the final JSON report and store it in the certificate_verification_reports collection with a timestamp and unique identifier for later retrieval via the FastAPI backend. If storage fails, you report the error clearly.",
+          "llm": "openai/gpt-4o-mini"
+        }
+      },
+      "start": false,
+      "listen": "expert_analysis_and_report",
+      "router": false,
+      "description": "Persists the final verification report to MongoDB Atlas for storage, audit trail, and later retrieval via the FastAPI backend."
+    },
+    "expert_analysis_and_report": {
+      "do": {
+        "call": "crew",
+        "with": {
+          "tasks": [
+            {
+              "name": "expert_review",
+              "agent": "verification_expert",
+              "description": "Review ALL evidence from the verification pipeline for the certificate at {file_path}. OCR Results: {ocr_result} | QR and Metadata Results: {qr_metadata_result} | Visual Verification Results: {visual_result} | Digital Signature and Certificate Number Results: {digital_cert_result} | Tampering Detection Results: {tampering_result}. Determine: verdict (Verified/Suspicious/Fake/Manual Review), confidence score (0.0-1.0), overall score (0-100), and per-check summary for each of the 9 checks (ocr, qr, metadata, template, logo, seal, digital_signature, certificate_number, tampering). Provide full reasoning.",
+              "expected_output": "Detailed forensic analysis with verdict, confidence, overall_score, per-check findings, summary, recommendation, and next_action."
+            },
+            {
+              "name": "generate_report",
+              "agent": "report_generator",
+              "description": "Using the expert analysis, generate the final structured verification report as valid JSON matching this exact schema: {status: Verified|Suspicious|Fake|Manual Review, confidence: float 0-1, overall_score: int 0-100, certificate_holder: string, certificate_number: string, institution: string, checks: {ocr: string, qr: string, metadata: string, template: string, logo: string, seal: string, digital_signature: string, certificate_number: string, tampering: string}, summary: string, recommendation: string, next_action: string}. Use OCR data for holder/number/institution: {ocr_result}.",
+              "expected_output": "A valid JSON object following the exact schema with all fields populated."
+            }
+          ],
+          "agents": {
+            "report_generator": {
+              "llm": {
+                "model": "openai/gpt-5.4"
+              },
+              "goal": "Produce a complete structured JSON verification report based on all evidence gathered by the verification expert.",
+              "role": "Structured Verification Report Generator",
+              "verbose": true,
+              "backstory": "You are a precise technical writer and JSON formatter. You take verification findings and compile them into a structured, machine-readable report that can be consumed by a FastAPI backend. You ensure all required fields are present and properly formatted."
+            },
+            "verification_expert": {
+              "llm": {
+                "model": "openai/gpt-5.4"
+              },
+              "goal": "Verify uploaded certificates using multiple verification methods and generate an explainable authenticity report.",
+              "role": "Certificate Verification Expert",
+              "verbose": true,
+              "backstory": "You are an expert in digital document forensics and certificate verification. Your responsibility is to verify educational, government, and professional certificates. Never guess. Base every conclusion only on evidence collected from verification tools. If evidence is insufficient, recommend manual review."
+            }
+          },
+          "inputs": {
+            "file_path": "${state.certificate_file_path}",
+            "ocr_result": "${outputs.upload_and_ocr.raw}",
+            "visual_result": "${outputs.visual_verification.raw}",
+            "tampering_result": "${outputs.tampering_detection.raw}",
+            "qr_metadata_result": "${outputs.qr_and_metadata_verification.raw}",
+            "digital_cert_result": "${outputs.digital_and_number_verification.raw}"
+          },
+          "verbose": true
+        }
+      },
+      "start": false,
+      "listen": "tampering_detection",
+      "router": false,
+      "description": "The Certificate Verification Expert reviews all tool results and evidence, forms a final explainable verdict, and generates a fully structured JSON verification report with status, confidence score, per-check results, summary, recommendation, and next action."
+    },
+    "qr_and_metadata_verification": {
+      "do": {
+        "call": "crew",
+        "with": {
+          "tasks": [
+            {
+              "name": "qr_check",
+              "agent": "qr_verifier",
+              "description": "Analyze the certificate at {file_path} (type: {file_type}). Using the OCR text: {ocr_raw_text}, look for any QR code or URL. If found, scrape the target URL and verify it is an official institutional verification page. Return: qr_detected (bool), decoded_url (string or null), verification_status (Official/Unofficial/Not Found).",
+              "expected_output": "JSON with qr_detected, decoded_url, and verification_status fields."
+            },
+            {
+              "name": "metadata_check",
+              "agent": "metadata_analyst",
+              "description": "Read the certificate file at {file_path} and extract all available metadata. For PDF files extract: creation_date, modification_date, author, producer, and any software signatures. Flag suspicious patterns such as: modification date after issuance date, generic or editing software producers, or missing metadata. Return a JSON with all extracted fields and a suspicious_flags array.",
+              "expected_output": "JSON with creation_date, modification_date, author, producer, and suspicious_flags array."
+            }
+          ],
+          "agents": {
+            "qr_verifier": {
+              "goal": "Detect and decode any QR code on the certificate, then validate whether it points to an official verification page.",
+              "role": "QR Code Verification Specialist",
+              "tools": [
+                "crewai_tools:ScrapeWebsiteTool"
+              ],
+              "verbose": true,
+              "backstory": "Expert in QR code detection and digital document verification. You scan certificates for embedded QR codes and validate the URLs they contain against known official verification domains. Never assume a QR is valid without checking the URL destination.",
+              "llm": "openai/gpt-4o-mini"
+            },
+            "metadata_analyst": {
+              "goal": "Extract PDF metadata and detect suspicious editing history that might indicate tampering.",
+              "role": "PDF Metadata Forensics Analyst",
+              "tools": [
+                "crewai_tools:FileReadTool"
+              ],
+              "verbose": true,
+              "backstory": "You specialize in digital forensics of PDF documents. You extract creation date, modification date, author, producer, and software used, then flag anomalies such as modification after issuance or known editing software signatures.",
+              "llm": "openai/gpt-4o-mini"
+            }
+          },
+          "inputs": {
+            "file_path": "${state.certificate_file_path}",
+            "file_type": "${state.file_type}",
+            "ocr_raw_text": "${outputs.upload_and_ocr.raw}"
+          },
+          "verbose": true
+        }
+      },
+      "start": false,
+      "listen": "upload_and_ocr",
+      "router": false,
+      "description": "Detects and decodes any QR code on the certificate and validates whether it links to an official verification page. Also extracts PDF metadata (creation date, modification date, author, producer) and flags suspicious editing history."
+    },
+    "digital_and_number_verification": {
+      "do": {
+        "call": "crew",
+        "with": {
+          "tasks": [
+            {
+              "name": "digital_signature_check",
+              "agent": "digital_sig_verifier",
+              "description": "Inspect the certificate file at {file_path} (type: {file_type}) for a digital signature. Return: signature_present (bool), signature_valid (bool), certificate_chain_valid (bool), timestamp_valid (bool). If file is not a PDF, set all fields to false and note it is not applicable.",
+              "expected_output": "JSON with signature_present, signature_valid, certificate_chain_valid, timestamp_valid fields."
+            },
+            {
+              "name": "certificate_number_check",
+              "agent": "cert_number_verifier",
+              "description": "Look up certificate number: {certificate_number} issued by institution: {institution}. Search official institution websites or mock databases to verify the certificate exists. Return: exists_in_database (bool), database_record (string), verification_status (Verified/Not Found/Unverifiable).",
+              "expected_output": "JSON with exists_in_database (bool), database_record (string), verification_status."
+            }
+          ],
+          "agents": {
+            "cert_number_verifier": {
+              "goal": "Verify whether the certificate number exists and is valid in an official or mock verification database.",
+              "role": "Certificate Number Database Verification Specialist",
+              "tools": [
+                "crewai_tools:ScrapeWebsiteTool",
+                "crewai_tools:ExaSearchTool"
+              ],
+              "verbose": true,
+              "backstory": "You specialize in certificate registry lookups. Given a certificate number and institution, you check official databases or mock verification APIs to confirm the certificate's existence and validity. If no database is accessible, report the status as unverifiable and recommend manual verification.",
+              "llm": "openai/gpt-4o-mini"
+            },
+            "digital_sig_verifier": {
+              "goal": "Check whether the PDF certificate contains a valid digital signature and validate the certificate chain and timestamp.",
+              "role": "Digital Signature Verification Specialist",
+              "tools": [
+                "crewai_tools:FileReadTool"
+              ],
+              "verbose": true,
+              "backstory": "You are a PKI and digital signature expert. You inspect PDF documents for embedded digital signatures, validate the signing certificate chain, and check timestamp validity. For non-PDF files, report that digital signature checking is not applicable.",
+              "llm": "openai/gpt-4o-mini"
+            }
+          },
+          "inputs": {
+            "file_path": "${state.certificate_file_path}",
+            "file_type": "${state.file_type}",
+            "institution": "${outputs.upload_and_ocr.raw}",
+            "certificate_number": "${outputs.upload_and_ocr.raw}"
+          },
+          "verbose": true
+        }
+      },
+      "start": false,
+      "listen": "visual_verification",
+      "router": false,
+      "description": "Checks for a valid digital signature in the PDF (certificate chain and timestamp validation) and verifies whether the certificate number exists in an official or mock verification database."
+    }
+  },
+  "description": "An AI-powered certificate verification agent that verifies whether an uploaded certificate is genuine, suspicious, or fake. It runs OCR, QR, metadata, template, logo, seal, digital signature, certificate number, and tampering checks, then produces a structured JSON report saved to MongoDB Atlas."
+}
