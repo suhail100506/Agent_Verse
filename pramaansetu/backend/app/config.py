@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api"
     
     # Database & Cache
-    MONGO_URI: str = os.getenv("MONGO_URI", "mongodb://localhost:27017/fake_certificate_verification")
+    MONGO_URI: str = os.getenv("MONGO_URI", "mongodb+srv://mohammedsuhail100506:mongo10@cluster0.zjpg81g.mongodb.net/fake_certificate_verification?retryWrites=true&w=majority")
     MONGO_DB_NAME: str = os.getenv("MONGO_DB_NAME", "fake_certificate_verification")
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     

@@ -24,8 +24,8 @@ def to_object_id(val):
 async def connect_to_mongo():
     logger.info("Attempting MongoDB connection...")
     try:
-        # Set short server selection timeout (2000ms) to detect offline Mongo quickly
-        client = AsyncIOMotorClient(settings.MONGO_URI, serverSelectionTimeoutMS=2000)
+        # Set 10000ms server selection timeout for remote MongoDB Atlas cluster connection
+        client = AsyncIOMotorClient(settings.MONGO_URI, serverSelectionTimeoutMS=10000)
         # Test ping
         await client.admin.command('ping')
         db_instance.client = client
