@@ -7,6 +7,7 @@ import datetime
 import re
 
 from src.utils.llm_client import run_llm_agent
+from src.utils.mongo_client import save_report
 
 # PDF Extraction
 try:
@@ -342,17 +343,6 @@ def run_certificate_flow(
 
     save_local_report(final_report)
 
-    mongodb_uri = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-    try:
-        from pymongo import MongoClient
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=1200)
-        client.admin.command('ping')
-        db = client[os.getenv("DATABASE_NAME", "certificate_verifier")]
-        collection = db["certificate_verification_reports"]
-        collection.insert_one(final_report.copy())
-        client.close()
-        final_report["mongodb_saved"] = True
-    except Exception:
-        final_report["mongodb_saved"] = False
+    final_report["mongodb_saved"] = save_report("certificate_verification_reports", final_report)
 
     return final_report

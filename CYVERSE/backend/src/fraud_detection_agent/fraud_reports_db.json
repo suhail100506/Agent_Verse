@@ -1,5 +1,28 @@
 [
   {
+    "report_id": "FRD-BF36F06C",
+    "created_at": "2026-07-29T07:14:08.797246+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 9999.0,
+    "location": "Nigeria",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 25,
+    "checks": {
+      "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+      "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+      "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+      "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from Nigeria within 10 minutes of primary region."
+    },
+    "summary": "FRAUD ALERT: Transaction of $9999.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team.",
+    "llm_reasoning_used": false,
+    "llm_source": "env-default"
+  },
+  {
     "report_id": "FRD-24CC8B70",
     "created_at": "2026-07-29T05:32:18.443384+00:00",
     "agent": "Fraud Detection Agent",

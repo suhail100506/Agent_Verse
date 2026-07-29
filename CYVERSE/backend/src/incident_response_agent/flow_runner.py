@@ -6,6 +6,7 @@ from typing import Dict, Any, List, Optional
 from pathlib import Path
 
 from src.utils.llm_client import run_llm_agent
+from src.utils.mongo_client import save_report
 
 INCIDENT_REPORTS_DB_PATH = Path(__file__).parent / "incident_reports_db.json"
 
@@ -128,17 +129,6 @@ def run_incident_response_flow(
 
     save_local_incident_report(final_report)
 
-    mongodb_uri = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-    try:
-        from pymongo import MongoClient
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=1200)
-        client.admin.command('ping')
-        db = client[os.getenv("DATABASE_NAME", "certificate_verifier")]
-        collection = db["incident_response_reports"]
-        collection.insert_one(final_report.copy())
-        client.close()
-        final_report["mongodb_saved"] = True
-    except Exception:
-        final_report["mongodb_saved"] = False
+    final_report["mongodb_saved"] = save_report("incident_response_reports", final_report)
 
     return final_report

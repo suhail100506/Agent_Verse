@@ -25,6 +25,7 @@ except ImportError:
     HAS_TESSERACT = False
 
 from src.utils.llm_client import run_llm_agent
+from src.utils.mongo_client import save_report
 
 IDENTITY_REPORTS_DB_PATH = Path(__file__).parent / "identity_reports_db.json"
 
@@ -327,17 +328,6 @@ def run_identity_flow(
 
     save_local_identity_report(final_report)
 
-    mongodb_uri = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-    try:
-        from pymongo import MongoClient
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=1200)
-        client.admin.command('ping')
-        db = client[os.getenv("DATABASE_NAME", "certificate_verifier")]
-        collection = db["identity_verification_reports"]
-        collection.insert_one(final_report.copy())
-        client.close()
-        final_report["mongodb_saved"] = True
-    except Exception:
-        final_report["mongodb_saved"] = False
+    final_report["mongodb_saved"] = save_report("identity_verification_reports", final_report)
 
     return final_report

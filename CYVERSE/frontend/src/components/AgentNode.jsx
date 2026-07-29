@@ -13,7 +13,7 @@ import {
   Upload,
   FileText
 } from 'lucide-react';
-import { AGENT_ROUTES, DEFAULT_ROUTE } from '../data/agentRoutes';
+import { AGENT_ROUTES, DEFAULT_ROUTE, buildAgentFormData } from '../data/agentRoutes';
 
 const API_BASE = 'http://localhost:8000';
 
@@ -214,28 +214,7 @@ export default function AgentNode({ id, data, selected }) {
                   const route = targetNode ? (AGENT_ROUTES[targetNode.data.id] || DEFAULT_ROUTE) : DEFAULT_ROUTE;
                   const apiUrl = API_BASE + route.url;
 
-                  const formData = new FormData();
-                  if (route.kind === 'file') {
-                    if (fileVal) {
-                      formData.append(route.field, fileVal);
-                    } else {
-                      const blob = new Blob([val], { type: route.fileMime || 'text/plain' });
-                      formData.append(route.field, blob, route.fileName || 'payload.txt');
-                    }
-                  } else {
-                    formData.append(route.field, val || fileVal?.name || '');
-                  }
-
-                  // Attach per-node credential binding and playground overrides, if present.
-                  if (targetNode?.data?.credential_id) {
-                    formData.append('credential_id', targetNode.data.credential_id);
-                  }
-                  if (targetNode?.data?.systemPrompt) {
-                    formData.append('system_prompt', targetNode.data.systemPrompt);
-                  }
-                  if (targetNode?.data?.model) {
-                    formData.append('model', targetNode.data.model);
-                  }
+                  const formData = buildAgentFormData(route, targetNode?.data, val, fileVal);
 
                   const res = await fetch(apiUrl, {
                     method: 'POST',

@@ -16,6 +16,7 @@ from src.password_advisor_agent.flow_runner import run_password_flow
 from src.fraud_detection_agent.flow_runner import run_fraud_flow
 from src.incident_response_agent.flow_runner import run_incident_response_flow
 from src.social_engineering_agent.flow_runner import run_social_engineering_flow
+from src.utils.mongo_client import save_report
 
 ORCHESTRATOR_REPORTS_DB_PATH = Path(__file__).parent / "orchestrator_reports_db.json"
 
@@ -156,17 +157,6 @@ def run_master_orchestrator(
 
     save_local_orchestrator_report(master_report)
 
-    mongodb_uri = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-    try:
-        from pymongo import MongoClient
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=1200)
-        client.admin.command('ping')
-        db = client[os.getenv("DATABASE_NAME", "certificate_verifier")]
-        collection = db["cyberverse_orchestrator_reports"]
-        collection.insert_one(master_report.copy())
-        client.close()
-        master_report["mongodb_saved"] = True
-    except Exception:
-        master_report["mongodb_saved"] = False
+    master_report["mongodb_saved"] = save_report("cyberverse_orchestrator_reports", master_report)
 
     return master_report

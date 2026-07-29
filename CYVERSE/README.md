@@ -86,6 +86,15 @@ GROQ_API_KEY=your_groq_api_key_here
 
 Any node with no credential bound will use this automatically.
 
+## 5. Connect MongoDB (optional, for MongoDB Compass)
+
+Every agent saves its reports locally (JSON files in `backend/src/<agent>_agent/`) regardless of MongoDB — Mongo is purely an optional second copy you can browse live in MongoDB Compass.
+
+- **Have MongoDB running locally or in Atlas?** Add it as a credential: Sidebar → Credentials → **Add Credential** → type **MongoDB Connection** → paste your connection string (e.g. `mongodb://localhost:27017`) and a database name. This applies platform-wide — every agent's reports will save there.
+- Open MongoDB Compass with the same connection string and you'll see collections like `certificate_verification_reports`, `malware_analysis_reports`, `cyberverse_orchestrator_reports`, etc. appear and fill up as you run workflows.
+- No MongoDB running? Everything still works — each report response includes `"mongodb_saved": false` and the app keeps functioning off the local JSON files.
+- Alternative: set `MONGODB_URI` / `DATABASE_NAME` in `backend/.env` instead of using the UI — the vault credential takes priority over these if both are set.
+
 ---
 
 ## Testing the platform

@@ -14,6 +14,7 @@ import CommandPalette from './CommandPalette';
 import AiCopilotModal from './AiCopilotModal';
 import TemplatesModal from './TemplatesModal';
 import { WORKFLOW_TEMPLATES } from '../data/templates';
+import { executeWorkflowGraph } from '../lib/executeWorkflow';
 
 const INITIAL_NODES = [
   {
@@ -159,45 +160,22 @@ function WorkflowBuilderContent() {
     setSelection({ node, anchor });
   }, []);
 
-  // Master execution simulation
+  // Real dynamic execution: walks the actual graph from its head/trigger node(s)
+  // through every downstream node in dependency order, calling each node's real
+  // backend endpoint - not a fixed simulated step count.
   const handleRunWorkflow = useCallback(async () => {
+    if (nodes.length === 0) {
+      addLog('warn', 'Nothing to run - add some nodes to the canvas first.');
+      return;
+    }
     setIsRunning(true);
     setIsConsoleOpen(true);
-    addLog('info', '[Master Kickoff] Initiating sequential execution across workflow DAG...');
-
-    // Reset statuses
-    setNodes(nds => nds.map(n => ({ ...n, data: { ...n.data, status: 'idle' } })));
-
-    // Step 1: Ingest
-    addLog('info', '[Node 1/4] Running User Payload Ingest...');
-    setNodes(nds => nds.map(n => n.id === 'node-trigger-ingest' ? { ...n, data: { ...n.data, status: 'running' } } : n));
-    await new Promise(r => setTimeout(r, 700));
-    setNodes(nds => nds.map(n => n.id === 'node-trigger-ingest' ? { ...n, data: { ...n.data, status: 'completed' } } : n));
-    addLog('success', '[Node 1/4] Ingest Complete. Received payload string.');
-
-    // Step 2: Master Orchestrator
-    addLog('info', '[Node 2/4] Dispatched to Master Cyber Orchestrator...');
-    setNodes(nds => nds.map(n => n.id === 'node-orchestrator' ? { ...n, data: { ...n.data, status: 'running' } } : n));
-    await new Promise(r => setTimeout(r, 900));
-    setNodes(nds => nds.map(n => n.id === 'node-orchestrator' ? { ...n, data: { ...n.data, status: 'completed' } } : n));
-    addLog('success', '[Node 2/4] Intent routed to Document Extraction & Malware Analyzer.');
-
-    // Step 3: Sub-agents
-    addLog('info', '[Node 3/4] Parallel analysis: Running OCR Forensics & YARA PE Scan...');
-    setNodes(nds => nds.map(n => ['node-doc-forensics', 'node-malware-scan'].includes(n.id) ? { ...n, data: { ...n.data, status: 'running' } } : n));
-    await new Promise(r => setTimeout(r, 1100));
-    setNodes(nds => nds.map(n => ['node-doc-forensics', 'node-malware-scan'].includes(n.id) ? { ...n, data: { ...n.data, status: 'completed' } } : n));
-    addLog('success', '[Node 3/4] Zero malware signatures detected. Certificate PKI valid.');
-
-    // Step 4: Final Report
-    addLog('info', '[Node 4/4] Generating Final PDF & JSON Audit Report...');
-    setNodes(nds => nds.map(n => n.id === 'node-report' ? { ...n, data: { ...n.data, status: 'running' } } : n));
-    await new Promise(r => setTimeout(r, 600));
-    setNodes(nds => nds.map(n => n.id === 'node-report' ? { ...n, data: { ...n.data, status: 'completed' } } : n));
-    addLog('success', '[Workflow Complete] All 5 nodes executed successfully in 3.3s. Security Score: 98/100.');
-
-    setIsRunning(false);
-  }, [setNodes, addLog]);
+    try {
+      await executeWorkflowGraph({ nodes, edges, setNodes, setEdges, addLog });
+    } finally {
+      setIsRunning(false);
+    }
+  }, [nodes, edges, setNodes, setEdges, addLog]);
 
   // Load preset template - each entry in WORKFLOW_TEMPLATES carries its own real {nodes, edges} graph
   const handleLoadTemplate = useCallback((templateId) => {

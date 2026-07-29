@@ -39,6 +39,17 @@ from src.password_advisor_agent.flow_runner import run_password_flow, load_local
 from src.fraud_detection_agent.flow_runner import run_fraud_flow, load_local_fraud_reports
 from src.incident_response_agent.flow_runner import run_incident_response_flow, load_local_incident_reports
 from src.social_engineering_agent.flow_runner import run_social_engineering_flow, load_local_social_engineering_reports
+from src.utils.email_service import send_report_email
+
+
+def _maybe_notify(report: Dict[str, Any], agent_name: str, notify_email: Optional[str], credential_id: Optional[str]) -> Dict[str, Any]:
+    """If a Notify Email was configured on the node, actually send it (not just decorative UI)."""
+    if notify_email:
+        result = send_report_email(notify_email, report, agent_name=agent_name, credential_id=credential_id)
+        report["email_delivery_status"] = result["status"]
+        report["email_delivery_error"] = result["error"]
+    return report
+
 
 app = FastAPI(
     title="CyberVerse AI 10-Agent Platform API",
@@ -172,6 +183,8 @@ async def api_create_credential(
     smtp_user: Optional[str] = Form(None),
     smtp_pass: Optional[str] = Form(None),
     recipient_default: Optional[str] = Form(None),
+    mongodb_uri: Optional[str] = Form(None),
+    database_name: Optional[str] = Form(None),
 ):
     if type not in CREDENTIAL_TYPES:
         raise HTTPException(status_code=400, detail=f"Unsupported credential type '{type}'. Allowed: {sorted(CREDENTIAL_TYPES)}")
@@ -183,6 +196,8 @@ async def api_create_credential(
         "smtp_user": smtp_user or "",
         "smtp_pass": smtp_pass or "",
         "recipient_default": recipient_default or "",
+        "mongodb_uri": mongodb_uri or "",
+        "database_name": database_name or "",
     }
     try:
         record = create_credential(name=name, type=type, secret_fields=secret_fields)
@@ -211,7 +226,8 @@ async def master_orchestrator_analyze(
     prompt: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
     selfie_file: Optional[UploadFile] = File(None),
-    credential_id: Optional[str] = Form(None)
+    credential_id: Optional[str] = Form(None),
+    notify_email: Optional[str] = Form(None)
 ):
     saved_file_path = None
     saved_selfie_path = None
@@ -247,7 +263,7 @@ async def master_orchestrator_analyze(
             file_type=file_type,
             credential_id=credential_id
         )
-        return report
+        return _maybe_notify(report, "Master Cyber Orchestrator", notify_email, credential_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Orchestration failed: {str(e)}")
 
@@ -259,6 +275,7 @@ async def verify_certificate(
     credential_id: Optional[str] = Form(None),
     system_prompt: Optional[str] = Form(None),
     model: Optional[str] = Form(None),
+    notify_email: Optional[str] = Form(None),
 ):
     filename = file.filename or "uploaded_certificate"
     ext = os.path.splitext(filename)[1].lower()
@@ -272,7 +289,8 @@ async def verify_certificate(
     with open(saved_file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    return run_certificate_flow(str(saved_file_path), file_type, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    report = run_certificate_flow(str(saved_file_path), file_type, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    return _maybe_notify(report, "Fake Certificate Verification Agent", notify_email, credential_id)
 
 
 @app.post("/api/verify/identity")
@@ -282,6 +300,7 @@ async def verify_identity(
     credential_id: Optional[str] = Form(None),
     system_prompt: Optional[str] = Form(None),
     model: Optional[str] = Form(None),
+    notify_email: Optional[str] = Form(None),
 ):
     doc_filename = document_file.filename or "id_document"
     ext = os.path.splitext(doc_filename)[1].lower()
@@ -298,7 +317,8 @@ async def verify_identity(
             shutil.copyfileobj(selfie_file.file, buffer)
         selfie_path_str = str(selfie_path)
 
-    return run_identity_flow(str(doc_path), selfie_path_str, file_type, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    report = run_identity_flow(str(doc_path), selfie_path_str, file_type, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    return _maybe_notify(report, "Identity Verification Agent", notify_email, credential_id)
 
 
 @app.post("/api/analyze/malware")
@@ -307,6 +327,7 @@ async def analyze_malware(
     credential_id: Optional[str] = Form(None),
     system_prompt: Optional[str] = Form(None),
     model: Optional[str] = Form(None),
+    notify_email: Optional[str] = Form(None),
 ):
     filename = file.filename or "suspicious_payload.bin"
     file_id = str(uuid.uuid4())[:8]
@@ -314,7 +335,8 @@ async def analyze_malware(
     with open(saved_file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    return run_malware_flow(str(saved_file_path), "binary", credential_id=credential_id, system_prompt=system_prompt, model=model)
+    report = run_malware_flow(str(saved_file_path), "binary", credential_id=credential_id, system_prompt=system_prompt, model=model)
+    return _maybe_notify(report, "Malware Analyzer Agent", notify_email, credential_id)
 
 
 @app.post("/api/analyze/threat")
@@ -323,8 +345,10 @@ async def analyze_threat(
     credential_id: Optional[str] = Form(None),
     system_prompt: Optional[str] = Form(None),
     model: Optional[str] = Form(None),
+    notify_email: Optional[str] = Form(None),
 ):
-    return run_threat_flow(query, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    report = run_threat_flow(query, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    return _maybe_notify(report, "Cyber Threat Detection Agent", notify_email, credential_id)
 
 
 @app.post("/api/analyze/phishing")
@@ -333,8 +357,10 @@ async def analyze_phishing(
     credential_id: Optional[str] = Form(None),
     system_prompt: Optional[str] = Form(None),
     model: Optional[str] = Form(None),
+    notify_email: Optional[str] = Form(None),
 ):
-    return run_phishing_flow(url_or_text, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    report = run_phishing_flow(url_or_text, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    return _maybe_notify(report, "Phishing Detection Agent", notify_email, credential_id)
 
 
 @app.post("/api/audit/privacy")
@@ -343,8 +369,10 @@ async def audit_privacy(
     credential_id: Optional[str] = Form(None),
     system_prompt: Optional[str] = Form(None),
     model: Optional[str] = Form(None),
+    notify_email: Optional[str] = Form(None),
 ):
-    return run_privacy_flow(text_content, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    report = run_privacy_flow(text_content, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    return _maybe_notify(report, "Privacy Compliance Agent", notify_email, credential_id)
 
 
 @app.post("/api/advise/password")
@@ -353,8 +381,10 @@ async def advise_password(
     credential_id: Optional[str] = Form(None),
     system_prompt: Optional[str] = Form(None),
     model: Optional[str] = Form(None),
+    notify_email: Optional[str] = Form(None),
 ):
-    return run_password_flow(password, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    report = run_password_flow(password, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    return _maybe_notify(report, "Password Security Advisor Agent", notify_email, credential_id)
 
 
 @app.post("/api/detect/fraud")
@@ -364,18 +394,23 @@ async def detect_fraud(
     credential_id: Optional[str] = Form(None),
     system_prompt: Optional[str] = Form(None),
     model: Optional[str] = Form(None),
+    notify_email: Optional[str] = Form(None),
 ):
-    return run_fraud_flow({"amount": amount, "location": location}, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    report = run_fraud_flow({"amount": amount, "location": location}, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    return _maybe_notify(report, "Fraud Detection Agent", notify_email, credential_id)
 
 
 @app.post("/api/incident/generate")
 async def generate_incident_report(
     title: str = Form("Cyber Incident Investigation"),
+    severity: str = Form("HIGH"),
     credential_id: Optional[str] = Form(None),
     system_prompt: Optional[str] = Form(None),
     model: Optional[str] = Form(None),
+    notify_email: Optional[str] = Form(None),
 ):
-    return run_incident_response_flow({"title": title, "severity": "HIGH"}, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    report = run_incident_response_flow({"title": title, "severity": severity}, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    return _maybe_notify(report, "Incident Response Agent", notify_email, credential_id)
 
 
 @app.post("/api/analyze/social-engineering")
@@ -385,6 +420,7 @@ async def analyze_social_engineering(
     credential_id: Optional[str] = Form(None),
     system_prompt: Optional[str] = Form(None),
     model: Optional[str] = Form(None),
+    notify_email: Optional[str] = Form(None),
 ):
     saved_file_path = None
     if file and file.filename:
@@ -393,7 +429,8 @@ async def analyze_social_engineering(
         with open(saved_file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-    return run_social_engineering_flow(text, saved_file_path, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    report = run_social_engineering_flow(text, saved_file_path, credential_id=credential_id, system_prompt=system_prompt, model=model)
+    return _maybe_notify(report, "Social Engineering / Deepfake Detection Agent", notify_email, credential_id)
 
 
 @app.get("/api/reports")

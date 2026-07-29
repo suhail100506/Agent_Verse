@@ -19,3 +19,29 @@ export const AGENT_ROUTES = {
 };
 
 export const DEFAULT_ROUTE = { url: '/api/analyze/phishing', field: 'url_or_text', kind: 'text' };
+
+// Shared by AgentNode's single-node "Run Node" button and the full-graph executor,
+// so credential/prompt/model/notify-email/agent-specific field wiring only lives once.
+export function buildAgentFormData(route, targetData, val, fileVal) {
+  const formData = new FormData();
+
+  if (route.kind === 'file') {
+    if (fileVal) {
+      formData.append(route.field, fileVal);
+    } else {
+      const blob = new Blob([val || ''], { type: route.fileMime || 'text/plain' });
+      formData.append(route.field, blob, route.fileName || 'payload.txt');
+    }
+  } else {
+    formData.append(route.field, val || fileVal?.name || '');
+  }
+
+  if (targetData?.credential_id) formData.append('credential_id', targetData.credential_id);
+  if (targetData?.systemPrompt) formData.append('system_prompt', targetData.systemPrompt);
+  if (targetData?.model) formData.append('model', targetData.model);
+  if (targetData?.notifyEmail) formData.append('notify_email', targetData.notifyEmail);
+  if (targetData?.defaultAmount) formData.append('amount', targetData.defaultAmount);
+  if (targetData?.severity) formData.append('severity', targetData.severity);
+
+  return formData;
+}

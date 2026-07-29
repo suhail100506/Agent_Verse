@@ -13,18 +13,20 @@ logger = logging.getLogger(__name__)
 
 CREDENTIALS_DB_PATH = Path(__file__).parent / "credentials_db.json"
 
-ALLOWED_TYPES = {"groq_api_key", "smtp", "generic_api_key"}
+ALLOWED_TYPES = {"groq_api_key", "smtp", "generic_api_key", "mongodb"}
 
 SECRET_FIELDS_BY_TYPE = {
     "groq_api_key": ["api_key"],
     "generic_api_key": ["api_key"],
     "smtp": ["smtp_host", "smtp_port", "smtp_user", "smtp_pass", "recipient_default"],
+    "mongodb": ["mongodb_uri", "database_name"],
 }
 
 PRIMARY_FIELD_BY_TYPE = {
     "groq_api_key": "api_key",
     "generic_api_key": "api_key",
     "smtp": "smtp_user",
+    "mongodb": "mongodb_uri",
 }
 
 
@@ -124,6 +126,15 @@ def delete_credential(credential_id: str) -> bool:
         return False
     save_credentials(remaining)
     return True
+
+
+def find_credential_id_by_type(type: str) -> Optional[str]:
+    """Returns the most recently added credential_id of the given type, or None."""
+    records = load_credentials()
+    for r in records:
+        if r.get("type") == type:
+            return r.get("credential_id")
+    return None
 
 
 def resolve_secret(credential_id: str) -> Optional[Dict[str, Any]]:

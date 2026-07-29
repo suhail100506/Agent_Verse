@@ -7,6 +7,7 @@ from typing import Dict, Any, Optional
 from pathlib import Path
 
 from src.utils.llm_client import run_llm_agent
+from src.utils.mongo_client import save_report
 
 PRIVACY_REPORTS_DB_PATH = Path(__file__).parent / "privacy_reports_db.json"
 
@@ -132,17 +133,6 @@ def run_privacy_flow(
 
     save_local_privacy_report(final_report)
 
-    mongodb_uri = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-    try:
-        from pymongo import MongoClient
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=1200)
-        client.admin.command('ping')
-        db = client[os.getenv("DATABASE_NAME", "certificate_verifier")]
-        collection = db["privacy_compliance_reports"]
-        collection.insert_one(final_report.copy())
-        client.close()
-        final_report["mongodb_saved"] = True
-    except Exception:
-        final_report["mongodb_saved"] = False
+    final_report["mongodb_saved"] = save_report("privacy_compliance_reports", final_report)
 
     return final_report

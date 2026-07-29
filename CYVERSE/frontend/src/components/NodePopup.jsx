@@ -9,12 +9,15 @@ import {
   Loader2,
   ChevronDown,
 } from 'lucide-react';
+import { getNodeKind, AGENT_EXTRA_FIELDS } from '../data/nodeSettingsSchema';
+import { MODEL_OPTIONS } from '../data/agentLibrary';
 
 const API_BASE = 'http://localhost:8000';
 
 const CREDENTIAL_TYPES = [
   { value: 'groq_api_key', label: 'Groq API Key' },
   { value: 'smtp', label: 'SMTP / Email' },
+  { value: 'mongodb', label: 'MongoDB Connection' },
   { value: 'generic_api_key', label: 'Generic API Key' },
 ];
 
@@ -58,6 +61,9 @@ export default function NodePopup({ node, anchor, onUpdateNode, onDeleteNode, on
   if (!node) return null;
 
   const { id, data } = node;
+  const kind = getNodeKind(data);
+  const extraFields = kind === 'agent' ? (AGENT_EXTRA_FIELDS[data.id] || []) : [];
+  const tabs = kind === 'agent' ? ['config', 'credentials', 'json', 'logs'] : ['config', 'json', 'logs'];
 
   const handleCopyJson = () => {
     navigator.clipboard.writeText(JSON.stringify(data, null, 2));
@@ -152,7 +158,7 @@ export default function NodePopup({ node, anchor, onUpdateNode, onDeleteNode, on
 
         {/* TABS */}
         <div className="px-2 py-1.5 border-b border-white/10 flex items-center gap-1 text-[10.5px] shrink-0">
-          {['config', 'credentials', 'json', 'logs'].map((tab) => (
+          {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -191,34 +197,92 @@ export default function NodePopup({ node, anchor, onUpdateNode, onDeleteNode, on
                 />
               </div>
 
-              <div>
-                <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1">System Prompt Override</label>
-                <textarea
-                  rows={3}
-                  placeholder="Leave blank to use this agent's default prompt..."
-                  value={data.systemPrompt || ''}
-                  onChange={(e) => onUpdateNode(id, { systemPrompt: e.target.value })}
-                  className="w-full bg-black/30 border border-white/10 rounded-lg px-2.5 py-1.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all resize-none"
-                />
-              </div>
+              {/* AGENT-KIND NODES: LLM reasoning settings + any agent-specific fields */}
+              {kind === 'agent' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1">System Prompt Override</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Leave blank to use this agent's default prompt..."
+                      value={data.systemPrompt || ''}
+                      onChange={(e) => onUpdateNode(id, { systemPrompt: e.target.value })}
+                      className="w-full bg-black/30 border border-white/10 rounded-lg px-2.5 py-1.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all resize-none"
+                    />
+                  </div>
 
-              <div>
-                <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1">Notify Email</label>
-                <input
-                  type="email"
-                  placeholder="analyst@company.com"
-                  value={data.notifyEmail || ''}
-                  onChange={(e) => onUpdateNode(id, { notifyEmail: e.target.value })}
-                  className="w-full bg-black/30 border border-white/10 rounded-lg px-2.5 py-1.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all"
-                />
-              </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1">Model</label>
+                    <select
+                      value={data.model || MODEL_OPTIONS[0].value}
+                      onChange={(e) => onUpdateNode(id, { model: e.target.value })}
+                      className="w-full bg-black/30 border border-white/10 rounded-lg px-2.5 py-1.5 text-zinc-200 focus:outline-none focus:border-indigo-500/50"
+                    >
+                      {MODEL_OPTIONS.map((m) => (
+                        <option key={m.value} value={m.value}>{m.label}</option>
+                      ))}
+                    </select>
+                  </div>
 
-              {data.isLogicNode && (
+                  {extraFields.map((field) => (
+                    <div key={field.key}>
+                      <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1">{field.label}</label>
+                      {field.type === 'select' ? (
+                        <select
+                          value={data[field.key] ?? field.default ?? ''}
+                          onChange={(e) => onUpdateNode(id, { [field.key]: e.target.value })}
+                          className="w-full bg-black/30 border border-white/10 rounded-lg px-2.5 py-1.5 text-zinc-200 focus:outline-none focus:border-indigo-500/50"
+                        >
+                          {field.options.map((opt) => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type={field.type}
+                          placeholder={field.placeholder}
+                          value={data[field.key] ?? ''}
+                          onChange={(e) => onUpdateNode(id, { [field.key]: e.target.value })}
+                          className="w-full bg-black/30 border border-white/10 rounded-lg px-2.5 py-1.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50"
+                        />
+                      )}
+                    </div>
+                  ))}
+
+                  <div>
+                    <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1">Notify Email</label>
+                    <input
+                      type="email"
+                      placeholder="analyst@company.com"
+                      value={data.notifyEmail || ''}
+                      onChange={(e) => onUpdateNode(id, { notifyEmail: e.target.value })}
+                      className="w-full bg-black/30 border border-white/10 rounded-lg px-2.5 py-1.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* REPORT NODE: just wants somewhere to send the aggregated result */}
+              {kind === 'report' && (
+                <div>
+                  <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1">Notify Email</label>
+                  <input
+                    type="email"
+                    placeholder="analyst@company.com"
+                    value={data.notifyEmail || ''}
+                    onChange={(e) => onUpdateNode(id, { notifyEmail: e.target.value })}
+                    className="w-full bg-black/30 border border-white/10 rounded-lg px-2.5 py-1.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all"
+                  />
+                </div>
+              )}
+
+              {/* LOGIC NODE: only the branch condition */}
+              {kind === 'logic' && (
                 <div className="p-2.5 rounded-xl bg-black/20 border border-white/10 space-y-2">
                   <span className="text-[10px] font-bold text-amber-500/80 uppercase tracking-widest block">Branch Expression</span>
                   <input
                     type="text"
-                    value={data.conditionField || 'riskScore'}
+                    value={data.conditionField || 'overall_score'}
                     onChange={(e) => onUpdateNode(id, { conditionField: e.target.value })}
                     className="w-full bg-black/30 border border-white/10 rounded-md p-1.5 text-zinc-200 focus:border-indigo-500/50 focus:outline-none"
                   />
@@ -243,7 +307,8 @@ export default function NodePopup({ node, anchor, onUpdateNode, onDeleteNode, on
                 </div>
               )}
 
-              {data.isWebhookTrigger && (
+              {/* WEBHOOK TRIGGER: only the URL to hit */}
+              {kind === 'trigger-webhook' && (
                 <div className="p-2.5 rounded-xl bg-black/20 border border-white/10 space-y-1.5">
                   <span className="text-[10px] font-semibold text-zinc-400 block">Webhook URL (connect this node to an agent first)</span>
                   <code className="block text-[9.5px] text-indigo-300 font-mono break-all bg-black/30 rounded p-1.5">
@@ -252,17 +317,32 @@ export default function NodePopup({ node, anchor, onUpdateNode, onDeleteNode, on
                 </div>
               )}
 
-              {data.cron !== undefined && (
-                <div className="p-2.5 rounded-xl bg-black/20 border border-white/10 flex items-center justify-between">
-                  <span className="text-[10px] font-semibold text-zinc-400">Armed</span>
-                  <button
-                    onClick={() => onUpdateNode(id, { armed: !data.armed })}
-                    className={`w-9 h-5 rounded-full transition-colors relative ${data.armed ? 'bg-emerald-500' : 'bg-zinc-700'}`}
-                  >
-                    <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${data.armed ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                  </button>
+              {/* SCHEDULE TRIGGER: only cron + armed toggle */}
+              {kind === 'trigger-schedule' && (
+                <div className="p-2.5 rounded-xl bg-black/20 border border-white/10 space-y-2">
+                  <div>
+                    <label className="text-[10px] font-semibold text-zinc-400 mb-1 block">Cron Expression</label>
+                    <input
+                      type="text"
+                      value={data.cron || '*/15 * * * *'}
+                      onChange={(e) => onUpdateNode(id, { cron: e.target.value })}
+                      className="w-full bg-black/30 border border-white/10 rounded-md p-1.5 text-zinc-200 font-mono focus:border-indigo-500/50 focus:outline-none"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-[10px] font-semibold text-zinc-400">Armed</span>
+                    <button
+                      onClick={() => onUpdateNode(id, { armed: !data.armed })}
+                      className={`w-9 h-5 rounded-full transition-colors relative ${data.armed ? 'bg-emerald-500' : 'bg-zinc-700'}`}
+                    >
+                      <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${data.armed ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                    </button>
+                  </div>
+                  <p className="text-[9.5px] text-zinc-500 leading-relaxed">Arming only marks this node as active - real background scheduling isn't implemented yet; trigger it manually via the Run button or the webhook endpoint.</p>
                 </div>
               )}
+
+              {/* TRIGGER-TEXT node's own input/file fields live inline on the node itself - nothing extra to configure here. */}
 
               <button
                 onClick={() => onDeleteNode(id)}
@@ -357,6 +437,14 @@ export default function NodePopup({ node, anchor, onUpdateNode, onDeleteNode, on
                       <input type="text" placeholder="SMTP username / email" value={newCredFields.smtp_user || ''} onChange={(e) => setNewCredFields((f) => ({ ...f, smtp_user: e.target.value }))} className="w-full bg-black/30 border border-white/10 rounded-md p-1.5 text-zinc-200 placeholder-zinc-600 focus:border-indigo-500/50 focus:outline-none" />
                       <input type="password" placeholder="SMTP password / app password" value={newCredFields.smtp_pass || ''} onChange={(e) => setNewCredFields((f) => ({ ...f, smtp_pass: e.target.value }))} className="w-full bg-black/30 border border-white/10 rounded-md p-1.5 text-zinc-200 placeholder-zinc-600 focus:border-indigo-500/50 focus:outline-none" />
                       <input type="email" placeholder="Default recipient (optional)" value={newCredFields.recipient_default || ''} onChange={(e) => setNewCredFields((f) => ({ ...f, recipient_default: e.target.value }))} className="w-full bg-black/30 border border-white/10 rounded-md p-1.5 text-zinc-200 placeholder-zinc-600 focus:border-indigo-500/50 focus:outline-none" />
+                    </>
+                  )}
+
+                  {newCredType === 'mongodb' && (
+                    <>
+                      <input type="text" placeholder="mongodb://localhost:27017" value={newCredFields.mongodb_uri || ''} onChange={(e) => setNewCredFields((f) => ({ ...f, mongodb_uri: e.target.value }))} className="w-full bg-black/30 border border-white/10 rounded-md p-1.5 text-zinc-200 placeholder-zinc-600 focus:border-indigo-500/50 focus:outline-none" />
+                      <input type="text" placeholder="Database name (e.g. certificate_verifier)" value={newCredFields.database_name || ''} onChange={(e) => setNewCredFields((f) => ({ ...f, database_name: e.target.value }))} className="w-full bg-black/30 border border-white/10 rounded-md p-1.5 text-zinc-200 placeholder-zinc-600 focus:border-indigo-500/50 focus:outline-none" />
+                      <p className="text-[9.5px] text-zinc-500 leading-relaxed">Applies platform-wide (all agents' reports will save here) - view it live in MongoDB Compass with this same URI.</p>
                     </>
                   )}
 

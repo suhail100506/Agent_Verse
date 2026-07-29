@@ -163,10 +163,12 @@ export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed })
         isCollapsed ? 'w-16' : 'w-80'
       }`}
     >
-      {/* Collapse / Expand Toggle Button - Positioned absolutely so it bridges the border */}
-      <button 
+      {/* Collapse / Expand Toggle Button - Positioned absolutely so it bridges the border.
+          Vertically centered (rather than pinned near the top) so it never overlaps the
+          top tab row's icons/labels, regardless of how many tabs are in that row. */}
+      <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-6 w-6 h-6 rounded-full bg-[#3B3B3B] border border-black/40 text-zinc-400 hover:text-white flex items-center justify-center shadow-md z-30 transition-transform hover:scale-110"
+        className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#3B3B3B] border border-black/40 text-zinc-400 hover:text-white flex items-center justify-center shadow-md z-30 transition-transform hover:scale-110"
       >
         {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
       </button>
@@ -502,6 +504,7 @@ export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed })
                   >
                     <option value="groq_api_key">Groq API Key</option>
                     <option value="smtp">SMTP / Email</option>
+                    <option value="mongodb">MongoDB Connection</option>
                     <option value="generic_api_key">Generic API Key</option>
                   </select>
                   {(newCredType === 'groq_api_key' || newCredType === 'generic_api_key') && (
@@ -520,6 +523,13 @@ export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed })
                       <input type="text" placeholder="SMTP username / email" value={newCredFields.smtp_user || ''} onChange={(e) => setNewCredFields((f) => ({ ...f, smtp_user: e.target.value }))} className="w-full bg-[#1E1E1E] border border-black/20 rounded-md p-1.5 text-zinc-200 placeholder-zinc-600 focus:border-indigo-500/50 focus:outline-none" />
                       <input type="password" placeholder="SMTP password" value={newCredFields.smtp_pass || ''} onChange={(e) => setNewCredFields((f) => ({ ...f, smtp_pass: e.target.value }))} className="w-full bg-[#1E1E1E] border border-black/20 rounded-md p-1.5 text-zinc-200 placeholder-zinc-600 focus:border-indigo-500/50 focus:outline-none" />
                       <input type="email" placeholder="Default recipient (optional)" value={newCredFields.recipient_default || ''} onChange={(e) => setNewCredFields((f) => ({ ...f, recipient_default: e.target.value }))} className="w-full bg-[#1E1E1E] border border-black/20 rounded-md p-1.5 text-zinc-200 placeholder-zinc-600 focus:border-indigo-500/50 focus:outline-none" />
+                    </>
+                  )}
+                  {newCredType === 'mongodb' && (
+                    <>
+                      <input type="text" placeholder="mongodb://localhost:27017" value={newCredFields.mongodb_uri || ''} onChange={(e) => setNewCredFields((f) => ({ ...f, mongodb_uri: e.target.value }))} className="w-full bg-[#1E1E1E] border border-black/20 rounded-md p-1.5 text-zinc-200 placeholder-zinc-600 focus:border-indigo-500/50 focus:outline-none" />
+                      <input type="text" placeholder="Database name" value={newCredFields.database_name || ''} onChange={(e) => setNewCredFields((f) => ({ ...f, database_name: e.target.value }))} className="w-full bg-[#1E1E1E] border border-black/20 rounded-md p-1.5 text-zinc-200 placeholder-zinc-600 focus:border-indigo-500/50 focus:outline-none" />
+                      <p className="text-[9.5px] text-zinc-500 leading-relaxed px-0.5">Applies platform-wide - view saved reports live in MongoDB Compass using this same URI.</p>
                     </>
                   )}
                   <div className="flex gap-2 pt-1">

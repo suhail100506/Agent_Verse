@@ -1,16 +1,17 @@
 import React, { useCallback, useState, useRef } from 'react';
-import { 
-  ReactFlow, 
-  Background, 
-  Controls, 
-  MiniMap, 
-  useNodesState, 
-  useEdgesState, 
+import {
+  ReactFlow,
+  Background,
+  Controls,
+  MiniMap,
+  useNodesState,
+  useEdgesState,
   addEdge,
   reconnectEdge,
   useReactFlow,
   ReactFlowProvider,
-  MarkerType
+  MarkerType,
+  SelectionMode
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import AgentNode from './AgentNode';
@@ -218,6 +219,10 @@ export default function WorkflowCanvas({
         fitView
         fitViewOptions={{ padding: 0.25 }}
         deleteKeyCode={["Backspace", "Delete"]}
+        selectionOnDrag
+        selectionMode={SelectionMode.Partial}
+        panOnDrag={[1, 2]}
+        multiSelectionKeyCode={["Shift", "Meta", "Control"]}
         className="react-flow-custom z-10"
       >
         <Controls className="!bg-[#2B2B2B]/80 !border-white/10 !text-zinc-300 !rounded-lg !shadow-xl !p-1 backdrop-blur-md" />
