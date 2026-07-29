@@ -1,5 +1,46 @@
 [
   {
+    "report_id": "IDR-F9FB9C5F",
+    "created_at": "2026-07-29T05:28:55.828425+00:00",
+    "type": "identity",
+    "document_file_name": "fake_passport.pdf",
+    "selfie_file_name": null,
+    "file_type": "pdf",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 31,
+    "identity_information": {
+      "full_name": "Verified Identity Holder",
+      "id_number": "ID-984-236C98",
+      "date_of_birth": "1994-08-14",
+      "gender": "Female",
+      "expiry_date": "2029-12-31",
+      "issuing_authority": "Department of Homeland Security / Passport Office"
+    },
+    "biometrics": {
+      "face_match_percentage": 32.4,
+      "face_verdict": "MISMATCH - Secondary face differs significantly from ID photo of 'Verified Identity Holder'",
+      "liveness_verified": false
+    },
+    "checks": {
+      "ocr": "Failed - Extracted name 'Verified Identity Holder', but ID field 'ID-984-236C98' displays font manipulation artifacts.",
+      "face_match": "Failed - Biometric Face Match 32.4%. Required 85.0% threshold for 'Verified Identity Holder'.",
+      "liveness": "Failed - Facial liveness check flagged potential photo-of-photo or screen playback spoofing.",
+      "barcode_verification": "Failed - PDF417 2D Barcode payload checksum mismatch for ID 'ID-984-236C98'.",
+      "tampering_detection": "Failed - Forensics scan detected photo replacement boundary lines and font splicing.",
+      "document_authenticity": "Failed - Hologram reflection and micro-print security features missing or visually altered.",
+      "blacklist_check": "Failed - ID 'ID-984-236C98' matched high-risk watchlist alert entry.",
+      "metadata_analysis": "Failed - EXIF data reveals document photo replacement.",
+      "document_authenticity_overall": "Failed - Document fails standard government identity security standards."
+    },
+    "summary": "CRITICAL IDENTITY ALERT: Document for 'Verified Identity Holder' (ID: ID-984-236C98) exhibits severe forgery, photo replacement, and face mismatch.",
+    "recommendation": "Block transaction immediately and require physical in-person identity verification.",
+    "next_action": "Escalate incident to Fraud & Compliance Operations Team.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
     "report_id": "IDR-9C4C75C8",
     "created_at": "2026-07-28T16:58:09.741705+00:00",
     "type": "identity",

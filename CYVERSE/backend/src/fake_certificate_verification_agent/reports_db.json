@@ -1,5 +1,34 @@
 [
   {
+    "report_id": "REP-853B9B99",
+    "created_at": "2026-07-29T05:22:27.345643+00:00",
+    "certificate_file_name": "test_cert_fake.txt",
+    "file_type": "image",
+    "status": "Fake",
+    "confidence": 0.94,
+    "overall_score": 34,
+    "certificate_holder": "Test Cert",
+    "certificate_number": "CERT-2026-BFA39B",
+    "institution": "Global Accredited Institution",
+    "raw_text_excerpt": "Direct Visual Parsing",
+    "checks": {
+      "ocr": "Failed - Extracted candidate 'Test Cert', but text field alignment indicates font tampering.",
+      "qr": "Failed - Embedded QR code for cert ID 'CERT-2026-BFA39B' links to unverified domain (verify-fake.tmp).",
+      "metadata": "Failed - Image read error: cannot identify image file 'temp_uploads/test_cert_fake.txt'",
+      "template": "Failed - Layout similarity 42% against official template for 'Global Accredited Institution'.",
+      "logo": "Failed - Institutional logo for 'Global Accredited Institution' displays resolution distortion.",
+      "seal": "Failed - Official embossed seal missing required micro-print border and signature overlap.",
+      "digital_signature": "Failed - Invalid PKI digital signature attached to document.",
+      "certificate_number": "Failed - Certificate ID 'CERT-2026-BFA39B' not found in registry database for 'Global Accredited Institution'.",
+      "tampering": "Failed - Forensic scan detected font splicing, pixel cloning around grade fields, and layer edits."
+    },
+    "summary": "CRITICAL FORENSIC ALERT: Certificate for 'Test Cert' (ID: CERT-2026-BFA39B) exhibits severe forgery and visual alteration.",
+    "recommendation": "Reject certificate immediately and flag candidate for integrity review.",
+    "next_action": "Escalate report to Academic Integrity & Compliance Department.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
     "report_id": "REP-1A3063F8",
     "created_at": "2026-07-28T22:16:49.153686+00:00",
     "certificate_file_name": "c593ab06_images.png",

@@ -1,4 +1,4 @@
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
 from pathlib import Path
 import os
 import json
@@ -6,11 +6,7 @@ import uuid
 import datetime
 import re
 
-try:
-    from litellm import completion
-    HAS_LITELLM = True
-except ImportError:
-    HAS_LITELLM = False
+from src.utils.llm_client import run_llm_agent
 
 # PDF Extraction
 try:
@@ -204,7 +200,24 @@ def smart_parse_certificate_fields(raw_text: str, metadata: Dict[str, Any], file
     return fields
 
 
-def run_certificate_flow(file_path: str, file_type: str = "pdf") -> Dict[str, Any]:
+DEFAULT_SYSTEM_PROMPT = """You are a forensic certificate verification expert.
+Analyze the extracted text and metadata from a document to determine if it is a genuine certificate, suspicious, or a fake/forgery.
+
+Rules:
+- If it has obvious red flags (e.g., words like 'fake', 'template', bizarre text, or completely empty text), respond with 'Fake'.
+- If it's ambiguous or lacks standard certificate details (Name, Institution, ID), respond with 'Suspicious'.
+- If it looks like a valid certificate with a proper name, institution, and ID, respond with 'Verified'.
+
+Respond with ONLY one word: Verified, Suspicious, or Fake."""
+
+
+def run_certificate_flow(
+    file_path: str,
+    file_type: str = "pdf",
+    credential_id: Optional[str] = None,
+    system_prompt: Optional[str] = None,
+    model: Optional[str] = None,
+) -> Dict[str, Any]:
     filename = os.path.basename(file_path)
     raw_text, metadata, suspicious_flags = extract_document_content(file_path, file_type)
     fields = smart_parse_certificate_fields(raw_text, metadata, filename)
@@ -227,39 +240,27 @@ def run_certificate_flow(file_path: str, file_type: str = "pdf") -> Dict[str, An
     
     is_suspicious = "suspicious" in filename_lower or "mod" in filename_lower or len(serious_flags) > 0
 
-    # CRT LLM Verification
-    if HAS_LITELLM and (os.getenv("GROQ_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("GROK_API_KEY") or os.getenv("XAI_API_KEY")):
-        try:
-            prompt = f"""
-            You are a forensic certificate verification expert.
-            Analyze this extracted text and metadata from a document to determine if it is a genuine certificate, suspicious, or a fake/forgery.
-            
-            Rules:
-            - If it has obvious red flags (e.g., words like 'fake', 'template', bizarre text, or completely empty text), respond with 'Fake'.
-            - If it's ambiguous or lacks standard certificate details (Name, Institution, ID), respond with 'Suspicious'.
-            - If it looks like a valid certificate with a proper name, institution, and ID, respond with 'Verified'.
-            
-            Filename: {filename}
-            OCR Text: {raw_text}
-            Metadata: {metadata}
-            
-            Respond with ONLY one word: Verified, Suspicious, or Fake.
-            """
-            model = "groq/llama3-8b-8192" if os.getenv("GROQ_API_KEY") else "openai/gpt-4o-mini"
-            res = completion(model=model, messages=[{"role": "user", "content": prompt}], max_tokens=10)
-            llm_decision = res.choices[0].message.content.strip().title()
-            
-            if "Fake" in llm_decision:
-                is_fake = True
-                is_suspicious = False
-            elif "Suspicious" in llm_decision:
-                is_suspicious = True
-                is_fake = False
-            elif "Verified" in llm_decision:
-                is_fake = False
-                is_suspicious = False
-        except Exception as e:
-            pass # Fall back to heuristics if LLM fails
+    # LLM Verification (falls back to filename/metadata heuristics above on any failure)
+    user_prompt = f"Filename: {filename}\nOCR Text: {raw_text}\nMetadata: {metadata}"
+    llm_result = run_llm_agent(
+        system_prompt=system_prompt or DEFAULT_SYSTEM_PROMPT,
+        user_prompt=user_prompt,
+        credential_id=credential_id,
+        model=model or "llama-3.1-8b-instant",
+        max_tokens=10,
+        expect_json=False,
+    )
+    if llm_result["ok"]:
+        llm_decision = (llm_result["content"] or "").strip().title()
+        if "Fake" in llm_decision:
+            is_fake = True
+            is_suspicious = False
+        elif "Suspicious" in llm_decision:
+            is_suspicious = True
+            is_fake = False
+        elif "Verified" in llm_decision:
+            is_fake = False
+            is_suspicious = False
 
     if is_fake:
         status = "Fake"
@@ -334,7 +335,9 @@ def run_certificate_flow(file_path: str, file_type: str = "pdf") -> Dict[str, An
         "checks": checks,
         "summary": summary,
         "recommendation": recommendation,
-        "next_action": next_action
+        "next_action": next_action,
+        "llm_reasoning_used": llm_result["ok"],
+        "llm_source": llm_result["source"]
     }
 
     save_local_report(final_report)

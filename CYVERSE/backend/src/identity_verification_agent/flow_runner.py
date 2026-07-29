@@ -24,7 +24,32 @@ try:
 except ImportError:
     HAS_TESSERACT = False
 
+from src.utils.llm_client import run_llm_agent
+
 IDENTITY_REPORTS_DB_PATH = Path(__file__).parent / "identity_reports_db.json"
+
+DEFAULT_SYSTEM_PROMPT = """You are an identity document verification expert (KYC/AML), reviewing OCR-extracted text,
+metadata, and biometric hints from an ID document (and optionally a selfie) for authenticity.
+Respond with ONLY a JSON object (no prose, no markdown fences) matching exactly this shape:
+{
+  "status": "Verified" | "Suspicious" | "Fake",
+  "risk_level": "LOW RISK" | "MEDIUM RISK" | "CRITICAL RISK",
+  "overall_score": <int 0-100>,
+  "confidence": <float 0-1>,
+  "face_match_percentage": <float 0-100>,
+  "face_verdict": "...",
+  "liveness_verified": <true|false>,
+  "checks": {
+    "ocr": "...", "face_match": "...", "liveness": "...", "barcode_verification": "...",
+    "tampering_detection": "...", "document_authenticity": "...", "blacklist_check": "...",
+    "metadata_analysis": "...", "document_authenticity_overall": "..."
+  },
+  "summary": "...",
+  "recommendation": "...",
+  "next_action": "..."
+}
+Use "status": "Verified" for a genuine document and "Fake" for a confirmed forged/mismatched document (matching this
+platform's status vocabulary)."""
 
 
 def load_local_identity_reports() -> list:
@@ -144,7 +169,14 @@ def smart_parse_identity_fields(raw_text: str, metadata: Dict[str, Any], filenam
     return fields
 
 
-def run_identity_flow(doc_file_path: str, selfie_file_path: Optional[str] = None, file_type: str = "pdf") -> Dict[str, Any]:
+def run_identity_flow(
+    doc_file_path: str,
+    selfie_file_path: Optional[str] = None,
+    file_type: str = "pdf",
+    credential_id: Optional[str] = None,
+    system_prompt: Optional[str] = None,
+    model: Optional[str] = None,
+) -> Dict[str, Any]:
     doc_filename = os.path.basename(doc_file_path)
     raw_text, metadata, suspicious_flags = extract_identity_content(doc_file_path, file_type)
     fields = smart_parse_identity_fields(raw_text, metadata, doc_filename)
@@ -233,6 +265,31 @@ def run_identity_flow(doc_file_path: str, selfie_file_path: Optional[str] = None
         recommendation = "Approve identity verification and grant account clearance."
         next_action = "Issue Verified Identity Badge and complete onboarding."
 
+    llm_result = run_llm_agent(
+        system_prompt=system_prompt or DEFAULT_SYSTEM_PROMPT,
+        user_prompt=(
+            f"Document filename: {doc_filename}\nSelfie filename: {selfie_name_lower or 'none provided'}\n"
+            f"Full name: {full_name}\nID number: {id_number}\nIssuing authority: {issuing_authority}\n"
+            f"Suspicious flags detected during extraction: {suspicious_flags or 'none'}"
+        ),
+        credential_id=credential_id,
+        model=model or "llama-3.3-70b-versatile",
+        expect_json=True,
+    )
+    if llm_result["ok"] and isinstance(llm_result["content"], dict):
+        d = llm_result["content"]
+        status = d.get("status", status)
+        risk_level = d.get("risk_level", risk_level)
+        overall_score = d.get("overall_score", overall_score)
+        confidence = d.get("confidence", confidence)
+        checks = d.get("checks", checks)
+        summary = d.get("summary", summary)
+        recommendation = d.get("recommendation", recommendation)
+        next_action = d.get("next_action", next_action)
+        face_match_pct = d.get("face_match_percentage", face_match_pct)
+        face_verdict = d.get("face_verdict", face_verdict)
+        is_live = d.get("liveness_verified", is_live)
+
     report_id = f"IDR-{uuid.uuid4().hex[:8].upper()}"
     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
@@ -263,7 +320,9 @@ def run_identity_flow(doc_file_path: str, selfie_file_path: Optional[str] = None
         "checks": checks,
         "summary": summary,
         "recommendation": recommendation,
-        "next_action": next_action
+        "next_action": next_action,
+        "llm_reasoning_used": llm_result["ok"],
+        "llm_source": llm_result["source"]
     }
 
     save_local_identity_report(final_report)

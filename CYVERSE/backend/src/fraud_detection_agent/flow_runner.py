@@ -2,10 +2,28 @@ import os
 import json
 import uuid
 import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from pathlib import Path
 
+from src.utils.llm_client import run_llm_agent
+
 FRAUD_REPORTS_DB_PATH = Path(__file__).parent / "fraud_reports_db.json"
+
+DEFAULT_SYSTEM_PROMPT = """You are a financial fraud detection analyst evaluating a transaction for anomalies.
+Respond with ONLY a JSON object (no prose, no markdown fences) matching exactly this shape:
+{
+  "status": "Verified" | "Suspicious" | "Fake",
+  "risk_level": "LOW RISK" | "MEDIUM RISK" | "CRITICAL RISK",
+  "overall_score": <int 0-100>,
+  "confidence": <float 0-1>,
+  "checks": {
+    "behavioral_analytics": "...", "device_fingerprint": "...", "velocity_check": "...", "geolocation_anomaly": "..."
+  },
+  "summary": "...",
+  "recommendation": "...",
+  "next_action": "..."
+}
+Use "status": "Verified" for a legitimate transaction and "Fake" for a confirmed fraudulent transaction (matching this platform's status vocabulary)."""
 
 
 def load_local_fraud_reports() -> list:
@@ -25,7 +43,12 @@ def save_local_fraud_report(report: dict) -> None:
         json.dump(reports, f, indent=2)
 
 
-def run_fraud_flow(data: Dict[str, Any]) -> Dict[str, Any]:
+def run_fraud_flow(
+    data: Dict[str, Any],
+    credential_id: Optional[str] = None,
+    system_prompt: Optional[str] = None,
+    model: Optional[str] = None,
+) -> Dict[str, Any]:
     amount = data.get("amount", 2500.0)
     device_id = data.get("device_id", "DEV-TRUSTED-001")
     location = data.get("location", "Home Region")
@@ -61,6 +84,24 @@ def run_fraud_flow(data: Dict[str, Any]) -> Dict[str, Any]:
         recommendation = "Block transaction and freeze user account pending MFA step-up authentication."
         next_action = "Escalate to Fraud Operations Team."
 
+    llm_result = run_llm_agent(
+        system_prompt=system_prompt or DEFAULT_SYSTEM_PROMPT,
+        user_prompt=f"Transaction amount: ${amount:.2f}\nDevice ID: {device_id}\nLocation: {location}\nRaw data: {data}",
+        credential_id=credential_id,
+        model=model or "llama-3.3-70b-versatile",
+        expect_json=True,
+    )
+    if llm_result["ok"] and isinstance(llm_result["content"], dict):
+        d = llm_result["content"]
+        status = d.get("status", status)
+        risk_level = d.get("risk_level", risk_level)
+        overall_score = d.get("overall_score", overall_score)
+        confidence = d.get("confidence", confidence)
+        checks = d.get("checks", checks)
+        summary = d.get("summary", summary)
+        recommendation = d.get("recommendation", recommendation)
+        next_action = d.get("next_action", next_action)
+
     report_id = f"FRD-{uuid.uuid4().hex[:8].upper()}"
     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
@@ -78,7 +119,9 @@ def run_fraud_flow(data: Dict[str, Any]) -> Dict[str, Any]:
         "checks": checks,
         "summary": summary,
         "recommendation": recommendation,
-        "next_action": next_action
+        "next_action": next_action,
+        "llm_reasoning_used": llm_result["ok"],
+        "llm_source": llm_result["source"]
     }
 
     save_local_fraud_report(final_report)

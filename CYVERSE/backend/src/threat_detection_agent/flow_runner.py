@@ -6,7 +6,26 @@ import re
 from typing import Dict, Any, Optional
 from pathlib import Path
 
+from src.utils.llm_client import run_llm_agent
+
 THREAT_REPORTS_DB_PATH = Path(__file__).parent / "threat_reports_db.json"
+
+DEFAULT_SYSTEM_PROMPT = """You are a cyber threat intelligence analyst evaluating an IP address, domain, or URL.
+Respond with ONLY a JSON object (no prose, no markdown fences) matching exactly this shape:
+{
+  "status": "Verified" | "Suspicious" | "Fake",
+  "risk_level": "LOW RISK" | "MEDIUM RISK" | "CRITICAL RISK",
+  "overall_score": <int 0-100>,
+  "confidence": <float 0-1>,
+  "checks": {
+    "ip_reputation": "...", "abuseipdb_score": "...", "threat_category": "...",
+    "shodan_port_scan": "...", "geolocation": "..."
+  },
+  "summary": "...",
+  "recommendation": "...",
+  "next_action": "..."
+}
+Use "status": "Verified" for a clean/trusted target and "Fake" for a confirmed malicious target (matching this platform's status vocabulary)."""
 
 
 def load_local_threat_reports() -> list:
@@ -26,7 +45,13 @@ def save_local_threat_report(report: dict) -> None:
         json.dump(reports, f, indent=2)
 
 
-def run_threat_flow(query: str, artifact_path: Optional[str] = None) -> Dict[str, Any]:
+def run_threat_flow(
+    query: str,
+    artifact_path: Optional[str] = None,
+    credential_id: Optional[str] = None,
+    system_prompt: Optional[str] = None,
+    model: Optional[str] = None,
+) -> Dict[str, Any]:
     ip_match = re.search(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", query)
     target = ip_match.group(0) if ip_match else "185.220.101.5"
 
@@ -64,6 +89,24 @@ def run_threat_flow(query: str, artifact_path: Optional[str] = None) -> Dict[str
         recommendation = "Block IP address across all Perimeter Firewalls and Web Application Firewalls."
         next_action = "Add '{target}' to Automated Network Blocklist and trigger Incident Alert."
 
+    llm_result = run_llm_agent(
+        system_prompt=system_prompt or DEFAULT_SYSTEM_PROMPT,
+        user_prompt=f"Query: {query}\nExtracted target: {target}",
+        credential_id=credential_id,
+        model=model or "llama-3.3-70b-versatile",
+        expect_json=True,
+    )
+    if llm_result["ok"] and isinstance(llm_result["content"], dict):
+        d = llm_result["content"]
+        status = d.get("status", status)
+        risk_level = d.get("risk_level", risk_level)
+        overall_score = d.get("overall_score", overall_score)
+        confidence = d.get("confidence", confidence)
+        checks = d.get("checks", checks)
+        summary = d.get("summary", summary)
+        recommendation = d.get("recommendation", recommendation)
+        next_action = d.get("next_action", next_action)
+
     report_id = f"THR-{uuid.uuid4().hex[:8].upper()}"
     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
@@ -81,7 +124,9 @@ def run_threat_flow(query: str, artifact_path: Optional[str] = None) -> Dict[str
         "checks": checks,
         "summary": summary,
         "recommendation": recommendation,
-        "next_action": next_action
+        "next_action": next_action,
+        "llm_reasoning_used": llm_result["ok"],
+        "llm_source": llm_result["source"]
     }
 
     save_local_threat_report(final_report)

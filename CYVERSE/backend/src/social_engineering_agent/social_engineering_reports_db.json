@@ -1,0 +1,71 @@
+[
+  {
+    "report_id": "SOCENG-15CF3B68",
+    "created_at": "2026-07-29T05:47:14.310469+00:00",
+    "agent": "Social Engineering / Deepfake Detection Agent",
+    "type": "social_engineering",
+    "input_excerpt": "urgent ceo deepfake wire transfer gift card",
+    "attached_media": null,
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 22,
+    "checks": {
+      "urgency_pressure_language": "Failed - Detected phrases: ['urgent(?:ly)?']",
+      "authority_impersonation": "Failed - Detected phrases: []",
+      "financial_request_pattern": "Failed - Detected phrases: ['wire transfer', 'gift card']",
+      "media_tampering_indicators": "Passed - No media manipulation fingerprints found."
+    },
+    "summary": "CRITICAL SOCIAL ENGINEERING ALERT: Multiple manipulation tactics and/or media tampering indicators detected.",
+    "recommendation": "Do not comply with any request in this communication. Report to Security immediately.",
+    "next_action": "Escalate to Security Awareness & Incident Response Team.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
+    "report_id": "SOCENG-DD3DB188",
+    "created_at": "2026-07-29T05:33:21.848387+00:00",
+    "agent": "Social Engineering / Deepfake Detection Agent",
+    "type": "social_engineering",
+    "input_excerpt": "URGENT! This is your CEO, please wire transfer gift cards immediately",
+    "attached_media": null,
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 22,
+    "checks": {
+      "urgency_pressure_language": "Failed - Detected phrases: ['urgent(?:ly)?', 'immediately']",
+      "authority_impersonation": "Failed - Detected phrases: ['this is (?:your )?(?:ceo|cfo|it support|it department|bank)']",
+      "financial_request_pattern": "Failed - Detected phrases: ['wire transfer', 'gift card']",
+      "media_tampering_indicators": "Passed - No media manipulation fingerprints found."
+    },
+    "summary": "CRITICAL SOCIAL ENGINEERING ALERT: Multiple manipulation tactics and/or media tampering indicators detected.",
+    "recommendation": "Do not comply with any request in this communication. Report to Security immediately.",
+    "next_action": "Escalate to Security Awareness & Incident Response Team.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
+    "report_id": "SOCENG-1DEACBF8",
+    "created_at": "2026-07-29T05:32:41.906579+00:00",
+    "agent": "Social Engineering / Deepfake Detection Agent",
+    "type": "social_engineering",
+    "input_excerpt": "this looks like a deepfake video used for impersonation of our CEO",
+    "attached_media": null,
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.96,
+    "overall_score": 95,
+    "checks": {
+      "urgency_pressure_language": "Passed - No urgency or pressure tactics detected.",
+      "authority_impersonation": "Passed - No impersonation phrasing detected.",
+      "financial_request_pattern": "Passed - No suspicious financial/credential requests detected.",
+      "media_tampering_indicators": "Passed - No media attached for analysis."
+    },
+    "summary": "Social engineering scan found no manipulation tactics or deepfake indicators in the provided content.",
+    "recommendation": "No action required.",
+    "next_action": "Archive as benign communication.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  }
+]

@@ -2,10 +2,30 @@ import os
 import json
 import uuid
 import datetime
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from pathlib import Path
 
+from src.utils.llm_client import run_llm_agent
+
 INCIDENT_REPORTS_DB_PATH = Path(__file__).parent / "incident_reports_db.json"
+
+DEFAULT_SYSTEM_PROMPT = """You are a SOC incident response lead running the containment/eradication/recovery playbook
+for a reported cyber incident.
+Respond with ONLY a JSON object (no prose, no markdown fences) matching exactly this shape:
+{
+  "status": "Verified" | "Suspicious" | "Fake",
+  "risk_level": "LOW RISK" | "MEDIUM RISK" | "CRITICAL RISK",
+  "overall_score": <int 0-100>,
+  "confidence": <float 0-1>,
+  "checks": {
+    "containment_phase": "...", "eradication_phase": "...", "recovery_phase": "...", "post_incident_audit": "..."
+  },
+  "summary": "...",
+  "recommendation": "...",
+  "next_action": "..."
+}
+Use "status": "Verified" for a successfully-contained/low-severity incident and "Fake" for an active critical incident
+(matching this platform's status vocabulary)."""
 
 
 def load_local_incident_reports() -> list:
@@ -25,7 +45,12 @@ def save_local_incident_report(report: dict) -> None:
         json.dump(reports, f, indent=2)
 
 
-def run_incident_response_flow(incident_data: Dict[str, Any]) -> Dict[str, Any]:
+def run_incident_response_flow(
+    incident_data: Dict[str, Any],
+    credential_id: Optional[str] = None,
+    system_prompt: Optional[str] = None,
+    model: Optional[str] = None,
+) -> Dict[str, Any]:
     title = incident_data.get("title", "Multi-Agent Cyber Incident Audit")
     severity = incident_data.get("severity", "HIGH")
     
@@ -64,6 +89,24 @@ def run_incident_response_flow(incident_data: Dict[str, Any]) -> Dict[str, Any]:
         recommendation = "Maintain enhanced monitoring on affected VLAN for 72 hours."
         next_action = "Close incident ticket and submit final Post-Mortem Report to CISO."
 
+    llm_result = run_llm_agent(
+        system_prompt=system_prompt or DEFAULT_SYSTEM_PROMPT,
+        user_prompt=f"Incident title: {title}\nReported severity: {severity}",
+        credential_id=credential_id,
+        model=model or "llama-3.3-70b-versatile",
+        expect_json=True,
+    )
+    if llm_result["ok"] and isinstance(llm_result["content"], dict):
+        d = llm_result["content"]
+        status = d.get("status", status)
+        risk_level = d.get("risk_level", risk_level)
+        overall_score = d.get("overall_score", overall_score)
+        confidence = d.get("confidence", confidence)
+        checks = d.get("checks", checks)
+        summary = d.get("summary", summary)
+        recommendation = d.get("recommendation", recommendation)
+        next_action = d.get("next_action", next_action)
+
     final_report = {
         "report_id": report_id,
         "created_at": timestamp,
@@ -78,7 +121,9 @@ def run_incident_response_flow(incident_data: Dict[str, Any]) -> Dict[str, Any]:
         "checks": checks,
         "summary": summary,
         "recommendation": recommendation,
-        "next_action": next_action
+        "next_action": next_action,
+        "llm_reasoning_used": llm_result["ok"],
+        "llm_source": llm_result["source"]
     }
 
     save_local_incident_report(final_report)

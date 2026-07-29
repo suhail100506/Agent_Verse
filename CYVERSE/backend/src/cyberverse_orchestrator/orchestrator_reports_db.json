@@ -1,5 +1,421 @@
 [
   {
+    "orchestration_id": "ORCH-7C007D62",
+    "created_at": "2026-07-29T05:47:20.991876+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "we had a breach containment incident",
+    "router_diagnostics": {
+      "selected_agent": "Incident Response Agent",
+      "agent_key": "incident_response",
+      "classification_confidence": 0.93,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Incident Response Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "INC-B83EAF9B",
+      "created_at": "2026-07-29T05:47:20.991876+00:00",
+      "agent": "Incident Response Agent",
+      "type": "incident_response",
+      "title": "we had a breach containment incident",
+      "severity": "HIGH",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.96,
+      "overall_score": 28,
+      "checks": {
+        "containment_phase": "Failed - Active C2 outbound traffic and data exfiltration detected.",
+        "eradication_phase": "Warning - Ransomware payload active across host nodes.",
+        "recovery_phase": "Failed - Isolated offline backup restoration required.",
+        "post_incident_audit": "Failed - High severity cyber incident triggered."
+      },
+      "summary": "CRITICAL INCIDENT ALERT: Ransomware outbreak & exfiltration flagged for 'we had a breach containment incident'.",
+      "recommendation": "Initiate emergency isolation and dispatch Incident Response Team.",
+      "next_action": "Execute Playbook #INC-CRITICAL-99.",
+      "llm_reasoning_used": false,
+      "llm_source": "unavailable",
+      "mongodb_saved": false
+    },
+    "status": "Fake",
+    "overall_score": 28,
+    "summary": "[Master Orchestrator -> Incident Response Agent] CRITICAL INCIDENT ALERT: Ransomware outbreak & exfiltration flagged for 'we had a breach containment incident'.",
+    "recommendation": "Initiate emergency isolation and dispatch Incident Response Team.",
+    "next_action": "Execute Playbook #INC-CRITICAL-99."
+  },
+  {
+    "orchestration_id": "ORCH-6E208CDA",
+    "created_at": "2026-07-29T05:47:17.656107+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "GDPR PII compliance check",
+    "router_diagnostics": {
+      "selected_agent": "Privacy Compliance Agent",
+      "agent_key": "privacy_compliance",
+      "classification_confidence": 0.95,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Privacy Compliance Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "PRV-702E1752",
+      "created_at": "2026-07-29T05:47:17.657190+00:00",
+      "agent": "Privacy Compliance Agent",
+      "type": "privacy",
+      "status": "Verified",
+      "risk_level": "LOW RISK",
+      "confidence": 0.97,
+      "overall_score": 95,
+      "pii_detected": {
+        "ssn_count": 0,
+        "credit_cards_count": 0,
+        "emails_count": 0
+      },
+      "checks": {
+        "gdpr_compliance": "Passed - No unencrypted Personally Identifiable Information (PII) detected.",
+        "dpdp_act_check": "Passed - Personal data processing consent flags valid.",
+        "hipaa_compliance": "Passed - Zero Protected Health Information (PHI) strings exposed.",
+        "data_masking": "Passed - Sensitive fields masked correctly with asterisk placeholders."
+      },
+      "summary": "Privacy Compliance Audit passed. Document adheres to GDPR, DPDP, and HIPAA guidelines.",
+      "recommendation": "Document is safe for cross-border storage and distribution.",
+      "next_action": "Mark privacy audit as approved.",
+      "llm_reasoning_used": false,
+      "llm_source": "unavailable",
+      "mongodb_saved": false
+    },
+    "status": "Verified",
+    "overall_score": 95,
+    "summary": "[Master Orchestrator -> Privacy Compliance Agent] Privacy Compliance Audit passed. Document adheres to GDPR, DPDP, and HIPAA guidelines.",
+    "recommendation": "Document is safe for cross-border storage and distribution.",
+    "next_action": "Mark privacy audit as approved."
+  },
+  {
+    "orchestration_id": "ORCH-827EB2AA",
+    "created_at": "2026-07-29T05:47:14.308725+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "urgent ceo deepfake wire transfer gift card",
+    "router_diagnostics": {
+      "selected_agent": "Social Engineering / Deepfake Detection Agent",
+      "agent_key": "social_engineering",
+      "classification_confidence": 0.96,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Social Engineering / Deepfake Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "SOCENG-15CF3B68",
+      "created_at": "2026-07-29T05:47:14.310469+00:00",
+      "agent": "Social Engineering / Deepfake Detection Agent",
+      "type": "social_engineering",
+      "input_excerpt": "urgent ceo deepfake wire transfer gift card",
+      "attached_media": null,
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.95,
+      "overall_score": 22,
+      "checks": {
+        "urgency_pressure_language": "Failed - Detected phrases: ['urgent(?:ly)?']",
+        "authority_impersonation": "Failed - Detected phrases: []",
+        "financial_request_pattern": "Failed - Detected phrases: ['wire transfer', 'gift card']",
+        "media_tampering_indicators": "Passed - No media manipulation fingerprints found."
+      },
+      "summary": "CRITICAL SOCIAL ENGINEERING ALERT: Multiple manipulation tactics and/or media tampering indicators detected.",
+      "recommendation": "Do not comply with any request in this communication. Report to Security immediately.",
+      "next_action": "Escalate to Security Awareness & Incident Response Team.",
+      "llm_reasoning_used": false,
+      "llm_source": "unavailable",
+      "mongodb_saved": false
+    },
+    "status": "Fake",
+    "overall_score": 22,
+    "summary": "[Master Orchestrator -> Social Engineering / Deepfake Detection Agent] CRITICAL SOCIAL ENGINEERING ALERT: Multiple manipulation tactics and/or media tampering indicators detected.",
+    "recommendation": "Do not comply with any request in this communication. Report to Security immediately.",
+    "next_action": "Escalate to Security Awareness & Incident Response Team."
+  },
+  {
+    "orchestration_id": "ORCH-A61E11BD",
+    "created_at": "2026-07-29T05:47:10.946583+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "check this password strength: abc123",
+    "router_diagnostics": {
+      "selected_agent": "Password Security Advisor Agent",
+      "agent_key": "password_advisor",
+      "classification_confidence": 0.95,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Password Security Advisor Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "PWD-E0068ED1",
+      "created_at": "2026-07-29T05:47:10.946583+00:00",
+      "agent": "Password Security Advisor Agent",
+      "type": "password",
+      "entropy_bits": 219.15,
+      "length": 36,
+      "status": "Fake",
+      "risk_level": "HIGH RISK",
+      "confidence": 0.96,
+      "overall_score": 30,
+      "checks": {
+        "entropy_calculation": "Failed - Low Entropy 219.15 bits (Threshold: 60+ bits required).",
+        "dictionary_exposure": "Failed - Contains common dictionary term or sequential number pattern.",
+        "breach_database": "Failed - Password appears in known leaked credential breach databases.",
+        "character_diversity": "Warning - Insufficient character pool diversity."
+      },
+      "summary": "WEAK PASSWORD ALERT: Provided password has low entropy (219.15 bits) and vulnerable pattern.",
+      "recommendation": "Enforce 14+ character password with symbols and numbers.",
+      "next_action": "Require immediate password change.",
+      "llm_reasoning_used": false,
+      "llm_source": "unavailable",
+      "mongodb_saved": false
+    },
+    "status": "Fake",
+    "overall_score": 30,
+    "summary": "[Master Orchestrator -> Password Security Advisor Agent] WEAK PASSWORD ALERT: Provided password has low entropy (219.15 bits) and vulnerable pattern.",
+    "recommendation": "Enforce 14+ character password with symbols and numbers.",
+    "next_action": "Require immediate password change."
+  },
+  {
+    "orchestration_id": "ORCH-227E7575",
+    "created_at": "2026-07-29T05:33:23.926824+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "check this password for strength: hunter2",
+    "router_diagnostics": {
+      "selected_agent": "Password Security Advisor Agent",
+      "agent_key": "password_advisor",
+      "classification_confidence": 0.95,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Password Security Advisor Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "PWD-A83C53F6",
+      "created_at": "2026-07-29T05:33:23.927736+00:00",
+      "agent": "Password Security Advisor Agent",
+      "type": "password",
+      "entropy_bits": 249.59,
+      "length": 41,
+      "status": "Fake",
+      "risk_level": "HIGH RISK",
+      "confidence": 0.96,
+      "overall_score": 30,
+      "checks": {
+        "entropy_calculation": "Failed - Low Entropy 249.59 bits (Threshold: 60+ bits required).",
+        "dictionary_exposure": "Failed - Contains common dictionary term or sequential number pattern.",
+        "breach_database": "Failed - Password appears in known leaked credential breach databases.",
+        "character_diversity": "Warning - Insufficient character pool diversity."
+      },
+      "summary": "WEAK PASSWORD ALERT: Provided password has low entropy (249.59 bits) and vulnerable pattern.",
+      "recommendation": "Enforce 14+ character password with symbols and numbers.",
+      "next_action": "Require immediate password change.",
+      "llm_reasoning_used": false,
+      "llm_source": "unavailable",
+      "mongodb_saved": false
+    },
+    "status": "Fake",
+    "overall_score": 30,
+    "summary": "[Master Orchestrator -> Password Security Advisor Agent] WEAK PASSWORD ALERT: Provided password has low entropy (249.59 bits) and vulnerable pattern.",
+    "recommendation": "Enforce 14+ character password with symbols and numbers.",
+    "next_action": "Require immediate password change."
+  },
+  {
+    "orchestration_id": "ORCH-37C346C7",
+    "created_at": "2026-07-29T05:32:48.144826+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "we had a data breach containment incident yesterday",
+    "router_diagnostics": {
+      "selected_agent": "Incident Response Agent",
+      "agent_key": "incident_response",
+      "classification_confidence": 0.93,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Incident Response Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "INC-A5979DE4",
+      "created_at": "2026-07-29T05:32:48.144826+00:00",
+      "agent": "Incident Response Agent",
+      "type": "incident_response",
+      "title": "we had a data breach containment incident yesterday",
+      "severity": "HIGH",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.96,
+      "overall_score": 28,
+      "checks": {
+        "containment_phase": "Failed - Active C2 outbound traffic and data exfiltration detected.",
+        "eradication_phase": "Warning - Ransomware payload active across host nodes.",
+        "recovery_phase": "Failed - Isolated offline backup restoration required.",
+        "post_incident_audit": "Failed - High severity cyber incident triggered."
+      },
+      "summary": "CRITICAL INCIDENT ALERT: Ransomware outbreak & exfiltration flagged for 'we had a data breach containment incident yesterday'.",
+      "recommendation": "Initiate emergency isolation and dispatch Incident Response Team.",
+      "next_action": "Execute Playbook #INC-CRITICAL-99.",
+      "llm_reasoning_used": false,
+      "llm_source": "unavailable",
+      "mongodb_saved": false
+    },
+    "status": "Fake",
+    "overall_score": 28,
+    "summary": "[Master Orchestrator -> Incident Response Agent] CRITICAL INCIDENT ALERT: Ransomware outbreak & exfiltration flagged for 'we had a data breach containment incident yesterday'.",
+    "recommendation": "Initiate emergency isolation and dispatch Incident Response Team.",
+    "next_action": "Execute Playbook #INC-CRITICAL-99."
+  },
+  {
+    "orchestration_id": "ORCH-04B8795E",
+    "created_at": "2026-07-29T05:32:45.076737+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "is our GDPR privacy compliance ok for this dataset",
+    "router_diagnostics": {
+      "selected_agent": "Privacy Compliance Agent",
+      "agent_key": "privacy_compliance",
+      "classification_confidence": 0.95,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Privacy Compliance Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "PRV-14075A60",
+      "created_at": "2026-07-29T05:32:45.077752+00:00",
+      "agent": "Privacy Compliance Agent",
+      "type": "privacy",
+      "status": "Verified",
+      "risk_level": "LOW RISK",
+      "confidence": 0.97,
+      "overall_score": 95,
+      "pii_detected": {
+        "ssn_count": 0,
+        "credit_cards_count": 0,
+        "emails_count": 0
+      },
+      "checks": {
+        "gdpr_compliance": "Passed - No unencrypted Personally Identifiable Information (PII) detected.",
+        "dpdp_act_check": "Passed - Personal data processing consent flags valid.",
+        "hipaa_compliance": "Passed - Zero Protected Health Information (PHI) strings exposed.",
+        "data_masking": "Passed - Sensitive fields masked correctly with asterisk placeholders."
+      },
+      "summary": "Privacy Compliance Audit passed. Document adheres to GDPR, DPDP, and HIPAA guidelines.",
+      "recommendation": "Document is safe for cross-border storage and distribution.",
+      "next_action": "Mark privacy audit as approved.",
+      "llm_reasoning_used": false,
+      "llm_source": "unavailable",
+      "mongodb_saved": false
+    },
+    "status": "Verified",
+    "overall_score": 95,
+    "summary": "[Master Orchestrator -> Privacy Compliance Agent] Privacy Compliance Audit passed. Document adheres to GDPR, DPDP, and HIPAA guidelines.",
+    "recommendation": "Document is safe for cross-border storage and distribution.",
+    "next_action": "Mark privacy audit as approved."
+  },
+  {
+    "orchestration_id": "ORCH-B50CF327",
+    "created_at": "2026-07-29T05:32:41.906579+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "this looks like a deepfake video used for impersonation of our CEO",
+    "router_diagnostics": {
+      "selected_agent": "Social Engineering / Deepfake Detection Agent",
+      "agent_key": "social_engineering",
+      "classification_confidence": 0.96,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Social Engineering / Deepfake Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "SOCENG-1DEACBF8",
+      "created_at": "2026-07-29T05:32:41.906579+00:00",
+      "agent": "Social Engineering / Deepfake Detection Agent",
+      "type": "social_engineering",
+      "input_excerpt": "this looks like a deepfake video used for impersonation of our CEO",
+      "attached_media": null,
+      "status": "Verified",
+      "risk_level": "LOW RISK",
+      "confidence": 0.96,
+      "overall_score": 95,
+      "checks": {
+        "urgency_pressure_language": "Passed - No urgency or pressure tactics detected.",
+        "authority_impersonation": "Passed - No impersonation phrasing detected.",
+        "financial_request_pattern": "Passed - No suspicious financial/credential requests detected.",
+        "media_tampering_indicators": "Passed - No media attached for analysis."
+      },
+      "summary": "Social engineering scan found no manipulation tactics or deepfake indicators in the provided content.",
+      "recommendation": "No action required.",
+      "next_action": "Archive as benign communication.",
+      "llm_reasoning_used": false,
+      "llm_source": "unavailable",
+      "mongodb_saved": false
+    },
+    "status": "Verified",
+    "overall_score": 95,
+    "summary": "[Master Orchestrator -> Social Engineering / Deepfake Detection Agent] Social engineering scan found no manipulation tactics or deepfake indicators in the provided content.",
+    "recommendation": "No action required.",
+    "next_action": "Archive as benign communication."
+  },
+  {
+    "orchestration_id": "ORCH-D0D51A30",
+    "created_at": "2026-07-29T05:32:18.443384+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "urgent! this is your CEO, send a gift card wire transfer immediately",
+    "router_diagnostics": {
+      "selected_agent": "Fraud Detection Agent",
+      "agent_key": "fraud_detection",
+      "classification_confidence": 0.94,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Fraud Detection Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "FRD-24CC8B70",
+      "created_at": "2026-07-29T05:32:18.443384+00:00",
+      "agent": "Fraud Detection Agent",
+      "type": "fraud",
+      "amount": 2500.0,
+      "location": "urgent! this is your CEO, send a gift card wire transfer immediately",
+      "status": "Fake",
+      "risk_level": "CRITICAL RISK",
+      "confidence": 0.95,
+      "overall_score": 25,
+      "checks": {
+        "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+        "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+        "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+        "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from urgent! this is your CEO, send a gift card wire transfer immediately within 10 minutes of primary region."
+      },
+      "summary": "FRAUD ALERT: Transaction of $2500.00 flagged for behavioral anomaly and impossible travel.",
+      "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+      "next_action": "Escalate to Fraud Operations Team.",
+      "llm_reasoning_used": false,
+      "llm_source": "unavailable",
+      "mongodb_saved": false
+    },
+    "status": "Fake",
+    "overall_score": 25,
+    "summary": "[Master Orchestrator -> Fraud Detection Agent] FRAUD ALERT: Transaction of $2500.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team."
+  },
+  {
+    "orchestration_id": "ORCH-89AE1221",
+    "created_at": "2026-07-29T05:32:15.226809+00:00",
+    "platform": "CyberVerse AI Multi-Agent Platform",
+    "user_query": "check this password for strength: hunter2",
+    "router_diagnostics": {
+      "selected_agent": "Password Security Advisor Agent",
+      "agent_key": "password_advisor",
+      "classification_confidence": 0.95,
+      "routing_reason": "Dispatched based on prompt tokens and artifact metadata to 'Password Security Advisor Agent'."
+    },
+    "sub_agent_report": {
+      "report_id": "PWD-61A99BA7",
+      "created_at": "2026-07-29T05:32:15.226809+00:00",
+      "agent": "Password Security Advisor Agent",
+      "type": "password",
+      "entropy_bits": 249.59,
+      "length": 41,
+      "status": "Fake",
+      "risk_level": "HIGH RISK",
+      "confidence": 0.96,
+      "overall_score": 30,
+      "checks": {
+        "entropy_calculation": "Failed - Low Entropy 249.59 bits (Threshold: 60+ bits required).",
+        "dictionary_exposure": "Failed - Contains common dictionary term or sequential number pattern.",
+        "breach_database": "Failed - Password appears in known leaked credential breach databases.",
+        "character_diversity": "Warning - Insufficient character pool diversity."
+      },
+      "summary": "WEAK PASSWORD ALERT: Provided password has low entropy (249.59 bits) and vulnerable pattern.",
+      "recommendation": "Enforce 14+ character password with symbols and numbers.",
+      "next_action": "Require immediate password change.",
+      "llm_reasoning_used": false,
+      "llm_source": "unavailable",
+      "mongodb_saved": false
+    },
+    "status": "Fake",
+    "overall_score": 30,
+    "summary": "[Master Orchestrator -> Password Security Advisor Agent] WEAK PASSWORD ALERT: Provided password has low entropy (249.59 bits) and vulnerable pattern.",
+    "recommendation": "Enforce 14+ character password with symbols and numbers.",
+    "next_action": "Require immediate password change."
+  },
+  {
     "orchestration_id": "ORCH-18F4D95E",
     "created_at": "2026-07-28T16:58:09.536415+00:00",
     "platform": "CyberVerse AI Multi-Agent Platform",

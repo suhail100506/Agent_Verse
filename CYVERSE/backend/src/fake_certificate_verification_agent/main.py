@@ -24,6 +24,12 @@ from src.identity_verification_agent.flow_runner import run_identity_flow, load_
 from src.cyberverse_orchestrator.master_router import run_master_orchestrator, load_local_orchestrator_reports
 from src.cyberverse_orchestrator.auth import register_user, login_user
 from src.cyberverse_orchestrator.report_exporter import generate_report_html
+from src.cyberverse_orchestrator.credentials_vault import (
+    create_credential,
+    list_credentials,
+    delete_credential,
+    ALLOWED_TYPES as CREDENTIAL_TYPES,
+)
 
 from src.malware_analyzer_agent.flow_runner import run_malware_flow, load_local_malware_reports
 from src.threat_detection_agent.flow_runner import run_threat_flow, load_local_threat_reports
@@ -32,6 +38,7 @@ from src.privacy_compliance_agent.flow_runner import run_privacy_flow, load_loca
 from src.password_advisor_agent.flow_runner import run_password_flow, load_local_password_reports
 from src.fraud_detection_agent.flow_runner import run_fraud_flow, load_local_fraud_reports
 from src.incident_response_agent.flow_runner import run_incident_response_flow, load_local_incident_reports
+from src.social_engineering_agent.flow_runner import run_social_engineering_flow, load_local_social_engineering_reports
 
 app = FastAPI(
     title="CyberVerse AI 10-Agent Platform API",
@@ -62,8 +69,8 @@ def health_check():
     return {
         "status": "online",
         "service": "CyberVerse AI 10-Agent Platform API",
-        "version": "5.0.0",
-        "features": ["JWT Authentication", "JSON & HTML Exporters", "Admin Agent Analytics"],
+        "version": "6.0.0",
+        "features": ["JWT Authentication", "Credential Vault", "Groq LLM Reasoning", "JSON & HTML Exporters", "Admin Agent Analytics"],
         "agents": [
             "Master CyberVerse AI Orchestrator Agent",
             "Fake Certificate Verification Agent",
@@ -74,7 +81,8 @@ def health_check():
             "Privacy Compliance Agent",
             "Password Security Advisor Agent",
             "Fraud Detection Agent",
-            "Incident Response Agent"
+            "Incident Response Agent",
+            "Social Engineering / Deepfake Detection Agent"
         ]
     }
 
@@ -92,7 +100,8 @@ def get_system_stats():
         load_local_privacy_reports() +
         load_local_password_reports() +
         load_local_fraud_reports() +
-        load_local_incident_reports()
+        load_local_incident_reports() +
+        load_local_social_engineering_reports()
     )
     verified = sum(1 for r in all_reports if (r.get("status") or "").upper() == "VERIFIED")
     flagged = sum(1 for r in all_reports if (r.get("status") or "").upper() in ["FAKE", "SUSPICIOUS", "MALICIOUS", "CRITICAL RISK"])
@@ -111,7 +120,7 @@ def get_system_stats():
 @app.get("/api/admin/agents")
 def get_agents_status():
     return {
-        "total": 10,
+        "total": 11,
         "agents": [
             {"name": "Master CyberVerse Orchestrator", "status": "ONLINE", "health": 100},
             {"name": "Fake Certificate Verification Agent", "status": "ONLINE", "health": 98},
@@ -122,7 +131,8 @@ def get_agents_status():
             {"name": "Privacy Compliance Agent", "status": "ONLINE", "health": 96},
             {"name": "Password Security Advisor Agent", "status": "ONLINE", "health": 100},
             {"name": "Fraud Detection Agent", "status": "ONLINE", "health": 97},
-            {"name": "Incident Response Agent", "status": "ONLINE", "health": 99}
+            {"name": "Incident Response Agent", "status": "ONLINE", "health": 99},
+            {"name": "Social Engineering / Deepfake Detection Agent", "status": "ONLINE", "health": 98}
         ]
     }
 
@@ -151,12 +161,57 @@ def api_get_current_user(authorization: Optional[str] = Header(None)):
     return {"authenticated": True, "username": "Mohammed Suhail", "role": "Lead SOC Architect"}
 
 
+# Credential Vault Endpoints
+@app.post("/api/credentials", status_code=201)
+async def api_create_credential(
+    name: str = Form(...),
+    type: str = Form(...),
+    api_key: Optional[str] = Form(None),
+    smtp_host: Optional[str] = Form(None),
+    smtp_port: Optional[str] = Form(None),
+    smtp_user: Optional[str] = Form(None),
+    smtp_pass: Optional[str] = Form(None),
+    recipient_default: Optional[str] = Form(None),
+):
+    if type not in CREDENTIAL_TYPES:
+        raise HTTPException(status_code=400, detail=f"Unsupported credential type '{type}'. Allowed: {sorted(CREDENTIAL_TYPES)}")
+
+    secret_fields = {
+        "api_key": api_key or "",
+        "smtp_host": smtp_host or "",
+        "smtp_port": smtp_port or "",
+        "smtp_user": smtp_user or "",
+        "smtp_pass": smtp_pass or "",
+        "recipient_default": recipient_default or "",
+    }
+    try:
+        record = create_credential(name=name, type=type, secret_fields=secret_fields)
+        return record
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/credentials")
+def api_list_credentials():
+    records = list_credentials()
+    return {"total": len(records), "credentials": records}
+
+
+@app.delete("/api/credentials/{credential_id}")
+def api_delete_credential(credential_id: str):
+    deleted = delete_credential(credential_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Credential not found")
+    return {"status": "deleted", "credential_id": credential_id}
+
+
 # Orchestrator & Analysis Endpoints
 @app.post("/api/orchestrator/analyze")
 async def master_orchestrator_analyze(
     prompt: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
-    selfie_file: Optional[UploadFile] = File(None)
+    selfie_file: Optional[UploadFile] = File(None),
+    credential_id: Optional[str] = Form(None)
 ):
     saved_file_path = None
     saved_selfie_path = None
@@ -189,7 +244,8 @@ async def master_orchestrator_analyze(
             prompt=prompt or "",
             file_path=saved_file_path,
             selfie_path=saved_selfie_path,
-            file_type=file_type
+            file_type=file_type,
+            credential_id=credential_id
         )
         return report
     except Exception as e:
@@ -198,7 +254,12 @@ async def master_orchestrator_analyze(
 
 @app.post("/api/verify")
 @app.post("/api/verify/certificate")
-async def verify_certificate(file: UploadFile = File(...)):
+async def verify_certificate(
+    file: UploadFile = File(...),
+    credential_id: Optional[str] = Form(None),
+    system_prompt: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+):
     filename = file.filename or "uploaded_certificate"
     ext = os.path.splitext(filename)[1].lower()
     allowed_extensions = [".pdf", ".docx", ".txt", ".zip", ".exe", ".dll", ".apk", ".png", ".jpg", ".jpeg", ".webp", ".avif"]
@@ -211,11 +272,17 @@ async def verify_certificate(file: UploadFile = File(...)):
     with open(saved_file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    return run_certificate_flow(str(saved_file_path), file_type)
+    return run_certificate_flow(str(saved_file_path), file_type, credential_id=credential_id, system_prompt=system_prompt, model=model)
 
 
 @app.post("/api/verify/identity")
-async def verify_identity(document_file: UploadFile = File(...), selfie_file: Optional[UploadFile] = File(None)):
+async def verify_identity(
+    document_file: UploadFile = File(...),
+    selfie_file: Optional[UploadFile] = File(None),
+    credential_id: Optional[str] = Form(None),
+    system_prompt: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+):
     doc_filename = document_file.filename or "id_document"
     ext = os.path.splitext(doc_filename)[1].lower()
     file_type = "pdf" if ext == ".pdf" else "image"
@@ -231,48 +298,102 @@ async def verify_identity(document_file: UploadFile = File(...), selfie_file: Op
             shutil.copyfileobj(selfie_file.file, buffer)
         selfie_path_str = str(selfie_path)
 
-    return run_identity_flow(str(doc_path), selfie_path_str, file_type)
+    return run_identity_flow(str(doc_path), selfie_path_str, file_type, credential_id=credential_id, system_prompt=system_prompt, model=model)
 
 
 @app.post("/api/analyze/malware")
-async def analyze_malware(file: UploadFile = File(...)):
+async def analyze_malware(
+    file: UploadFile = File(...),
+    credential_id: Optional[str] = Form(None),
+    system_prompt: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+):
     filename = file.filename or "suspicious_payload.bin"
     file_id = str(uuid.uuid4())[:8]
     saved_file_path = UPLOAD_DIR / f"malware_{file_id}_{filename}"
     with open(saved_file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    return run_malware_flow(str(saved_file_path), "binary")
+    return run_malware_flow(str(saved_file_path), "binary", credential_id=credential_id, system_prompt=system_prompt, model=model)
 
 
 @app.post("/api/analyze/threat")
-async def analyze_threat(query: str = Form(...)):
-    return run_threat_flow(query)
+async def analyze_threat(
+    query: str = Form(...),
+    credential_id: Optional[str] = Form(None),
+    system_prompt: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+):
+    return run_threat_flow(query, credential_id=credential_id, system_prompt=system_prompt, model=model)
 
 
 @app.post("/api/analyze/phishing")
-async def analyze_phishing(url_or_text: str = Form(...)):
-    return run_phishing_flow(url_or_text)
+async def analyze_phishing(
+    url_or_text: str = Form(...),
+    credential_id: Optional[str] = Form(None),
+    system_prompt: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+):
+    return run_phishing_flow(url_or_text, credential_id=credential_id, system_prompt=system_prompt, model=model)
 
 
 @app.post("/api/audit/privacy")
-async def audit_privacy(text_content: str = Form(...)):
-    return run_privacy_flow(text_content)
+async def audit_privacy(
+    text_content: str = Form(...),
+    credential_id: Optional[str] = Form(None),
+    system_prompt: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+):
+    return run_privacy_flow(text_content, credential_id=credential_id, system_prompt=system_prompt, model=model)
 
 
 @app.post("/api/advise/password")
-async def advise_password(password: str = Form(...)):
-    return run_password_flow(password)
+async def advise_password(
+    password: str = Form(...),
+    credential_id: Optional[str] = Form(None),
+    system_prompt: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+):
+    return run_password_flow(password, credential_id=credential_id, system_prompt=system_prompt, model=model)
 
 
 @app.post("/api/detect/fraud")
-async def detect_fraud(amount: float = Form(2500.0), location: str = Form("Seychelles")):
-    return run_fraud_flow({"amount": amount, "location": location})
+async def detect_fraud(
+    amount: float = Form(2500.0),
+    location: str = Form("Seychelles"),
+    credential_id: Optional[str] = Form(None),
+    system_prompt: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+):
+    return run_fraud_flow({"amount": amount, "location": location}, credential_id=credential_id, system_prompt=system_prompt, model=model)
 
 
 @app.post("/api/incident/generate")
-async def generate_incident_report(title: str = Form("Cyber Incident Investigation")):
-    return run_incident_response_flow({"title": title, "severity": "HIGH"})
+async def generate_incident_report(
+    title: str = Form("Cyber Incident Investigation"),
+    credential_id: Optional[str] = Form(None),
+    system_prompt: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+):
+    return run_incident_response_flow({"title": title, "severity": "HIGH"}, credential_id=credential_id, system_prompt=system_prompt, model=model)
+
+
+@app.post("/api/analyze/social-engineering")
+async def analyze_social_engineering(
+    text: str = Form(""),
+    file: Optional[UploadFile] = File(None),
+    credential_id: Optional[str] = Form(None),
+    system_prompt: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+):
+    saved_file_path = None
+    if file and file.filename:
+        file_id = str(uuid.uuid4())[:8]
+        saved_file_path = str(UPLOAD_DIR / f"soceng_{file_id}_{file.filename}")
+        with open(saved_file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+    return run_social_engineering_flow(text, saved_file_path, credential_id=credential_id, system_prompt=system_prompt, model=model)
 
 
 @app.get("/api/reports")
@@ -287,7 +408,8 @@ def get_all_reports(agent_type: Optional[str] = Query(None), limit: int = Query(
         load_local_privacy_reports() +
         load_local_password_reports() +
         load_local_fraud_reports() +
-        load_local_incident_reports()
+        load_local_incident_reports() +
+        load_local_social_engineering_reports()
     )
     all_reports.sort(key=lambda x: x.get("created_at", ""), reverse=True)
     return {"total": len(all_reports), "reports": all_reports[:limit]}
@@ -305,7 +427,8 @@ def get_report_by_id(report_id: str):
         load_local_privacy_reports() +
         load_local_password_reports() +
         load_local_fraud_reports() +
-        load_local_incident_reports()
+        load_local_incident_reports() +
+        load_local_social_engineering_reports()
     )
     for report in all_reports:
         if report.get("report_id") == report_id or report.get("orchestration_id") == report_id:
@@ -325,7 +448,8 @@ def export_report_json(report_id: str):
         load_local_privacy_reports() +
         load_local_password_reports() +
         load_local_fraud_reports() +
-        load_local_incident_reports()
+        load_local_incident_reports() +
+        load_local_social_engineering_reports()
     )
     for report in all_reports:
         if report.get("report_id") == report_id or report.get("orchestration_id") == report_id:
@@ -345,12 +469,74 @@ def export_report_html(report_id: str):
         load_local_privacy_reports() +
         load_local_password_reports() +
         load_local_fraud_reports() +
-        load_local_incident_reports()
+        load_local_incident_reports() +
+        load_local_social_engineering_reports()
     )
     for report in all_reports:
         if report.get("report_id") == report_id or report.get("orchestration_id") == report_id:
             return generate_report_html(report)
     raise HTTPException(status_code=404, detail="Report not found")
+
+
+# Trigger Endpoints (v1 scope: in-memory only, no persistence, no real scheduler queue)
+_TRIGGER_REGISTRY: Dict[str, str] = {}
+
+
+def _dispatch_agent_by_id(agent_id: str, text: str, file_path: Optional[str], credential_id: Optional[str]) -> Dict[str, Any]:
+    if agent_id in ("agent-doc-ext", "agent-auth-ver", "agent-vis-forensics"):
+        file_type = "pdf" if (file_path or "").lower().endswith(".pdf") else "image"
+        return run_certificate_flow(file_path or "webhook_payload.txt", file_type, credential_id=credential_id)
+    if agent_id == "agent-decision":
+        return run_master_orchestrator(prompt=text, file_path=file_path, credential_id=credential_id)
+    if agent_id == "agent-identity":
+        return run_identity_flow(file_path or "webhook_id_document.txt", None, "image", credential_id=credential_id)
+    if agent_id == "agent-malware":
+        return run_malware_flow(file_path or "webhook_payload.bin", "binary", credential_id=credential_id)
+    if agent_id == "agent-threat":
+        return run_threat_flow(text, credential_id=credential_id)
+    if agent_id == "agent-phishing":
+        return run_phishing_flow(text, credential_id=credential_id)
+    if agent_id == "agent-privacy":
+        return run_privacy_flow(text, credential_id=credential_id)
+    if agent_id == "agent-password":
+        return run_password_flow(text, credential_id=credential_id)
+    if agent_id == "agent-fraud":
+        return run_fraud_flow({"amount": 2500.0, "location": text}, credential_id=credential_id)
+    if agent_id == "agent-incident":
+        return run_incident_response_flow({"title": text, "severity": "HIGH"}, credential_id=credential_id)
+    if agent_id == "agent-social-eng":
+        return run_social_engineering_flow(text, file_path, credential_id=credential_id)
+    raise HTTPException(status_code=400, detail=f"Unknown agent_id '{agent_id}' for webhook dispatch")
+
+
+@app.post("/api/triggers/register")
+async def register_trigger(node_id: str = Form(...), agent_id: str = Form(...)):
+    _TRIGGER_REGISTRY[node_id] = agent_id
+    return {"status": "registered", "node_id": node_id, "agent_id": agent_id}
+
+
+@app.post("/api/triggers/webhook/{node_id}")
+async def fire_webhook_trigger(
+    node_id: str,
+    text: str = Form(""),
+    file: Optional[UploadFile] = File(None),
+    credential_id: Optional[str] = Form(None),
+):
+    agent_id = _TRIGGER_REGISTRY.get(node_id)
+    if not agent_id:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No agent registered for webhook node '{node_id}'. Open the workflow in the UI first so it can register this trigger's downstream agent."
+        )
+
+    saved_path = None
+    if file and file.filename:
+        file_id = str(uuid.uuid4())[:8]
+        saved_path = str(UPLOAD_DIR / f"webhook_{file_id}_{file.filename}")
+        with open(saved_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+    return _dispatch_agent_by_id(agent_id, text, saved_path, credential_id)
 
 
 # Serve static frontend

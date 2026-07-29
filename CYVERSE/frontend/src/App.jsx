@@ -1,11 +1,9 @@
 import React from 'react';
-import Sidebar from './components/Sidebar';
 import WorkflowBuilder from './components/WorkflowBuilder';
 
 function App() {
   return (
-    <div className="w-full h-screen flex flex-col bg-[#07090e] relative overflow-hidden select-none">
-      <Sidebar />
+    <div className="w-full h-screen bg-[#0b0f14] text-slate-100 overflow-hidden font-sans">
       <WorkflowBuilder />
     </div>
   );

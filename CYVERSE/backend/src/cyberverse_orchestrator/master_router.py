@@ -8,6 +8,14 @@ from pathlib import Path
 
 from src.fake_certificate_verification_agent.flow_runner import run_certificate_flow
 from src.identity_verification_agent.flow_runner import run_identity_flow
+from src.malware_analyzer_agent.flow_runner import run_malware_flow
+from src.threat_detection_agent.flow_runner import run_threat_flow
+from src.phishing_detection_agent.flow_runner import run_phishing_flow
+from src.privacy_compliance_agent.flow_runner import run_privacy_flow
+from src.password_advisor_agent.flow_runner import run_password_flow
+from src.fraud_detection_agent.flow_runner import run_fraud_flow
+from src.incident_response_agent.flow_runner import run_incident_response_flow
+from src.social_engineering_agent.flow_runner import run_social_engineering_flow
 
 ORCHESTRATOR_REPORTS_DB_PATH = Path(__file__).parent / "orchestrator_reports_db.json"
 
@@ -50,11 +58,31 @@ def classify_user_request(prompt: str, file_path: Optional[str] = None) -> Tuple
     if any(k in p_lower for k in ["phishing", "spam", "suspicious email", "fake link", "spoof"]):
         return "phishing_detection", "Phishing Detection Agent", 0.95
 
-    # 4. Identity Verification
+    # 4. Social Engineering / Deepfake Detection
+    if any(k in p_lower for k in ["deepfake", "impersonat", "social engineer", "vishing", "pretexting", "ceo fraud", "voice clone", "manipulation tactic"]):
+        return "social_engineering", "Social Engineering / Deepfake Detection Agent", 0.96
+
+    # 5. Privacy Compliance
+    if any(k in p_lower for k in ["pii", "gdpr", "dpdp", "privacy", "compliance", "personal data", "hipaa"]):
+        return "privacy_compliance", "Privacy Compliance Agent", 0.95
+
+    # 6. Password Security
+    if any(k in p_lower for k in ["password", "passphrase", "credential strength", "entropy"]):
+        return "password_advisor", "Password Security Advisor Agent", 0.95
+
+    # 7. Fraud Detection
+    if any(k in p_lower for k in ["transaction", "fraud", "chargeback", "payment anomaly", "wire transfer"]):
+        return "fraud_detection", "Fraud Detection Agent", 0.94
+
+    # 8. Incident Response
+    if any(k in p_lower for k in ["incident", "breach", "containment", "playbook", "post-mortem"]):
+        return "incident_response", "Incident Response Agent", 0.93
+
+    # 9. Identity Verification
     if any(k in p_lower for k in ["identity", "passport", "id card", "license", "selfie", "face match", "liveness", "ssn", "voter"]) or "passport" in f_lower or "license" in f_lower or "selfie" in f_lower or "id" in f_lower:
         return "identity_verification", "Identity Verification Agent", 0.97
 
-    # 5. Certificate Verification (Default for PDFs / Degree images unless specified)
+    # 10. Certificate Verification (Default for PDFs / Degree images unless specified)
     if any(k in p_lower for k in ["cert", "degree", "diploma", "university", "stanford", "mit", "academic", "grade", "transcript"]) or "cert" in f_lower or "degree" in f_lower or "diploma" in f_lower:
         return "certificate_verification", "Fake Certificate Verification Agent", 0.97
 
@@ -64,99 +92,48 @@ def classify_user_request(prompt: str, file_path: Optional[str] = None) -> Tuple
     return "incident_response", "Incident Response Agent", 0.90
 
 
-def run_malware_analysis_flow(prompt: str, file_path: str) -> Dict[str, Any]:
-    filename = os.path.basename(file_path) if file_path else "suspicious_payload.bin"
-    return {
-        "report_id": f"MAL-{uuid.uuid4().hex[:8].upper()}",
-        "agent": "Malware Analyzer Agent",
-        "status": "Suspicious",
-        "risk_level": "HIGH RISK",
-        "confidence": 0.94,
-        "overall_score": 42,
-        "file_name": filename,
-        "checks": {
-            "static_pe_header": "Warning - Suspicious PE Section '.text' contains packed code entropy 7.82.",
-            "yara_rules": "Failed - Matched YARA rule 'SUSP_XOR_OBFUSCATED_PAYLOAD_GENERIC'.",
-            "virus_total_reputation": "Failed - Flagged by 14 / 72 Antivirus engines on VirusTotal.",
-            "network_c2_callbacks": "Warning - Hardcoded fallback C2 domain 'cnc-control.tmp:8443' detected.",
-            "digital_signature": "Failed - Unsigned binary; no valid Authenticode signature present."
-        },
-        "summary": f"Malware analysis for '{filename}' identified packed executable code, high entropy, and C2 callback indicators.",
-        "recommendation": "Isolate file in sandbox, block C2 IPs in firewall, and perform endpoint cleanup.",
-        "next_action": "Quarantine file and notify SOC Threat Hunting Team."
-    }
-
-
-def run_threat_detection_flow(prompt: str, file_path: Optional[str] = None) -> Dict[str, Any]:
-    ip_match = re.search(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", prompt)
-    target = ip_match.group(0) if ip_match else "185.220.101.5"
-    return {
-        "report_id": f"THR-{uuid.uuid4().hex[:8].upper()}",
-        "agent": "Cyber Threat Detection Agent",
-        "status": "Fake",
-        "risk_level": "CRITICAL RISK",
-        "confidence": 0.97,
-        "overall_score": 28,
-        "target_analyzed": target,
-        "checks": {
-            "ip_reputation": f"Failed - Target IP '{target}' listed on 8 global threat blacklists.",
-            "abuseipdb_score": "Failed - Abuse Confidence Score 94%. 1,240 malicious reports in last 30 days.",
-            "threat_category": "Failed - Categorized as 'Tor Exit Node / Port Scanner / SSH Brute-Force Bot'.",
-            "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
-            "geo_location": "Passed - Country: Seychelles (AS62005)."
-        },
-        "summary": f"Threat Intelligence scan for '{target}' confirmed active malicious botnet activity and port scanning.",
-        "recommendation": "Block IP in Perimeter Firewall and WAF immediately.",
-        "next_action": "Add '{target}' to Automated Network Blocklist."
-    }
-
-
-def run_phishing_detection_flow(prompt: str) -> Dict[str, Any]:
-    return {
-        "report_id": f"PHISH-{uuid.uuid4().hex[:8].upper()}",
-        "agent": "Phishing Detection Agent",
-        "status": "Fake",
-        "risk_level": "HIGH RISK",
-        "confidence": 0.95,
-        "overall_score": 35,
-        "checks": {
-            "url_typosquatting": "Failed - Domain 'paypal-secure-verify.tmp' mimics official brand 'paypal.com'.",
-            "ssl_certificate": "Failed - Free Let's Encrypt SSL issued 2 hours ago; domain age < 24 hours.",
-            "email_header_dkim": "Failed - DKIM and SPF checks failed for sender domain.",
-            "credential_harvesting": "Failed - HTML form submits plain-text credentials to external IP."
-        },
-        "summary": "Phishing analysis detected brand typosquatting, invalid SPF/DKIM, and credential harvesting form.",
-        "recommendation": "Do not click link or input credentials. Mark email as phishing.",
-        "next_action": "Submit URL to Google Safe Browsing and block domain."
-    }
-
-
-def run_master_orchestrator(prompt: str = "", file_path: Optional[str] = None, selfie_path: Optional[str] = None, file_type: str = "pdf") -> Dict[str, Any]:
+def run_master_orchestrator(
+    prompt: str = "",
+    file_path: Optional[str] = None,
+    selfie_path: Optional[str] = None,
+    file_type: str = "pdf",
+    credential_id: Optional[str] = None,
+) -> Dict[str, Any]:
     """
     Master Orchestrator Engine:
     Classifies, dispatches to sub-agents, and synthesizes final CyberVerse Security Audit Report.
     """
     target_key, target_name, confidence = classify_user_request(prompt, file_path)
-    
+
     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
     orchestration_id = f"ORCH-{uuid.uuid4().hex[:8].upper()}"
 
-    sub_report = {}
     if target_key == "certificate_verification":
         effective_path = file_path if file_path else "test_cert.pdf"
-        sub_report = run_certificate_flow(effective_path, file_type)
+        sub_report = run_certificate_flow(effective_path, file_type, credential_id=credential_id)
     elif target_key == "identity_verification":
         effective_doc = file_path if file_path else "id_doc.pdf"
-        sub_report = run_identity_flow(effective_doc, selfie_path, file_type)
+        sub_report = run_identity_flow(effective_doc, selfie_path, file_type, credential_id=credential_id)
     elif target_key == "malware_analysis":
-        sub_report = run_malware_analysis_flow(prompt, file_path)
+        effective_path = file_path if file_path else "suspicious_payload.bin"
+        sub_report = run_malware_flow(effective_path, "binary", credential_id=credential_id)
     elif target_key == "threat_detection":
-        sub_report = run_threat_detection_flow(prompt, file_path)
+        sub_report = run_threat_flow(prompt, file_path, credential_id=credential_id)
     elif target_key == "phishing_detection":
-        sub_report = run_phishing_detection_flow(prompt)
+        sub_report = run_phishing_flow(prompt, credential_id=credential_id)
+    elif target_key == "social_engineering":
+        sub_report = run_social_engineering_flow(prompt, file_path, credential_id=credential_id)
+    elif target_key == "privacy_compliance":
+        sub_report = run_privacy_flow(prompt, credential_id=credential_id)
+    elif target_key == "password_advisor":
+        sub_report = run_password_flow(prompt, credential_id=credential_id)
+    elif target_key == "fraud_detection":
+        sub_report = run_fraud_flow({"amount": 2500.0, "location": prompt or "Unknown"}, credential_id=credential_id)
+    elif target_key == "incident_response":
+        sub_report = run_incident_response_flow({"title": prompt or "Multi-Agent Cyber Incident Audit", "severity": "HIGH"}, credential_id=credential_id)
     else:
         effective_path = file_path if file_path else "security_audit.pdf"
-        sub_report = run_certificate_flow(effective_path, file_type)
+        sub_report = run_certificate_flow(effective_path, file_type, credential_id=credential_id)
 
     master_report = {
         "orchestration_id": orchestration_id,

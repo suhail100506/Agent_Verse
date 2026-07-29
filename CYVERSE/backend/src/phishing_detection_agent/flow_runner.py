@@ -8,10 +8,28 @@ from pathlib import Path
 import logging
 
 from src.utils.email_service import send_alert
+from src.utils.llm_client import run_llm_agent
 
 logger = logging.getLogger(__name__)
 
 PHISHING_REPORTS_DB_PATH = Path(__file__).parent / "phishing_reports_db.json"
+
+DEFAULT_SYSTEM_PROMPT = """You are a phishing detection expert analyzing a URL or email/text content.
+Respond with ONLY a JSON object (no prose, no markdown fences) matching exactly this shape:
+{
+  "status": "Verified" | "Suspicious" | "Fake",
+  "risk_level": "LOW RISK" | "MEDIUM RISK" | "CRITICAL RISK",
+  "overall_score": <int 0-100>,
+  "confidence": <float 0-1>,
+  "checks": {
+    "url_typosquatting": "...", "ssl_certificate": "...", "email_header_dkim": "...",
+    "credential_harvesting": "..."
+  },
+  "summary": "...",
+  "recommendation": "...",
+  "next_action": "..."
+}
+Use "status": "Verified" for a legitimate/safe link and "Fake" for a confirmed phishing attempt (matching this platform's status vocabulary)."""
 
 
 def load_local_phishing_reports() -> list:
@@ -31,7 +49,12 @@ def save_local_phishing_report(report: dict) -> None:
         json.dump(reports, f, indent=2)
 
 
-def run_phishing_flow(url_or_text: str) -> Dict[str, Any]:
+def run_phishing_flow(
+    url_or_text: str,
+    credential_id: Optional[str] = None,
+    system_prompt: Optional[str] = None,
+    model: Optional[str] = None,
+) -> Dict[str, Any]:
     url_match = re.search(r"https?://[^\s]+", url_or_text)
     target_url = url_match.group(0) if url_match else (url_or_text if url_or_text else "http://paypal-security-verify.tmp/login")
 
@@ -67,6 +90,24 @@ def run_phishing_flow(url_or_text: str) -> Dict[str, Any]:
         recommendation = "Do not click link or enter credentials. Report email to Security Administrator."
         next_action = "Submit domain to Google Safe Browsing and block in Secure Web Gateway."
 
+    llm_result = run_llm_agent(
+        system_prompt=system_prompt or DEFAULT_SYSTEM_PROMPT,
+        user_prompt=f"URL or text content: {url_or_text}\nExtracted target: {target_url}",
+        credential_id=credential_id,
+        model=model or "llama-3.3-70b-versatile",
+        expect_json=True,
+    )
+    if llm_result["ok"] and isinstance(llm_result["content"], dict):
+        d = llm_result["content"]
+        status = d.get("status", status)
+        risk_level = d.get("risk_level", risk_level)
+        overall_score = d.get("overall_score", overall_score)
+        confidence = d.get("confidence", confidence)
+        checks = d.get("checks", checks)
+        summary = d.get("summary", summary)
+        recommendation = d.get("recommendation", recommendation)
+        next_action = d.get("next_action", next_action)
+
     report_id = f"PHISH-{uuid.uuid4().hex[:8].upper()}"
     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
@@ -85,7 +126,9 @@ def run_phishing_flow(url_or_text: str) -> Dict[str, Any]:
         "recommendation": recommendation,
         "next_action": next_action,
         "email_delivery_status": "skipped",
-        "email_delivery_error": None
+        "email_delivery_error": None,
+        "llm_reasoning_used": llm_result["ok"],
+        "llm_source": llm_result["source"]
     }
 
     if status == "Fake":

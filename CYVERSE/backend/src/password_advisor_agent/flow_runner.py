@@ -4,10 +4,30 @@ import uuid
 import datetime
 import math
 import re
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from pathlib import Path
 
+from src.utils.llm_client import run_llm_agent
+
 PASSWORD_REPORTS_DB_PATH = Path(__file__).parent / "password_reports_db.json"
+
+DEFAULT_SYSTEM_PROMPT = """You are a password security advisor evaluating password strength.
+You are given the password's computed bit entropy and length (never judge based on your own re-derivation of the
+password's characters beyond what's given - trust the provided entropy value).
+Respond with ONLY a JSON object (no prose, no markdown fences) matching exactly this shape:
+{
+  "status": "Verified" | "Suspicious" | "Fake",
+  "risk_level": "LOW RISK" | "MEDIUM RISK" | "CRITICAL RISK",
+  "overall_score": <int 0-100>,
+  "confidence": <float 0-1>,
+  "checks": {
+    "entropy_calculation": "...", "dictionary_exposure": "...", "breach_database": "...", "character_diversity": "..."
+  },
+  "summary": "...",
+  "recommendation": "...",
+  "next_action": "..."
+}
+Use "status": "Verified" for a strong password and "Fake" for a weak/breach-prone password (matching this platform's status vocabulary)."""
 
 
 def load_local_password_reports() -> list:
@@ -37,7 +57,12 @@ def calculate_entropy(password: str) -> float:
     return round(len(password) * math.log2(pool_size), 2)
 
 
-def run_password_flow(password: str) -> Dict[str, Any]:
+def run_password_flow(
+    password: str,
+    credential_id: Optional[str] = None,
+    system_prompt: Optional[str] = None,
+    model: Optional[str] = None,
+) -> Dict[str, Any]:
     pwd = password if password else "P@ssword123!"
     entropy = calculate_entropy(pwd)
 
@@ -72,8 +97,31 @@ def run_password_flow(password: str) -> Dict[str, Any]:
             "character_diversity": "Warning - Insufficient character pool diversity."
         }
         summary = f"WEAK PASSWORD ALERT: Provided password has low entropy ({entropy} bits) and vulnerable pattern."
-        recommendation = "Enforce 14+ character password with symbols and numbers.",
+        recommendation = "Enforce 14+ character password with symbols and numbers."
         next_action = "Require immediate password change."
+
+    # Never send the raw password to a third-party LLM API - only derived signals.
+    llm_result = run_llm_agent(
+        system_prompt=system_prompt or DEFAULT_SYSTEM_PROMPT,
+        user_prompt=(
+            f"Password length: {len(pwd)}\nComputed entropy: {entropy} bits\n"
+            f"Matches a common dictionary word or pattern: {is_weak}\n"
+            f"Contains lowercase/uppercase/digits/symbols pool size derived entropy above."
+        ),
+        credential_id=credential_id,
+        model=model or "llama-3.3-70b-versatile",
+        expect_json=True,
+    )
+    if llm_result["ok"] and isinstance(llm_result["content"], dict):
+        d = llm_result["content"]
+        status = d.get("status", status)
+        risk_level = d.get("risk_level", risk_level)
+        overall_score = d.get("overall_score", overall_score)
+        confidence = d.get("confidence", confidence)
+        checks = d.get("checks", checks)
+        summary = d.get("summary", summary)
+        recommendation = d.get("recommendation", recommendation)
+        next_action = d.get("next_action", next_action)
 
     report_id = f"PWD-{uuid.uuid4().hex[:8].upper()}"
     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -92,7 +140,9 @@ def run_password_flow(password: str) -> Dict[str, Any]:
         "checks": checks,
         "summary": summary,
         "recommendation": recommendation,
-        "next_action": next_action
+        "next_action": next_action,
+        "llm_reasoning_used": llm_result["ok"],
+        "llm_source": llm_result["source"]
     }
 
     save_local_password_report(final_report)

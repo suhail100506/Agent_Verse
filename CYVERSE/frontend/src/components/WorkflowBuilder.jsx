@@ -1,110 +1,310 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { 
-  ReactFlow, 
-  Background, 
-  Controls, 
-  MiniMap, 
-  useNodesState, 
-  useEdgesState, 
-  addEdge,
-  useReactFlow,
+import React, { useState, useCallback, useEffect } from 'react';
+import {
+  useNodesState,
+  useEdgesState,
   ReactFlowProvider
 } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
-import AgentNode from './AgentNode';
 
-const nodeTypes = { agentNode: AgentNode };
+import Header from './Header';
+import Sidebar from './Sidebar';
+import WorkflowCanvas from './WorkflowCanvas';
+import NodePopup from './NodePopup';
+import BottomConsole from './BottomConsole';
+import CommandPalette from './CommandPalette';
+import AiCopilotModal from './AiCopilotModal';
+import TemplatesModal from './TemplatesModal';
+import { WORKFLOW_TEMPLATES } from '../data/templates';
 
-const initialNodes = [
-  { id: "node-user-upload", type: "agentNode", data: { icon: "📄", label: "User Payload Ingest", subtitle: "Payload Trigger Input" }, position: { x: 300, y: 20 } },
-  { id: "node-doc-ext", type: "agentNode", data: { icon: "🤖", label: "Document Extraction Agent", subtitle: "OCR & Metadata Parsing" }, position: { x: 300, y: 110 } }
+const INITIAL_NODES = [
+  {
+    id: 'node-trigger-ingest',
+    type: 'agentNode',
+    position: { x: 80, y: 150 },
+    data: {
+      id: 'node-user-upload',
+      label: 'User Payload Ingest',
+      subtitle: 'Payload Trigger Input',
+      icon: '📄',
+      isTextBox: true,
+      inputLabel: 'User Payload',
+      status: 'idle'
+    }
+  },
+  {
+    id: 'node-orchestrator',
+    type: 'agentNode',
+    position: { x: 420, y: 150 },
+    data: {
+      id: 'agent-decision',
+      label: 'Master Cyber Orchestrator',
+      subtitle: 'Multi-Agent Intent Router',
+      icon: '🧠',
+      inputLabel: 'Multi-Agent Synthesis',
+      status: 'idle'
+    }
+  },
+  {
+    id: 'node-doc-forensics',
+    type: 'agentNode',
+    position: { x: 780, y: 50 },
+    data: {
+      id: 'agent-doc-ext',
+      label: 'Document Extraction Agent',
+      subtitle: 'OCR & Layout Metadata',
+      icon: '🤖',
+      inputLabel: 'PDF Document Required',
+      status: 'idle'
+    }
+  },
+  {
+    id: 'node-malware-scan',
+    type: 'agentNode',
+    position: { x: 780, y: 250 },
+    data: {
+      id: 'agent-malware',
+      label: 'Malware Analyzer Agent',
+      subtitle: 'PE & YARA Behavioral Audit',
+      icon: '🦠',
+      inputLabel: 'Binary Executable (.exe)',
+      status: 'idle'
+    }
+  },
+  {
+    id: 'node-report',
+    type: 'agentNode',
+    position: { x: 1140, y: 150 },
+    data: {
+      id: 'node-final-report',
+      label: 'Final Security Report',
+      subtitle: 'JSON & PDF SOC Exporter',
+      icon: '📋',
+      inputLabel: 'Report Generator',
+      status: 'idle'
+    }
+  }
 ];
 
-const initialEdges = [
-  { id: "e1-2", source: "node-user-upload", target: "node-doc-ext", animated: true, style: { stroke: "#38bdf8", strokeWidth: 2 } }
+const INITIAL_EDGES = [
+  { id: 'edge-1-2', source: 'node-trigger-ingest', target: 'node-orchestrator', animated: true, style: { stroke: '#6366f1', strokeWidth: 2.5 } },
+  { id: 'edge-2-3', source: 'node-orchestrator', target: 'node-doc-forensics', animated: true, style: { stroke: '#06b6d4', strokeWidth: 2 } },
+  { id: 'edge-2-4', source: 'node-orchestrator', target: 'node-malware-scan', animated: true, style: { stroke: '#06b6d4', strokeWidth: 2 } },
+  { id: 'edge-3-5', source: 'node-doc-forensics', target: 'node-report', animated: true, style: { stroke: '#10b981', strokeWidth: 2 } },
+  { id: 'edge-4-5', source: 'node-malware-scan', target: 'node-report', animated: true, style: { stroke: '#10b981', strokeWidth: 2 } }
 ];
 
-import { reconnectEdge } from '@xyflow/react';
+function WorkflowBuilderContent() {
+  const [nodes, setNodes, onNodesChange] = useNodesState(INITIAL_NODES);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(INITIAL_EDGES);
+  
+  const [selection, setSelection] = useState({ node: null, anchor: null });
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isConsoleOpen, setIsConsoleOpen] = useState(true);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isSaved, setIsSaved] = useState(true);
 
-function WorkflowCanvas() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const { screenToFlowPosition } = useReactFlow();
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isAiCopilotOpen, setIsAiCopilotOpen] = useState(false);
+  const [isTemplatesOpen, setIsTemplatesOpen] = useState(false);
 
-  const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge({ ...params, animated: true, style: { stroke: "#38bdf8", strokeWidth: 2 } }, eds)),
-    [setEdges],
-  );
+  const [logs, setLogs] = useState([
+    { id: 1, type: 'info', timestamp: new Date().toLocaleTimeString(), message: '[CyberVerse Engine] Ready for multi-agent execution.' }
+  ]);
 
-  const onReconnect = useCallback(
-    (oldEdge, newConnection) => setEdges((els) => reconnectEdge(oldEdge, newConnection, els)),
-    [setEdges],
-  );
-
-  const onDragOver = useCallback((event) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+  const addLog = useCallback((type, message) => {
+    setLogs(prev => [
+      ...prev,
+      { id: Date.now(), type, timestamp: new Date().toLocaleTimeString(), message }
+    ]);
   }, []);
 
-  const onDrop = useCallback(
-    (event) => {
-      event.preventDefault();
+  // Register any webhook-trigger node's downstream agent with the backend so
+  // POST /api/triggers/webhook/{node_id} can be fired externally (v1: in-memory only).
+  useEffect(() => {
+    nodes.forEach((n) => {
+      if (!n.data?.isWebhookTrigger) return;
+      const outEdge = edges.find(e => e.source === n.id);
+      const targetNode = outEdge ? nodes.find(nn => nn.id === outEdge.target) : null;
+      if (!targetNode?.data?.id) return;
 
-      const type = event.dataTransfer.getData('application/reactflow/agent');
-      if (!type) return;
+      const formData = new FormData();
+      formData.append('node_id', n.id);
+      formData.append('agent_id', targetNode.data.id);
+      fetch('http://localhost:8000/api/triggers/register', { method: 'POST', body: formData }).catch(() => {});
+    });
+  }, [nodes, edges]);
 
-      const agentData = JSON.parse(type);
-      const position = screenToFlowPosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
+  // Update selected node data
+  const handleUpdateNode = useCallback((nodeId, updatedData) => {
+    setIsSaved(false);
+    setNodes(nds => nds.map(n => {
+      if (n.id === nodeId) {
+        const nextNode = { ...n, data: { ...n.data, ...updatedData } };
+        setSelection(sel => (sel.node && sel.node.id === nodeId) ? { ...sel, node: nextNode } : sel);
+        return nextNode;
+      }
+      return n;
+    }));
+  }, [setNodes]);
 
-      const newNode = {
-        id: `node-${agentData.id}-${Date.now()}`,
-        type: 'agentNode',
-        position,
-        data: { ...agentData, status: 'idle' },
-      };
+  // Delete node
+  const handleDeleteNode = useCallback((nodeId) => {
+    setIsSaved(false);
+    setNodes(nds => nds.filter(n => n.id !== nodeId));
+    setEdges(eds => eds.filter(e => e.source !== nodeId && e.target !== nodeId));
+    setSelection({ node: null, anchor: null });
+    addLog('warn', `Removed node ${nodeId} from canvas.`);
+  }, [setNodes, setEdges, addLog]);
 
-      setNodes((nds) => nds.concat(newNode));
-    },
-    [screenToFlowPosition, setNodes],
-  );
+  const handleNodeSelect = useCallback((node, anchor) => {
+    setSelection({ node, anchor });
+  }, []);
 
-  const displayEdges = edges.map(edge => ({
-    ...edge,
-    type: 'default', 
-    animated: !edge.selected,
-    style: {
-      ...edge.style,
-      stroke: edge.selected ? '#0ea5e9' : (edge.style?.stroke || '#38bdf8'),
-      strokeWidth: edge.selected ? 3 : (edge.style?.strokeWidth || 2)
+  // Master execution simulation
+  const handleRunWorkflow = useCallback(async () => {
+    setIsRunning(true);
+    setIsConsoleOpen(true);
+    addLog('info', '[Master Kickoff] Initiating sequential execution across workflow DAG...');
+
+    // Reset statuses
+    setNodes(nds => nds.map(n => ({ ...n, data: { ...n.data, status: 'idle' } })));
+
+    // Step 1: Ingest
+    addLog('info', '[Node 1/4] Running User Payload Ingest...');
+    setNodes(nds => nds.map(n => n.id === 'node-trigger-ingest' ? { ...n, data: { ...n.data, status: 'running' } } : n));
+    await new Promise(r => setTimeout(r, 700));
+    setNodes(nds => nds.map(n => n.id === 'node-trigger-ingest' ? { ...n, data: { ...n.data, status: 'completed' } } : n));
+    addLog('success', '[Node 1/4] Ingest Complete. Received payload string.');
+
+    // Step 2: Master Orchestrator
+    addLog('info', '[Node 2/4] Dispatched to Master Cyber Orchestrator...');
+    setNodes(nds => nds.map(n => n.id === 'node-orchestrator' ? { ...n, data: { ...n.data, status: 'running' } } : n));
+    await new Promise(r => setTimeout(r, 900));
+    setNodes(nds => nds.map(n => n.id === 'node-orchestrator' ? { ...n, data: { ...n.data, status: 'completed' } } : n));
+    addLog('success', '[Node 2/4] Intent routed to Document Extraction & Malware Analyzer.');
+
+    // Step 3: Sub-agents
+    addLog('info', '[Node 3/4] Parallel analysis: Running OCR Forensics & YARA PE Scan...');
+    setNodes(nds => nds.map(n => ['node-doc-forensics', 'node-malware-scan'].includes(n.id) ? { ...n, data: { ...n.data, status: 'running' } } : n));
+    await new Promise(r => setTimeout(r, 1100));
+    setNodes(nds => nds.map(n => ['node-doc-forensics', 'node-malware-scan'].includes(n.id) ? { ...n, data: { ...n.data, status: 'completed' } } : n));
+    addLog('success', '[Node 3/4] Zero malware signatures detected. Certificate PKI valid.');
+
+    // Step 4: Final Report
+    addLog('info', '[Node 4/4] Generating Final PDF & JSON Audit Report...');
+    setNodes(nds => nds.map(n => n.id === 'node-report' ? { ...n, data: { ...n.data, status: 'running' } } : n));
+    await new Promise(r => setTimeout(r, 600));
+    setNodes(nds => nds.map(n => n.id === 'node-report' ? { ...n, data: { ...n.data, status: 'completed' } } : n));
+    addLog('success', '[Workflow Complete] All 5 nodes executed successfully in 3.3s. Security Score: 98/100.');
+
+    setIsRunning(false);
+  }, [setNodes, addLog]);
+
+  // Load preset template - each entry in WORKFLOW_TEMPLATES carries its own real {nodes, edges} graph
+  const handleLoadTemplate = useCallback((templateId) => {
+    setIsSaved(false);
+    const tmpl = WORKFLOW_TEMPLATES.find(t => t.id === templateId);
+    if (!tmpl) {
+      setNodes(INITIAL_NODES);
+      setEdges(INITIAL_EDGES);
+      addLog('warn', `Unknown template "${templateId}" - loaded default SOC pipeline instead.`);
+      return;
     }
-  }));
+    // Deep-clone so repeated loads of the same template don't share node/edge object references
+    setNodes(JSON.parse(JSON.stringify(tmpl.nodes)));
+    setEdges(JSON.parse(JSON.stringify(tmpl.edges)));
+    addLog('info', `Loaded template: ${tmpl.title}`);
+  }, [setNodes, setEdges, addLog]);
+
+  // Generate AI Workflow
+  const handleGenerateAiWorkflow = useCallback((promptText) => {
+    setIsSaved(false);
+    addLog('info', `[AI Copilot] Generating flow graph for prompt: "${promptText.substring(0, 40)}..."`);
+    handleLoadTemplate('template-certificate-verification');
+  }, [handleLoadTemplate, addLog]);
+
+  // Add node from Command Palette
+  const handleAddNodeFromPalette = useCallback((defaultData) => {
+    setIsSaved(false);
+    const newNode = {
+      id: `node-${Date.now()}`,
+      type: 'agentNode',
+      position: { x: 400 + Math.random() * 100, y: 200 + Math.random() * 100 },
+      data: { ...defaultData, status: 'idle' }
+    };
+    setNodes(nds => nds.concat(newNode));
+    addLog('info', `Added new ${defaultData.label} node to canvas.`);
+  }, [setNodes, addLog]);
 
   return (
-    <div className="flex-1 relative w-full h-full bg-[#07090e]" onDragOver={onDragOver} onDrop={onDrop}>
-      <ReactFlow
-        nodes={nodes}
-        edges={displayEdges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onReconnect={onReconnect}
-        nodeTypes={nodeTypes}
-        fitView
-        fitViewOptions={{ padding: 0.2 }}
-        deleteKeyCode={["Backspace", "Delete"]}
-        className="react-flow-custom"
-      >
-        <Background color="#1e293b" gap={24} size={1} />
-        <Controls className="!bg-slate-900/90 !border-slate-800 !text-slate-300 !rounded-xl !shadow-2xl" />
-        <MiniMap 
-          nodeColor="#0f172a" 
-          maskColor="rgba(7, 9, 14, 0.8)" 
-          style={{ backgroundColor: '#07090e' }} 
+    <div className="w-full h-screen flex flex-col bg-[#0b0f14] text-slate-100 overflow-hidden select-none">
+      {/* TOP NAVIGATION HEADER */}
+      <Header 
+        onRunWorkflow={handleRunWorkflow}
+        isRunning={isRunning}
+        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+        onOpenAiCopilot={() => setIsAiCopilotOpen(true)}
+        onOpenTemplates={() => setIsTemplatesOpen(true)}
+        onSaveWorkflow={() => setIsSaved(true)}
+        isSaved={isSaved}
+        nodeCount={nodes.length}
+        edgeCount={edges.length}
+      />
+
+      {/* MAIN BODY AREA: Sidebar + Canvas + Inspector */}
+      <div className="flex-1 flex overflow-hidden relative">
+        <Sidebar 
+          onLoadTemplate={handleLoadTemplate}
+          isCollapsed={isSidebarCollapsed}
+          setIsCollapsed={setIsSidebarCollapsed}
         />
-      </ReactFlow>
+
+        <WorkflowCanvas
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          setNodes={setNodes}
+          setEdges={setEdges}
+          onNodeSelect={handleNodeSelect}
+        />
+      </div>
+
+      {selection.node && (
+        <NodePopup
+          node={selection.node}
+          anchor={selection.anchor}
+          onUpdateNode={handleUpdateNode}
+          onDeleteNode={handleDeleteNode}
+          onClose={() => setSelection({ node: null, anchor: null })}
+        />
+      )}
+
+      {/* BOTTOM CONSOLE & LOGS */}
+      <BottomConsole 
+        logs={logs}
+        isConsoleOpen={isConsoleOpen}
+        setIsConsoleOpen={setIsConsoleOpen}
+        onClearLogs={() => setLogs([])}
+      />
+
+      {/* MODALS */}
+      <CommandPalette 
+        isOpen={isCommandPaletteOpen}
+        onClose={setIsCommandPaletteOpen}
+        onAddNode={handleAddNodeFromPalette}
+      />
+
+      <AiCopilotModal 
+        isOpen={isAiCopilotOpen}
+        onClose={() => setIsAiCopilotOpen(false)}
+        onGenerateWorkflow={handleGenerateAiWorkflow}
+      />
+
+      <TemplatesModal 
+        isOpen={isTemplatesOpen}
+        onClose={() => setIsTemplatesOpen(false)}
+        onLoadTemplate={handleLoadTemplate}
+      />
     </div>
   );
 }
@@ -112,7 +312,7 @@ function WorkflowCanvas() {
 export default function WorkflowBuilder() {
   return (
     <ReactFlowProvider>
-      <WorkflowCanvas />
+      <WorkflowBuilderContent />
     </ReactFlowProvider>
   );
 }

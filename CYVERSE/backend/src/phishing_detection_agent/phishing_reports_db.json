@@ -1,5 +1,53 @@
 [
   {
+    "report_id": "PHISH-3A312573",
+    "created_at": "2026-07-29T05:44:29.861932+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-secure-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-secure-verify.tmp/log' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-secure-verify.tmp/log' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway.",
+    "email_delivery_status": "failed",
+    "email_delivery_error": "SMTP credentials not configured.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
+    "report_id": "PHISH-D18FD6C3",
+    "created_at": "2026-07-29T05:28:33.378102+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://paypal-secure-verify.tmp/login",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {
+      "url_typosquatting": "Failed - Domain 'http://paypal-secure-verify.tmp/log' displays brand typosquatting.",
+      "ssl_certificate": "Failed - Free SSL issued 2 hours ago; domain age less than 24 hours.",
+      "email_header_dkim": "Failed - DKIM and SPF checks failed for sender server.",
+      "credential_harvesting": "Failed - HTML payload submits credentials to unencrypted external endpoint."
+    },
+    "summary": "PHISHING ALERT: Domain 'http://paypal-secure-verify.tmp/log' detected as active credential harvesting page.",
+    "recommendation": "Do not click link or enter credentials. Report email to Security Administrator.",
+    "next_action": "Submit domain to Google Safe Browsing and block in Secure Web Gateway.",
+    "email_delivery_status": "failed",
+    "email_delivery_error": "SMTP credentials not configured.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
     "report_id": "PHISH-BA93151A",
     "created_at": "2026-07-28T21:39:03.392133+00:00",
     "agent": "Phishing Detection Agent",

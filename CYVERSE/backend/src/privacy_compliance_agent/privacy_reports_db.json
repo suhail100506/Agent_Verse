@@ -1,5 +1,83 @@
 [
   {
+    "report_id": "PRV-702E1752",
+    "created_at": "2026-07-29T05:47:17.657190+00:00",
+    "agent": "Privacy Compliance Agent",
+    "type": "privacy",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.97,
+    "overall_score": 95,
+    "pii_detected": {
+      "ssn_count": 0,
+      "credit_cards_count": 0,
+      "emails_count": 0
+    },
+    "checks": {
+      "gdpr_compliance": "Passed - No unencrypted Personally Identifiable Information (PII) detected.",
+      "dpdp_act_check": "Passed - Personal data processing consent flags valid.",
+      "hipaa_compliance": "Passed - Zero Protected Health Information (PHI) strings exposed.",
+      "data_masking": "Passed - Sensitive fields masked correctly with asterisk placeholders."
+    },
+    "summary": "Privacy Compliance Audit passed. Document adheres to GDPR, DPDP, and HIPAA guidelines.",
+    "recommendation": "Document is safe for cross-border storage and distribution.",
+    "next_action": "Mark privacy audit as approved.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
+    "report_id": "PRV-14075A60",
+    "created_at": "2026-07-29T05:32:45.077752+00:00",
+    "agent": "Privacy Compliance Agent",
+    "type": "privacy",
+    "status": "Verified",
+    "risk_level": "LOW RISK",
+    "confidence": 0.97,
+    "overall_score": 95,
+    "pii_detected": {
+      "ssn_count": 0,
+      "credit_cards_count": 0,
+      "emails_count": 0
+    },
+    "checks": {
+      "gdpr_compliance": "Passed - No unencrypted Personally Identifiable Information (PII) detected.",
+      "dpdp_act_check": "Passed - Personal data processing consent flags valid.",
+      "hipaa_compliance": "Passed - Zero Protected Health Information (PHI) strings exposed.",
+      "data_masking": "Passed - Sensitive fields masked correctly with asterisk placeholders."
+    },
+    "summary": "Privacy Compliance Audit passed. Document adheres to GDPR, DPDP, and HIPAA guidelines.",
+    "recommendation": "Document is safe for cross-border storage and distribution.",
+    "next_action": "Mark privacy audit as approved.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
+    "report_id": "PRV-42E88DB3",
+    "created_at": "2026-07-29T05:28:34.913996+00:00",
+    "agent": "Privacy Compliance Agent",
+    "type": "privacy",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 42,
+    "pii_detected": {
+      "ssn_count": 1,
+      "credit_cards_count": 0,
+      "emails_count": 0
+    },
+    "checks": {
+      "gdpr_compliance": "Failed - Found 1 unmasked SSNs and 0 Credit Card numbers.",
+      "dpdp_act_check": "Failed - Mandatory data principal consent disclosure missing.",
+      "hipaa_compliance": "Warning - Sensitive identity fields stored in plain text.",
+      "data_masking": "Failed - Plain-text SSN and financial card data exposed."
+    },
+    "summary": "PRIVACY VIOLATION ALERT: Document exposes unmasked PII (1 SSNs, 0 Credit Cards).",
+    "recommendation": "Apply automated PII redacting mask prior to external sharing.",
+    "next_action": "Trigger Data Loss Prevention (DLP) remediation playbook.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
     "report_id": "PRV-39964281",
     "created_at": "2026-07-28T16:58:10.081273+00:00",
     "agent": "Privacy Compliance Agent",

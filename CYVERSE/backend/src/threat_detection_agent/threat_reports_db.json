@@ -1,5 +1,53 @@
 [
   {
+    "report_id": "THR-408026C7",
+    "created_at": "2026-07-29T05:44:18.473702+00:00",
+    "agent": "Cyber Threat Detection Agent",
+    "type": "threat",
+    "target_analyzed": "185.220.101.5",
+    "query": "check ip 185.220.101.5",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 28,
+    "checks": {
+      "ip_reputation": "Failed - Target IP '185.220.101.5' listed on 12 global botnet blacklists.",
+      "abuseipdb_score": "Failed - Abuse Confidence Score 96%. 1,420 malicious reports in last 14 days.",
+      "threat_category": "Failed - Categorized as 'Tor Exit Node / SSH Brute-Force Bot / Scanner'.",
+      "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+      "geolocation": "Passed - Country: Seychelles (AS62005)."
+    },
+    "summary": "CRITICAL THREAT ALERT: Target '185.220.101.5' confirmed active malicious scanner and botnet node.",
+    "recommendation": "Block IP address across all Perimeter Firewalls and Web Application Firewalls.",
+    "next_action": "Add '{target}' to Automated Network Blocklist and trigger Incident Alert.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
+    "report_id": "THR-1AC8A04D",
+    "created_at": "2026-07-29T05:28:31.846871+00:00",
+    "agent": "Cyber Threat Detection Agent",
+    "type": "threat",
+    "target_analyzed": "185.220.101.5",
+    "query": "check ip 185.220.101.5",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 28,
+    "checks": {
+      "ip_reputation": "Failed - Target IP '185.220.101.5' listed on 12 global botnet blacklists.",
+      "abuseipdb_score": "Failed - Abuse Confidence Score 96%. 1,420 malicious reports in last 14 days.",
+      "threat_category": "Failed - Categorized as 'Tor Exit Node / SSH Brute-Force Bot / Scanner'.",
+      "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+      "geolocation": "Passed - Country: Seychelles (AS62005)."
+    },
+    "summary": "CRITICAL THREAT ALERT: Target '185.220.101.5' confirmed active malicious scanner and botnet node.",
+    "recommendation": "Block IP address across all Perimeter Firewalls and Web Application Firewalls.",
+    "next_action": "Add '{target}' to Automated Network Blocklist and trigger Incident Alert.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
     "report_id": "THR-A6DE89EE",
     "created_at": "2026-07-28T16:58:09.907349+00:00",
     "agent": "Cyber Threat Detection Agent",

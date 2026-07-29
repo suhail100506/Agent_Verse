@@ -1,5 +1,51 @@
 [
   {
+    "report_id": "FRD-24CC8B70",
+    "created_at": "2026-07-29T05:32:18.443384+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 2500.0,
+    "location": "urgent! this is your CEO, send a gift card wire transfer immediately",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 25,
+    "checks": {
+      "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+      "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+      "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+      "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from urgent! this is your CEO, send a gift card wire transfer immediately within 10 minutes of primary region."
+    },
+    "summary": "FRAUD ALERT: Transaction of $2500.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
+    "report_id": "FRD-672FB447",
+    "created_at": "2026-07-29T05:28:38.005898+00:00",
+    "agent": "Fraud Detection Agent",
+    "type": "fraud",
+    "amount": 9000,
+    "location": "Unknown",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.95,
+    "overall_score": 25,
+    "checks": {
+      "behavioral_analytics": "Failed - High-value transfer anomaly detected.",
+      "device_fingerprint": "Failed - Untrusted new device fingerprint.",
+      "velocity_check": "Failed - Rapid velocity spike (5 transactions in 2 minutes).",
+      "geolocation_anomaly": "Failed - Impossible travel anomaly: Login from Unknown within 10 minutes of primary region."
+    },
+    "summary": "FRAUD ALERT: Transaction of $9000.00 flagged for behavioral anomaly and impossible travel.",
+    "recommendation": "Block transaction and freeze user account pending MFA step-up authentication.",
+    "next_action": "Escalate to Fraud Operations Team.",
+    "llm_reasoning_used": false,
+    "llm_source": "unavailable"
+  },
+  {
     "report_id": "FRD-90406CAD",
     "created_at": "2026-07-28T16:58:10.270420+00:00",
     "agent": "Fraud Detection Agent",

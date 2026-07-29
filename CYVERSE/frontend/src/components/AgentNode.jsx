@@ -1,281 +1,319 @@
 import React, { useState } from 'react';
 import { Handle, Position, useReactFlow } from '@xyflow/react';
-import { Loader2, CheckCircle2 } from 'lucide-react';
+import {
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+  Play,
+  MoreHorizontal,
+  Copy,
+  Trash2,
+  Terminal,
+  Settings2,
+  Upload,
+  FileText
+} from 'lucide-react';
+import { AGENT_ROUTES, DEFAULT_ROUTE } from '../data/agentRoutes';
+
+const API_BASE = 'http://localhost:8000';
 
 export default function AgentNode({ id, data, selected }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const { getNodes, getEdges, setNodes, setEdges } = useReactFlow();
-  
+  const { getNodes, getEdges, setNodes, setEdges, deleteElements } = useReactFlow();
+  const [showMenu, setShowMenu] = useState(false);
+
   const isCompleted = data.status === 'completed';
   const isRunning = data.status === 'running';
+  const isError = data.status === 'error';
+
+  // Node duplicate handler
+  const handleDuplicate = (e) => {
+    e.stopPropagation();
+    setShowMenu(false);
+    const existingNode = getNodes().find(n => n.id === id);
+    if (!existingNode) return;
+
+    const newNode = {
+      ...existingNode,
+      id: `node-${Date.now()}`,
+      position: {
+        x: existingNode.position.x + 40,
+        y: existingNode.position.y + 40,
+      },
+      selected: false
+    };
+    setNodes(nds => nds.concat(newNode));
+  };
+
+  // Node delete handler
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    setShowMenu(false);
+    deleteElements({ nodes: [{ id }] });
+  };
 
   return (
-    <div className={`px-5 py-3 rounded-2xl border transition-all duration-300 shadow-xl min-w-[220px] text-center relative group ${isRunning ? 'bg-sky-950/90 border-sky-400 text-white shadow-sky-500/50 animate-pulse scale-105' : isCompleted ? 'bg-slate-950/90 border-emerald-500/60 text-slate-100' : 'bg-[#0f172a]/90 border-slate-700/80 text-slate-200 hover:border-sky-500/50'} ${selected ? 'border-sky-500 ring-2 ring-sky-500/50' : ''}`}>
-      <Handle type="target" position={Position.Top} className="!bg-sky-400 !w-2.5 !h-2.5 !border-2 !border-slate-900" />
+    <div 
+      className={`relative group rounded-xl transition-all duration-300 min-w-[260px] max-w-[320px] bg-zinc-900/80 backdrop-blur-xl border ${
+        isRunning 
+          ? 'border-indigo-500/50 shadow-[0_0_20px_rgba(99,102,241,0.15)] ring-1 ring-indigo-500/20' 
+          : isCompleted 
+          ? 'border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]' 
+          : isError
+          ? 'border-rose-500/50 shadow-[0_0_15px_rgba(244,63,94,0.15)] ring-1 ring-rose-500/20'
+          : selected 
+          ? 'border-zinc-500 shadow-[0_0_15px_rgba(255,255,255,0.05)] ring-1 ring-zinc-500/30' 
+          : 'border-white/5 hover:border-white/15 shadow-xl'
+      }`}
+    >
+      {/* TOP TARGET HANDLE */}
+      <Handle 
+        type="target" 
+        position={Position.Top} 
+        className="!bg-zinc-800 !w-2.5 !h-2.5 !border-2 !border-zinc-950 hover:!bg-white transition-colors" 
+      />
 
-      <div className="flex items-center justify-center gap-2 font-bold text-xs">
-        <span className="text-base">{data.icon}</span>
-        <span className="tracking-wide">{data.label}</span>
+      {/* NODE HEADER */}
+      <div className="p-3 border-b border-white/5 flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-zinc-800/80 border border-white/5 flex items-center justify-center text-sm shadow-inner shrink-0">
+            {data.icon || '🤖'}
+          </div>
+          <div className="flex flex-col justify-center">
+            <h3 className="font-semibold text-[13px] text-zinc-100 leading-tight">
+              {data.label || 'Specialized Agent'}
+            </h3>
+            <p className="text-[11px] text-zinc-400 font-medium truncate max-w-[150px] mt-0.5">
+              {data.subtitle || 'CyberVerse Node'}
+            </p>
+          </div>
+        </div>
+
+        {/* STATUS BADGE OR MENU */}
+        <div className="flex items-center gap-1.5 mt-0.5">
+          {isRunning && (
+            <span className="flex items-center gap-1 text-[10px] font-medium text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded-md border border-indigo-500/20">
+              <Loader2 className="w-3 h-3 animate-spin" /> Running
+            </span>
+          )}
+          {isCompleted && (
+            <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-md border border-emerald-500/20">
+              <CheckCircle2 className="w-3 h-3" /> Done
+            </span>
+          )}
+          {isError && (
+            <span className="flex items-center gap-1 text-[10px] font-medium text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded-md border border-rose-500/20">
+              <AlertCircle className="w-3 h-3" /> Error
+            </span>
+          )}
+
+          {/* MORE MENU */}
+          <div className="relative">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowMenu(!showMenu);
+              }}
+              className="p-1 rounded-md text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+            >
+              <MoreHorizontal className="w-4 h-4" />
+            </button>
+
+            {showMenu && (
+              <div className="absolute right-0 top-7 w-36 rounded-lg bg-zinc-900 border border-white/10 shadow-2xl py-1 z-50 text-[11px] font-medium text-zinc-300 backdrop-blur-xl">
+                <button 
+                  onClick={handleDuplicate}
+                  className="w-full px-3 py-1.5 text-left hover:bg-white/5 hover:text-white flex items-center gap-2 transition-colors"
+                >
+                  <Copy className="w-3.5 h-3.5" /> Duplicate
+                </button>
+                <div className="h-px bg-white/5 my-0.5"></div>
+                <button 
+                  onClick={handleDelete}
+                  className="w-full px-3 py-1.5 text-left hover:bg-rose-500/10 hover:text-rose-400 flex items-center gap-2 transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Delete
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-      
-      {data.isTextBox ? (
-        <div className="mt-2 text-left flex flex-col gap-2">
-          <input 
-            type="text" 
-            placeholder="Enter payload text here..." 
-            id={`test-input-${data.id}`}
-            onKeyDown={async (e) => {
-              if (e.key === 'Enter' && e.target.value) {
-                document.getElementById(`test-btn-${data.id}`)?.click();
-              }
-            }}
-            className="w-full bg-slate-900/50 border border-slate-700 rounded p-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 nodrag"
-          />
-          <div className="text-[9px] text-slate-500 font-bold text-center">- OR UPLOAD FILE -</div>
-          <input
-            type="file"
-            id={`test-file-${data.id}`}
-            className="w-full bg-slate-900/50 border border-slate-700 rounded p-1 text-[10px] text-slate-300 focus:outline-none focus:border-sky-500 nodrag file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-sky-500/20 file:text-sky-400 hover:file:bg-sky-500/30 cursor-pointer"
-          />
-          <button
-            id={`test-btn-${data.id}`}
-            disabled={loading}
-            onClick={async () => {
-              const val = document.getElementById(`test-input-${data.id}`)?.value || '';
-              const fileInput = document.getElementById(`test-file-${data.id}`);
-              const fileVal = fileInput?.files?.[0];
-              
-              if (!val && !fileVal) return;
-              
-              setLoading(true);
-              setResult(null);
-              
-              const allEdges = getEdges();
-              const outEdge = allEdges.find(e => e.source === id);
-              
-              if (!outEdge) {
-                setResult({ error: 'Please connect the Test Text Box to a target agent first (drag from the bottom dot to the top of an agent).' });
-                setLoading(false);
-                return;
-              }
 
-              let targetNodeId = outEdge.target;
+      {/* NODE BODY CONTENT */}
+      <div className="p-3 text-[11px]">
+        {data.isTextBox ? (
+          /* INTERACTIVE TEST INPUT TRIGGER NODE */
+          <div className="flex flex-col gap-2.5">
+            <label className="text-[10px] font-medium text-zinc-400 flex items-center gap-1.5">
+              <FileText className="w-3 h-3 text-zinc-500" /> Input Payload
+            </label>
+            <input 
+              type="text" 
+              placeholder="Enter query or payload..." 
+              id={`test-input-${id}`}
+              onKeyDown={async (e) => {
+                if (e.key === 'Enter' && e.target.value) {
+                  document.getElementById(`test-btn-${id}`)?.click();
+                }
+              }}
+              className="w-full bg-zinc-950/50 border border-white/10 rounded-md p-2 text-[11px] text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500/50 transition-all nodrag"
+            />
+            
+            <div className="flex items-center gap-2 text-[10px] text-zinc-600 font-medium justify-center my-0.5 uppercase tracking-wide">
+              <div className="flex-1 h-px bg-white/5"></div>
+              <span>OR</span>
+              <div className="flex-1 h-px bg-white/5"></div>
+            </div>
 
-              if (outEdge) {
-                setEdges(eds => eds.map(e => e.id === outEdge.id ? { ...e, animated: true, style: { stroke: '#f97316', strokeWidth: 4 } } : e));
-                setNodes(nds => nds.map(n => n.id === targetNodeId ? { ...n, data: { ...n.data, status: 'running' } } : n));
+            <div className="relative group/file">
+              <input
+                type="file"
+                id={`test-file-${id}`}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer nodrag z-10"
+              />
+              <div className="w-full bg-zinc-950/50 border border-white/5 border-dashed rounded-md p-2 text-center text-zinc-500 group-hover/file:border-zinc-500 group-hover/file:text-zinc-300 transition-colors flex items-center justify-center gap-2">
+                <Upload className="w-3.5 h-3.5" />
+                <span>Upload Document</span>
+              </div>
+            </div>
+
+            <button
+              id={`test-btn-${id}`}
+              disabled={loading}
+              onClick={async () => {
+                const val = document.getElementById(`test-input-${id}`)?.value || '';
+                const fileInput = document.getElementById(`test-file-${id}`);
+                const fileVal = fileInput?.files?.[0];
                 
-                await new Promise(r => setTimeout(r, 600)); // Visual delay for animation
-              }
-              
-              try {
-                let apiUrl = 'http://localhost:8001/api/analyze/phishing';
-                const formData = new FormData();
+                if (!val && !fileVal) return;
+                
+                setLoading(true);
+                setResult(null);
+                
+                const allEdges = getEdges();
+                const outEdge = allEdges.find(e => e.source === id);
+                
+                if (!outEdge) {
+                  setResult({ error: 'Connect this node to an agent node to run execution!' });
+                  setLoading(false);
+                  return;
+                }
 
-                // Dynamic routing based on the target agent connected
-                if (targetNodeId) {
-                  const targetNode = getNodes().find(n => n.id === targetNodeId);
-                  if (targetNode) {
-                    const tId = targetNode.data.id;
-                    if (['agent-doc-ext', 'agent-auth-ver', 'agent-vis-forensics', 'agent-decision'].includes(tId)) {
-                      apiUrl = 'http://localhost:8001/api/verify/certificate';
-                      if (fileVal) {
-                        formData.append('file', fileVal);
-                      } else {
-                        const blob = new Blob([val], { type: 'text/plain' });
-                        formData.append('file', blob, 'test_certificate.txt');
-                      }
-                    } else if (tId === 'agent-malware') {
-                      apiUrl = 'http://localhost:8001/api/analyze/malware';
-                      if (fileVal) {
-                        formData.append('file', fileVal);
-                      } else {
-                        const blob = new Blob([val], { type: 'application/octet-stream' });
-                        formData.append('file', blob, 'suspicious.exe');
-                      }
-                    } else if (tId === 'agent-threat') {
-                      apiUrl = 'http://localhost:8001/api/analyze/threat';
-                      formData.append('query', val);
-                    } else if (tId === 'agent-privacy') {
-                      apiUrl = 'http://localhost:8001/api/audit/privacy';
-                      if (fileVal) {
-                         // Some endpoints might take files in future, but API expects string currently. 
-                         // Just fallback to text
-                      }
-                      formData.append('text_content', val || fileVal?.name);
-                    } else if (tId === 'agent-password') {
-                      apiUrl = 'http://localhost:8001/api/advise/password';
-                      formData.append('password', val);
-                    } else if (tId === 'agent-fraud') {
-                      apiUrl = 'http://localhost:8001/api/detect/fraud';
-                      formData.append('amount', '2500');
-                      formData.append('location', val);
-                    } else if (tId === 'agent-incident') {
-                      apiUrl = 'http://localhost:8001/api/incident/generate';
-                      formData.append('title', val);
+                let targetNodeId = outEdge.target;
+
+                if (outEdge) {
+                  setEdges(eds => eds.map(e => e.id === outEdge.id ? { ...e, animated: true, style: { stroke: '#71717a', strokeWidth: 2 } } : e));
+                  setNodes(nds => nds.map(n => n.id === targetNodeId ? { ...n, data: { ...n.data, status: 'running' } } : n));
+                  await new Promise(r => setTimeout(r, 600)); 
+                }
+                
+                try {
+                  const targetNode = targetNodeId ? getNodes().find(n => n.id === targetNodeId) : null;
+                  const route = targetNode ? (AGENT_ROUTES[targetNode.data.id] || DEFAULT_ROUTE) : DEFAULT_ROUTE;
+                  const apiUrl = API_BASE + route.url;
+
+                  const formData = new FormData();
+                  if (route.kind === 'file') {
+                    if (fileVal) {
+                      formData.append(route.field, fileVal);
                     } else {
-                      // default to phishing
-                      formData.append('url_or_text', val);
+                      const blob = new Blob([val], { type: route.fileMime || 'text/plain' });
+                      formData.append(route.field, blob, route.fileName || 'payload.txt');
                     }
                   } else {
-                    formData.append('url_or_text', val);
+                    formData.append(route.field, val || fileVal?.name || '');
                   }
-                }
 
-                const res = await fetch(apiUrl, {
-                  method: 'POST',
-                  body: formData
-                });
-                const json = await res.json();
-                setResult(json);
-                
-                if (targetNodeId) {
-                  setNodes(nds => nds.map(n => n.id === targetNodeId ? { ...n, data: { ...n.data, status: 'completed' } } : n));
-                  setEdges(eds => eds.map(e => e.id === outEdge.id ? { ...e, style: { stroke: '#38bdf8', strokeWidth: 2 } } : e));
-                  
-                  // Spawn new node
-                  const targetNode = getNodes().find(n => n.id === targetNodeId);
-                  if (targetNode) {
-                    const alertNodeId = `alert-${Date.now()}`;
-                    
-                    // Customize alert based on agent type
-                    let alertType = 'safe'; // 'safe', 'warning', 'danger'
-                    let alertTitle = "Check Complete";
-                    let alertSubtitle = "Analysis finished";
-                    let strokeColor = '#10b981'; // green
-
-                    const tId = targetNode.data.id;
-                    if (['agent-doc-ext', 'agent-auth-ver', 'agent-vis-forensics', 'agent-decision'].includes(tId)) {
-                        if (json.status === 'Fake' || json.status === 'Fraudulent') alertType = 'danger';
-                        else if (json.status === 'Suspicious') alertType = 'warning';
-                        else alertType = 'safe';
-                        
-                        alertTitle = alertType === 'danger' ? "Fake Certificate Detected" : (alertType === 'warning' ? "Suspicious Certificate Flagged" : "Certificate Verified");
-                        alertSubtitle = json.summary || `Risk: ${json.risk_level}`;
-                        strokeColor = alertType === 'danger' ? '#f43f5e' : (alertType === 'warning' ? '#f59e0b' : '#10b981');
-                    } else if (tId === 'agent-malware') {
-                        if (json.status === 'Malicious') alertType = 'danger';
-                        alertTitle = alertType === 'danger' ? "Malware Detected" : "File Clean";
-                        alertSubtitle = json.summary || `Score: ${json.threat_score}/100`;
-                        strokeColor = alertType === 'danger' ? '#f43f5e' : '#10b981';
-                    } else if (tId === 'agent-threat') {
-                        if (json.status === 'Malicious') alertType = 'danger';
-                        else if (json.status === 'Suspicious') alertType = 'warning';
-                        alertTitle = alertType === 'danger' ? "Threat Found" : (alertType === 'warning' ? "Suspicious Target" : "Safe Target");
-                        alertSubtitle = json.summary || "No active threats detected";
-                        strokeColor = alertType === 'danger' ? '#f43f5e' : (alertType === 'warning' ? '#f59e0b' : '#10b981');
-                    } else if (tId === 'agent-phishing') {
-                        if (json.status === 'Fake') alertType = 'danger';
-                        alertTitle = alertType === 'danger' ? "Suspicious Email Found" : "Email Verified Safe";
-                        alertSubtitle = alertType === 'danger' ? `Email Alert: ${json.email_delivery_status}` : 'No alert dispatched';
-                        strokeColor = alertType === 'danger' ? '#f43f5e' : '#10b981';
-                    } else if (tId === 'agent-privacy') {
-                        if (json.status === 'Non-Compliant') alertType = 'danger';
-                        alertTitle = alertType === 'danger' ? "Privacy Violation" : "Compliant";
-                        alertSubtitle = json.summary || "No PII found";
-                        strokeColor = alertType === 'danger' ? '#f43f5e' : '#10b981';
-                    } else if (tId === 'agent-password') {
-                        if (json.status === 'Weak' || json.status === 'Vulnerable') alertType = 'danger';
-                        alertTitle = alertType === 'danger' ? "Weak Password" : "Strong Password";
-                        alertSubtitle = json.summary || "Password is secure";
-                        strokeColor = alertType === 'danger' ? '#f43f5e' : '#10b981';
-                    } else if (tId === 'agent-fraud') {
-                        if (json.status === 'Fraudulent') alertType = 'danger';
-                        else if (json.status === 'Suspicious') alertType = 'warning';
-                        alertTitle = alertType === 'danger' ? "Fraud Detected" : (alertType === 'warning' ? "Suspicious Transaction" : "Transaction Safe");
-                        alertSubtitle = json.summary || "No anomalies";
-                        strokeColor = alertType === 'danger' ? '#f43f5e' : (alertType === 'warning' ? '#f59e0b' : '#10b981');
-                    } else if (tId === 'agent-incident') {
-                        alertType = 'warning'; 
-                        alertTitle = "Incident Created";
-                        alertSubtitle = json.summary || "Playbook active";
-                        strokeColor = '#f97316'; // orange
-                    }
-                    
-                    let nodeIcon = "✅";
-                    if (alertType === 'danger') nodeIcon = "🚨";
-                    else if (alertType === 'warning') nodeIcon = "⚠️";
-
-                    const alertNode = {
-                      id: alertNodeId,
-                      type: 'agentNode',
-                      position: { x: targetNode.position.x, y: targetNode.position.y + 150 },
-                      data: {
-                        icon: nodeIcon,
-                        label: alertTitle,
-                        subtitle: alertSubtitle,
-                        status: 'completed'
-                      }
-                    };
-                    setNodes(nds => nds.concat(alertNode));
-                    setEdges(eds => eds.concat({
-                      id: `e-${targetNodeId}-${alertNodeId}`,
-                      source: targetNodeId,
-                      target: alertNodeId,
-                      animated: true,
-                      style: { stroke: strokeColor, strokeWidth: 3 }
-                    }));
+                  // Attach per-node credential binding and playground overrides, if present.
+                  if (targetNode?.data?.credential_id) {
+                    formData.append('credential_id', targetNode.data.credential_id);
                   }
+                  if (targetNode?.data?.systemPrompt) {
+                    formData.append('system_prompt', targetNode.data.systemPrompt);
+                  }
+                  if (targetNode?.data?.model) {
+                    formData.append('model', targetNode.data.model);
+                  }
+
+                  const res = await fetch(apiUrl, {
+                    method: 'POST',
+                    body: formData
+                  });
+                  const json = await res.json();
+                  setResult(json);
+
+                  if (targetNodeId) {
+                    setNodes(nds => nds.map(n => n.id === targetNodeId ? { ...n, data: { ...n.data, status: 'completed' } } : n));
+                    setEdges(eds => eds.map(e => e.id === outEdge.id ? { ...e, style: { stroke: '#a1a1aa', strokeWidth: 1.5 } } : e));
+                  }
+                } catch (err) {
+                  setResult({ error: `Backend server not reachable at ${API_BASE}` });
+                  if (targetNodeId) {
+                    setNodes(nds => nds.map(n => n.id === targetNodeId ? { ...n, data: { ...n.data, status: 'error' } } : n));
+                  }
+                } finally {
+                  setLoading(false);
                 }
-              } catch (err) {
-                setResult({ error: 'Failed to connect to API' });
-                if (targetNodeId) {
-                  setNodes(nds => nds.map(n => n.id === targetNodeId ? { ...n, data: { ...n.data, status: 'idle' } } : n));
-                  setEdges(eds => eds.map(e => e.id === outEdge.id ? { ...e, style: { stroke: '#38bdf8', strokeWidth: 2 } } : e));
-                }
-              } finally {
-                setLoading(false);
-              }
-            }}
-            className="w-full py-1.5 rounded bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-[11px] transition-colors flex items-center justify-center gap-1 shadow-md shadow-sky-500/20 disabled:opacity-50"
-          >
-            {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
-            {loading ? "Running..." : "▶ Run Simulation"}
-          </button>
-          
-          {result && !result.error && (
-            <div className="text-[10px] text-slate-300 bg-slate-900 p-2 rounded border border-slate-700 mt-1">
-              <div className="mb-1"><span className="text-slate-500">Status:</span> <strong className={result.status === 'Fake' ? 'text-rose-400' : 'text-emerald-400'}>{result.status}</strong></div>
-              <div className="mb-1"><span className="text-slate-500">Risk:</span> <strong>{result.risk_level}</strong></div>
-              <div className="mb-1"><span className="text-slate-500">Conf:</span> <strong>{(result.confidence * 100).toFixed(0)}%</strong></div>
-              <div className="mb-1"><span className="text-slate-500">Reason:</span> {result.summary}</div>
-              
-              {result.email_delivery_status && (
-                <div className={`mt-2 pt-2 border-t border-slate-700 font-bold ${result.email_delivery_status === 'success' ? 'text-emerald-400' : result.email_delivery_status === 'failed' ? 'text-rose-400' : 'text-slate-400'}`}>
-                  Email Alert: {result.email_delivery_status.toUpperCase()}
-                  {result.email_delivery_error && <div className="text-[9px] font-normal text-rose-300 mt-0.5">{result.email_delivery_error}</div>}
+              }}
+              className="w-full mt-1 py-1.5 rounded-md bg-white hover:bg-zinc-200 text-zinc-950 font-semibold text-[11px] transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 active:scale-[0.98] shadow-sm"
+            >
+              {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+              <span>{loading ? "Executing..." : "Run Node"}</span>
+            </button>
+            
+            {result && !result.error && (
+              <div className="text-[10px] text-zinc-300 bg-zinc-950/50 p-2.5 rounded-md border border-white/5 mt-1 space-y-1.5 font-mono">
+                <div className="flex items-center justify-between border-b border-white/5 pb-1">
+                  <span className="text-zinc-500">Status</span>
+                  <strong className={result.status === 'Fake' || result.status === 'Malicious' ? 'text-rose-400' : 'text-emerald-400'}>{result.status || 'Verified'}</strong>
                 </div>
-              )}
-            </div>
-          )}
-          {result && result.error && (
-            <div className="text-[10px] text-rose-400 bg-rose-950/50 p-2 rounded border border-rose-900">
-              {result.error}
-            </div>
-          )}
-        </div>
-      ) : (
-        data.subtitle && (
-          <div className="text-[10px] text-slate-400 mt-1 font-medium truncate">
-            {data.subtitle}
+                <div className="flex items-center justify-between border-b border-white/5 pb-1">
+                  <span className="text-zinc-500">Risk Score</span>
+                  <strong>{result.risk_level || result.threat_score || 'Low'}</strong>
+                </div>
+                <div className="text-zinc-400 leading-relaxed pt-1">{result.summary || 'Scan complete'}</div>
+              </div>
+            )}
+            {result && result.error && (
+              <div className="text-[10px] text-rose-400 bg-rose-500/5 p-2.5 rounded-md border border-rose-500/20 font-mono flex items-start gap-2">
+                <AlertCircle className="w-3 h-3 shrink-0 mt-0.5" />
+                <span>{result.error}</span>
+              </div>
+            )}
           </div>
-        )
-      )}
-      
-      {isRunning && (
-        <span className="absolute -top-2 -left-2 p-1 rounded-full bg-sky-500 text-slate-950 shadow-md">
-          <Loader2 className="w-3 h-3 animate-spin" />
-        </span>
-      )}
-      
-      {isCompleted && (
-        <span className="absolute -top-2 -left-2 p-1 rounded-full bg-emerald-500 text-slate-950 shadow-md">
-          <CheckCircle2 className="w-3 h-3" />
-        </span>
-      )}
-      
-      <Handle type="source" position={Position.Bottom} className="!bg-sky-400 !w-2.5 !h-2.5 !border-2 !border-slate-900" />
+        ) : (
+          /* STANDARD NODE METADATA DISPLAY */
+          <div className="space-y-2.5">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] text-zinc-500 font-medium">Input Port</span>
+              <div className="px-2 py-1 bg-zinc-950/50 border border-white/5 rounded text-[10px] font-mono text-zinc-300">
+                {data.inputLabel || 'payload_stream_in'}
+              </div>
+            </div>
+            
+            {data.isLogicNode && (
+              <div className="px-2 py-1.5 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] font-mono text-amber-400/90 flex flex-col gap-1">
+                <span className="text-[9px] text-amber-500/60 uppercase font-sans font-bold">Branch Condition</span>
+                <span>{data.conditionField} {data.conditionOperator} {data.conditionValue}</span>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between pt-2 text-[10px] font-mono text-zinc-500 border-t border-white/5">
+              <span className="flex items-center gap-1"><span className="w-1 h-1 rounded-full bg-emerald-500"></span> 42ms</span>
+              <span>18 MB</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* BOTTOM SOURCE HANDLE */}
+      <Handle 
+        type="source" 
+        position={Position.Bottom} 
+        className="!bg-zinc-800 !w-2.5 !h-2.5 !border-2 !border-zinc-950 hover:!bg-white transition-colors" 
+      />
     </div>
   );
 }

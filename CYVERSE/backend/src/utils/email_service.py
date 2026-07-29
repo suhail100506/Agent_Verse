@@ -2,64 +2,88 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from typing import Optional
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def send_alert(recipient_email: str, report: dict) -> dict:
+
+def send_report_email(recipient_email: str, report: dict, agent_name: str, credential_id: Optional[str] = None) -> dict:
     """
-    Sends an automated security alert email using SMTP.
+    Sends a generic security report notification email using SMTP.
     Returns a dict with 'status' and 'error' keys.
+
+    SMTP credentials resolve in this order: a bound vault credential (type "smtp"),
+    then the EMAIL_USER/EMAIL_PASS environment variables.
     """
-    email_user = os.getenv("EMAIL_USER")
-    email_pass = os.getenv("EMAIL_PASS")
+    smtp_host = "smtp.gmail.com"
+    smtp_port = 587
+    email_user = None
+    email_pass = None
+
+    if credential_id:
+        from src.cyberverse_orchestrator.credentials_vault import resolve_secret
+        secret = resolve_secret(credential_id)
+        if secret and secret.get("_type") == "smtp":
+            smtp_host = secret.get("smtp_host") or smtp_host
+            smtp_port = int(secret.get("smtp_port") or smtp_port)
+            email_user = secret.get("smtp_user") or None
+            email_pass = secret.get("smtp_pass") or None
+            recipient_email = recipient_email or secret.get("recipient_default") or recipient_email
 
     if not email_user or not email_pass:
-        logger.warning("SMTP credentials not found in environment variables.")
+        email_user = email_user or os.getenv("EMAIL_USER")
+        email_pass = email_pass or os.getenv("EMAIL_PASS")
+
+    if not email_user or not email_pass:
+        logger.warning("SMTP credentials not found (no bound credential and no EMAIL_USER/EMAIL_PASS env vars).")
         return {"status": "failed", "error": "SMTP credentials not configured."}
 
-    subject = "⚠ Security Alert: Suspicious Email Detected"
-    
+    if not recipient_email:
+        return {"status": "failed", "error": "No recipient email provided."}
+
+    status_label = report.get("status", "Flagged")
+    subject = f"⚠ CyberVerse Alert [{agent_name}]: {status_label}"
+
     html_body = f"""
     <html>
       <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-        <h2 style="color: #d9534f;">⚠ Security Alert: Suspicious/Phishing Email Detected</h2>
-        <p>The CyberVerse AI Security Platform has analyzed a recent email or link and classified it as malicious.</p>
-        
+        <h2 style="color: #d9534f;">⚠ {agent_name} Alert</h2>
+        <p>The CyberVerse AI Security Platform flagged the following result.</p>
+
         <table style="border-collapse: collapse; width: 100%; max-width: 600px; margin-bottom: 20px;">
             <tr style="background-color: #f9f9f9;">
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Alert ID:</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Report ID:</strong></td>
                 <td style="padding: 10px; border: 1px solid #ddd;">{report.get('report_id', 'N/A')}</td>
             </tr>
             <tr>
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Risk Level:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; color: #d9534f; font-weight: bold;">{report.get('risk_level', 'HIGH')}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Status:</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd; color: #d9534f; font-weight: bold;">{status_label}</td>
             </tr>
             <tr style="background-color: #f9f9f9;">
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Confidence Score:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">{report.get('confidence', 0.95)}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Risk Level:</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{report.get('risk_level', 'N/A')}</td>
             </tr>
             <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Confidence Score:</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{report.get('confidence', 'N/A')}</td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
                 <td style="padding: 10px; border: 1px solid #ddd;"><strong>Timestamp:</strong></td>
                 <td style="padding: 10px; border: 1px solid #ddd;">{report.get('created_at', 'N/A')}</td>
             </tr>
         </table>
-        
-        <h3 style="color: #5bc0de;">Detection Reasons:</h3>
-        <p>{report.get('summary', 'Unknown malicious activity detected.')}</p>
-        
-        <h3 style="color: #f0ad4e;">Recommended Actions:</h3>
-        <ul>
-            <li>Do <strong>not</strong> click any links.</li>
-            <li>Do <strong>not</strong> download any attachments.</li>
-            <li>Verify the sender's identity through alternate channels.</li>
-            <li>Report the email to your Security Administrator immediately.</li>
-        </ul>
-        
+
+        <h3 style="color: #5bc0de;">Summary:</h3>
+        <p>{report.get('summary', 'No summary available.')}</p>
+
+        <h3 style="color: #f0ad4e;">Recommendation:</h3>
+        <p>{report.get('recommendation', 'Review manually.')}</p>
+
         <br/>
         <p style="font-size: 12px; color: #777;">
-            Automated Alert generated by CyberVerse AI Multi-Agent Platform.
+            Automated notification generated by CyberVerse AI Multi-Agent Platform.
         </p>
       </body>
     </html>
@@ -72,15 +96,20 @@ def send_alert(recipient_email: str, report: dict) -> dict:
     msg.attach(MIMEText(html_body, 'html'))
 
     try:
-        server = smtplib.SMTP("smtp.gmail.com", 587, timeout=10)
+        server = smtplib.SMTP(smtp_host, smtp_port, timeout=10)
         server.ehlo()
         server.starttls()
         server.login(email_user, email_pass)
         server.sendmail(email_user, recipient_email, msg.as_string())
         server.quit()
-        logger.info(f"Successfully sent security alert email to {recipient_email}")
+        logger.info(f"Successfully sent {agent_name} alert email to {recipient_email}")
         return {"status": "success", "error": None}
     except Exception as e:
         error_msg = str(e)
         logger.error(f"Failed to send email to {recipient_email}: {error_msg}")
         return {"status": "failed", "error": error_msg}
+
+
+def send_alert(recipient_email: str, report: dict) -> dict:
+    """Backward-compatible wrapper used by phishing_detection_agent's existing call site."""
+    return send_report_email(recipient_email, report, agent_name="Phishing Detection Agent")

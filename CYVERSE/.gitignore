@@ -3,3 +3,4 @@
 __pycache__/
 .crewai/
 output/
+node_modules

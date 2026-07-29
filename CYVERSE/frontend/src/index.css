@@ -1,32 +1,79 @@
 @import "tailwindcss";
 
 @theme {
-  --color-sky-400: #38bdf8;
-  --color-sky-500: #0ea5e9;
-  --color-slate-900: #0f172a;
-  --color-slate-800: #1e293b;
+  --color-[#0b0f14]: #0b0f14;
+  --color-[#111827]: #111827;
+  --color-[#161b22]: #161b22;
+  --color-[#1e293b]: #1e293b;
+
+  --color-zinc-950: #09090b;
+  --color-zinc-900: #18181b;
+  --color-zinc-800: #27272a;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #07090e;
-  color: #f1f5f9;
+  background-color: var(--color-zinc-950);
+  color: #f8fafc;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* CUSTOM ULTRA-SLEEK SCROLLBAR */
 .custom-scrollbar::-webkit-scrollbar {
   height: 6px;
   width: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
-  border-radius: 4px;
+  background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(56, 189, 248, 0.5);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(56, 189, 248, 0.8);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* REACT FLOW CUSTOM OVERRIDES */
+.react-flow__pane {
+  background-color: var(--color-zinc-950) !important;
+}
+
+.react-flow__minimap {
+  background: rgba(24, 24, 27, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(12px) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
+}
+
+.react-flow__controls-button {
+  background-color: rgba(24, 24, 27, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  fill: #a1a1aa !important;
+  backdrop-filter: blur(8px) !important;
+}
+.react-flow__controls-button:hover {
+  background-color: rgba(39, 39, 42, 0.9) !important;
+  fill: #f8fafc !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.15s ease-out forwards;
+}
+
+/* Grid Background */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
