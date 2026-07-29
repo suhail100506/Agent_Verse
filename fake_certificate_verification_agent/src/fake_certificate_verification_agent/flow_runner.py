@@ -102,6 +102,14 @@ def extract_document_content(file_path: str, file_type: str) -> Tuple[str, Dict[
             except Exception as e:
                 suspicious_flags.append(f"pypdf read error: {str(e)}")
 
+    # Text Extraction
+    elif file_type == "text" or file_path.endswith(".txt"):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                raw_text = f.read()
+        except Exception as e:
+            suspicious_flags.append(f"Text read error: {str(e)}")
+
     # Image Extraction
     elif HAS_PIL:
         try:
@@ -206,6 +214,19 @@ def smart_parse_certificate_fields(raw_text: str, metadata: Dict[str, Any], file
 
 def run_certificate_flow(file_path: str, file_type: str = "pdf") -> Dict[str, Any]:
     filename = os.path.basename(file_path)
+    
+    # If the file is actually a JSON string from a previous agent's output, return it directly
+    if file_type == "text" or file_path.endswith(".txt"):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            import json
+            data = json.loads(content)
+            if "report_id" in data or "checks" in data:
+                return data
+        except Exception:
+            pass
+
     raw_text, metadata, suspicious_flags = extract_document_content(file_path, file_type)
     fields = smart_parse_certificate_fields(raw_text, metadata, filename)
 

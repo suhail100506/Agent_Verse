@@ -3,15 +3,56 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import logging
+import sqlite3
+from pathlib import Path
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def send_alert(recipient_email: str, report: dict) -> dict:
+DB_PATH = Path(__file__).parent / "notified_events.db"
+
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS notifications (
+            event_id TEXT PRIMARY KEY,
+            notified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+init_db()
+
+def is_event_notified(event_id: str) -> bool:
+    if not event_id:
+        return False
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('SELECT 1 FROM notifications WHERE event_id = ?', (event_id,))
+    result = cursor.fetchone()
+    conn.close()
+    return result is not None
+
+def mark_event_notified(event_id: str):
+    if not event_id:
+        return
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('INSERT OR IGNORE INTO notifications (event_id) VALUES (?)', (event_id,))
+    conn.commit()
+    conn.close()
+
+def send_alert(recipient_email: str, report: dict, event_id: str = None) -> dict:
     """
     Sends an automated security alert email using SMTP.
     Returns a dict with 'status' and 'error' keys.
     """
+    if event_id and is_event_notified(event_id):
+        logger.info(f"Event {event_id} already notified. Skipping email to prevent duplicates.")
+        return {"status": "skipped", "error": None}
+
     email_user = os.getenv("EMAIL_USER")
     email_pass = os.getenv("EMAIL_PASS")
 
@@ -19,42 +60,49 @@ def send_alert(recipient_email: str, report: dict) -> dict:
         logger.warning("SMTP credentials not found in environment variables.")
         return {"status": "failed", "error": "SMTP credentials not configured."}
 
-    subject = "⚠ Security Alert: Suspicious Email Detected"
+    subject = "⚠ Security Alert: Suspicious Activity Detected"
     
+    sender_info = report.get('sender', 'Unknown Sender')
+    email_subject = report.get('subject', 'Unknown Subject')
+    threat_level = report.get('risk_level', 'HIGH')
+    detection_reason = report.get('summary', 'Unknown malicious activity detected.')
+    detection_time = report.get('created_at', 'N/A')
+
     html_body = f"""
     <html>
       <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-        <h2 style="color: #d9534f;">⚠ Security Alert: Suspicious/Phishing Email Detected</h2>
-        <p>The CyberVerse AI Security Platform has analyzed a recent email or link and classified it as malicious.</p>
+        <h2 style="color: #d9534f;">⚠ Security Alert: Suspicious Activity Detected</h2>
+        <p>The CyberVerse AI Security Platform has analyzed a recent email or link and classified it as suspicious.</p>
         
         <table style="border-collapse: collapse; width: 100%; max-width: 600px; margin-bottom: 20px;">
             <tr style="background-color: #f9f9f9;">
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Alert ID:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">{report.get('report_id', 'N/A')}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Sender:</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{sender_info}</td>
             </tr>
             <tr>
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Risk Level:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; color: #d9534f; font-weight: bold;">{report.get('risk_level', 'HIGH')}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Subject:</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{email_subject}</td>
             </tr>
             <tr style="background-color: #f9f9f9;">
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Confidence Score:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">{report.get('confidence', 0.95)}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Threat Level:</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd; color: #d9534f; font-weight: bold;">{threat_level}</td>
             </tr>
             <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Detection Reason:</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{detection_reason}</td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
                 <td style="padding: 10px; border: 1px solid #ddd;"><strong>Timestamp:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">{report.get('created_at', 'N/A')}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{detection_time}</td>
             </tr>
         </table>
-        
-        <h3 style="color: #5bc0de;">Detection Reasons:</h3>
-        <p>{report.get('summary', 'Unknown malicious activity detected.')}</p>
         
         <h3 style="color: #f0ad4e;">Recommended Actions:</h3>
         <ul>
             <li>Do <strong>not</strong> click any links.</li>
             <li>Do <strong>not</strong> download any attachments.</li>
-            <li>Verify the sender's identity through alternate channels.</li>
-            <li>Report the email to your Security Administrator immediately.</li>
+            <li>Delete or quarantine the email.</li>
+            <li>Contact your administrator if unsure.</li>
         </ul>
         
         <br/>
@@ -79,6 +127,10 @@ def send_alert(recipient_email: str, report: dict) -> dict:
         server.sendmail(email_user, recipient_email, msg.as_string())
         server.quit()
         logger.info(f"Successfully sent security alert email to {recipient_email}")
+        
+        if event_id:
+            mark_event_notified(event_id)
+            
         return {"status": "success", "error": None}
     except Exception as e:
         error_msg = str(e)

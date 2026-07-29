@@ -32,6 +32,8 @@ from src.privacy_compliance_agent.flow_runner import run_privacy_flow, load_loca
 from src.password_advisor_agent.flow_runner import run_password_flow, load_local_password_reports
 from src.fraud_detection_agent.flow_runner import run_fraud_flow, load_local_fraud_reports
 from src.incident_response_agent.flow_runner import run_incident_response_flow, load_local_incident_reports
+from src.deepfake_detection_agent.flow_runner import run_deepfake_flow, load_local_deepfake_reports
+from src.utils.email_monitor import start_email_monitor
 
 app = FastAPI(
     title="CyberVerse AI 10-Agent Platform API",
@@ -56,6 +58,10 @@ FRONTEND_DIR = BASE_DIR / "frontend"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 FRONTEND_DIR.mkdir(parents=True, exist_ok=True)
 
+@app.on_event("startup")
+def startup_event():
+    start_email_monitor()
+
 
 @app.get("/api/health")
 def health_check():
@@ -74,7 +80,8 @@ def health_check():
             "Privacy Compliance Agent",
             "Password Security Advisor Agent",
             "Fraud Detection Agent",
-            "Incident Response Agent"
+            "Incident Response Agent",
+            "Deepfake Detection Agent"
         ]
     }
 
@@ -92,7 +99,8 @@ def get_system_stats():
         load_local_privacy_reports() +
         load_local_password_reports() +
         load_local_fraud_reports() +
-        load_local_incident_reports()
+        load_local_incident_reports() +
+        load_local_deepfake_reports()
     )
     verified = sum(1 for r in all_reports if (r.get("status") or "").upper() == "VERIFIED")
     flagged = sum(1 for r in all_reports if (r.get("status") or "").upper() in ["FAKE", "SUSPICIOUS", "MALICIOUS", "CRITICAL RISK"])
@@ -122,7 +130,8 @@ def get_agents_status():
             {"name": "Privacy Compliance Agent", "status": "ONLINE", "health": 96},
             {"name": "Password Security Advisor Agent", "status": "ONLINE", "health": 100},
             {"name": "Fraud Detection Agent", "status": "ONLINE", "health": 97},
-            {"name": "Incident Response Agent", "status": "ONLINE", "health": 99}
+            {"name": "Incident Response Agent", "status": "ONLINE", "health": 99},
+            {"name": "Deepfake Detection Agent", "status": "ONLINE", "health": 100}
         ]
     }
 
@@ -205,7 +214,7 @@ async def verify_certificate(file: UploadFile = File(...)):
     if ext not in allowed_extensions:
         raise HTTPException(status_code=400, detail=f"Unsupported file type '{ext}'.")
 
-    file_type = "pdf" if ext == ".pdf" else "image"
+    file_type = "pdf" if ext == ".pdf" else ("text" if ext == ".txt" else "image")
     file_id = str(uuid.uuid4())[:8]
     saved_file_path = UPLOAD_DIR / f"{file_id}_{filename}"
     with open(saved_file_path, "wb") as buffer:
@@ -275,6 +284,17 @@ async def generate_incident_report(title: str = Form("Cyber Incident Investigati
     return run_incident_response_flow({"title": title, "severity": "HIGH"})
 
 
+@app.post("/api/analyze/deepfake")
+async def analyze_deepfake(file: UploadFile = File(...)):
+    filename = file.filename or "suspicious_media.mp4"
+    file_id = str(uuid.uuid4())[:8]
+    saved_file_path = UPLOAD_DIR / f"deepfake_{file_id}_{filename}"
+    with open(saved_file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    return run_deepfake_flow(str(saved_file_path))
+
+
 @app.get("/api/reports")
 def get_all_reports(agent_type: Optional[str] = Query(None), limit: int = Query(30, ge=1, le=100)):
     all_reports = (
@@ -287,7 +307,8 @@ def get_all_reports(agent_type: Optional[str] = Query(None), limit: int = Query(
         load_local_privacy_reports() +
         load_local_password_reports() +
         load_local_fraud_reports() +
-        load_local_incident_reports()
+        load_local_incident_reports() +
+        load_local_deepfake_reports()
     )
     all_reports.sort(key=lambda x: x.get("created_at", ""), reverse=True)
     return {"total": len(all_reports), "reports": all_reports[:limit]}
@@ -305,7 +326,8 @@ def get_report_by_id(report_id: str):
         load_local_privacy_reports() +
         load_local_password_reports() +
         load_local_fraud_reports() +
-        load_local_incident_reports()
+        load_local_incident_reports() +
+        load_local_deepfake_reports()
     )
     for report in all_reports:
         if report.get("report_id") == report_id or report.get("orchestration_id") == report_id:
@@ -325,7 +347,8 @@ def export_report_json(report_id: str):
         load_local_privacy_reports() +
         load_local_password_reports() +
         load_local_fraud_reports() +
-        load_local_incident_reports()
+        load_local_incident_reports() +
+        load_local_deepfake_reports()
     )
     for report in all_reports:
         if report.get("report_id") == report_id or report.get("orchestration_id") == report_id:
@@ -345,7 +368,8 @@ def export_report_html(report_id: str):
         load_local_privacy_reports() +
         load_local_password_reports() +
         load_local_fraud_reports() +
-        load_local_incident_reports()
+        load_local_incident_reports() +
+        load_local_deepfake_reports()
     )
     for report in all_reports:
         if report.get("report_id") == report_id or report.get("orchestration_id") == report_id:

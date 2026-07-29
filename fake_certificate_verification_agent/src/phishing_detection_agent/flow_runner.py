@@ -31,12 +31,16 @@ def save_local_phishing_report(report: dict) -> None:
         json.dump(reports, f, indent=2)
 
 
-def run_phishing_flow(url_or_text: str) -> Dict[str, Any]:
+def run_phishing_flow(url_or_text: str, event_id: Optional[str] = None) -> Dict[str, Any]:
     url_match = re.search(r"https?://[^\s]+", url_or_text)
-    target_url = url_match.group(0) if url_match else (url_or_text if url_or_text else "http://paypal-security-verify.tmp/login")
-
-    u_lower = target_url.lower()
-    is_legit = "google.com" in u_lower or "github.com" in u_lower or "microsoft.com" in u_lower or "stanford.edu" in u_lower
+    
+    if not url_match:
+        target_url = "No link detected"
+        is_legit = True
+    else:
+        target_url = url_match.group(0)
+        u_lower = target_url.lower()
+        is_legit = "google.com" in u_lower or "github.com" in u_lower or "microsoft.com" in u_lower or "stanford.edu" in u_lower
 
     if is_legit:
         status = "Verified"
@@ -72,6 +76,7 @@ def run_phishing_flow(url_or_text: str) -> Dict[str, Any]:
 
     final_report = {
         "report_id": report_id,
+        "event_id": event_id,
         "created_at": timestamp,
         "agent": "Phishing Detection Agent",
         "type": "phishing",
@@ -89,13 +94,9 @@ def run_phishing_flow(url_or_text: str) -> Dict[str, Any]:
     }
 
     if status == "Fake":
-        email_match = re.search(r"[\w\.-]+@[\w\.-]+\.\w+", url_or_text)
-        recipient_email = email_match.group(0) if email_match else os.getenv("EMAIL_USER", "kavin88701@gmail.com")
-        
-        logger.info(f"Phishing detected! Triggering email alert to {recipient_email}")
-        email_result = send_alert(recipient_email, final_report)
-        final_report["email_delivery_status"] = email_result["status"]
-        final_report["email_delivery_error"] = email_result["error"]
+        logger.info("Phishing detected! Report generated. Notification Agent will handle the alert.")
+        final_report["email_delivery_status"] = "pending_notification_agent"
+        final_report["email_delivery_error"] = None
 
     save_local_phishing_report(final_report)
 

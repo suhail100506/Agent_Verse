@@ -70,7 +70,7 @@ export default function AgentNode({ id, data, selected }) {
               }
               
               try {
-                let apiUrl = 'http://localhost:8001/api/analyze/phishing';
+                let apiUrl = 'http://localhost:8000/api/analyze/phishing';
                 const formData = new FormData();
 
                 // Dynamic routing based on the target agent connected
@@ -79,7 +79,7 @@ export default function AgentNode({ id, data, selected }) {
                   if (targetNode) {
                     const tId = targetNode.data.id;
                     if (['agent-doc-ext', 'agent-auth-ver', 'agent-vis-forensics', 'agent-decision'].includes(tId)) {
-                      apiUrl = 'http://localhost:8001/api/verify/certificate';
+                      apiUrl = 'http://localhost:8000/api/verify/certificate';
                       if (fileVal) {
                         formData.append('file', fileVal);
                       } else {
@@ -87,7 +87,7 @@ export default function AgentNode({ id, data, selected }) {
                         formData.append('file', blob, 'test_certificate.txt');
                       }
                     } else if (tId === 'agent-malware') {
-                      apiUrl = 'http://localhost:8001/api/analyze/malware';
+                      apiUrl = 'http://localhost:8000/api/analyze/malware';
                       if (fileVal) {
                         formData.append('file', fileVal);
                       } else {
@@ -95,25 +95,33 @@ export default function AgentNode({ id, data, selected }) {
                         formData.append('file', blob, 'suspicious.exe');
                       }
                     } else if (tId === 'agent-threat') {
-                      apiUrl = 'http://localhost:8001/api/analyze/threat';
+                      apiUrl = 'http://localhost:8000/api/analyze/threat';
                       formData.append('query', val);
                     } else if (tId === 'agent-privacy') {
-                      apiUrl = 'http://localhost:8001/api/audit/privacy';
+                      apiUrl = 'http://localhost:8000/api/audit/privacy';
                       if (fileVal) {
                          // Some endpoints might take files in future, but API expects string currently. 
                          // Just fallback to text
                       }
                       formData.append('text_content', val || fileVal?.name);
                     } else if (tId === 'agent-password') {
-                      apiUrl = 'http://localhost:8001/api/advise/password';
+                      apiUrl = 'http://localhost:8000/api/advise/password';
                       formData.append('password', val);
                     } else if (tId === 'agent-fraud') {
-                      apiUrl = 'http://localhost:8001/api/detect/fraud';
+                      apiUrl = 'http://localhost:8000/api/detect/fraud';
                       formData.append('amount', '2500');
                       formData.append('location', val);
                     } else if (tId === 'agent-incident') {
-                      apiUrl = 'http://localhost:8001/api/incident/generate';
+                      apiUrl = 'http://localhost:8000/api/incident/generate';
                       formData.append('title', val);
+                    } else if (tId === 'agent-deepfake') {
+                      apiUrl = 'http://localhost:8000/api/analyze/deepfake';
+                      if (fileVal) {
+                        formData.append('file', fileVal);
+                      } else {
+                        const blob = new Blob([val], { type: 'video/mp4' });
+                        formData.append('file', blob, 'test_video.mp4');
+                      }
                     } else {
                       // default to phishing
                       formData.append('url_or_text', val);
@@ -191,6 +199,11 @@ export default function AgentNode({ id, data, selected }) {
                         alertTitle = "Incident Created";
                         alertSubtitle = json.summary || "Playbook active";
                         strokeColor = '#f97316'; // orange
+                    } else if (tId === 'agent-deepfake') {
+                        if (json.status === 'Fake') alertType = 'danger';
+                        alertTitle = alertType === 'danger' ? "Deepfake Detected" : "Media Authentic";
+                        alertSubtitle = json.summary || "Media is safe";
+                        strokeColor = alertType === 'danger' ? '#f43f5e' : '#10b981';
                     }
                     
                     let nodeIcon = "✅";

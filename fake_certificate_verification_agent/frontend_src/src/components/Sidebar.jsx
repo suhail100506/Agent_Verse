@@ -13,6 +13,7 @@ export const agentTypes = [
   {id: "agent-password", icon: "🔑", label: "Password Security Advisor", subtitle: "Entropy & Breach Database", inputLabel: "Password String Required"},
   {id: "agent-fraud", icon: "💳", label: "Fraud Detection Agent", subtitle: "Transaction Anomaly & Geo Risk", inputLabel: "Amount ($) & Location Required"},
   {id: "agent-incident", icon: "🚨", label: "Incident Response Agent", subtitle: "SOC Playbooks & Containment", inputLabel: "Incident Title Required"},
+  {id: "agent-deepfake", icon: "🎭", label: "Deepfake Detection Agent", subtitle: "Media Splicing & Face Swap", inputLabel: "Video / Audio File Required"},
   {id: "node-mongodb", icon: "🍃", label: "MongoDB Audit Logs", subtitle: "Persistent Database Store", inputLabel: "Database Persistence"},
   {id: "node-user-upload", icon: "📄", label: "User Payload Ingest", subtitle: "Payload Trigger Input", inputLabel: "User Query Required"},
   {id: "node-final-report", icon: "📋", label: "Final Security Report", subtitle: "JSON & PDF SOC Exporter", inputLabel: "Report Generator"},
