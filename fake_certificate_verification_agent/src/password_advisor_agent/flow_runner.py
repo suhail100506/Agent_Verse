@@ -37,17 +37,34 @@ def calculate_entropy(password: str) -> float:
     return round(len(password) * math.log2(pool_size), 2)
 
 
+import secrets
+import string
+
+
+def generate_recommended_password(length: int = 16) -> str:
+    alphabet = string.ascii_letters + string.digits + "!@#$%^&*"
+    while True:
+        password = ''.join(secrets.choice(alphabet) for _ in range(length))
+        if (any(c.islower() for c in password)
+                and any(c.isupper() for c in password)
+                and any(c.isdigit() for c in password)
+                and any(c in "!@#$%^&*" for c in password)):
+            return password
+
+
 def run_password_flow(password: str) -> Dict[str, Any]:
     pwd = password if password else "P@ssword123!"
     entropy = calculate_entropy(pwd)
 
     p_lower = pwd.lower()
     leetspeak = p_lower.replace("@", "a").replace("$", "s").replace("0", "o").replace("1", "i").replace("3", "e").replace("!", "")
-    common_words = ["password", "123456", "admin", "welcome", "qwerty", "letmein", "monkey"]
+    common_words = ["password", "123456", "admin", "welcome", "qwerty", "letmein", "monkey", "pass"]
     is_weak = any(w in p_lower or w in leetspeak for w in common_words) or len(pwd) < 10 or entropy < 50.0 or pwd in ["P@ssword123!", "Password123!"]
 
+    recommended_pwd = generate_recommended_password(16)
+
     if not is_weak and entropy > 75.0:
-        status = "Verified"
+        status = "Verified (Safe)"
         risk_level = "LOW RISK"
         overall_score = 98
         confidence = 0.98
@@ -58,22 +75,22 @@ def run_password_flow(password: str) -> Dict[str, Any]:
             "character_diversity": "Passed - Contains uppercase, lowercase, numbers, and special symbols."
         }
         summary = f"Password entropy analysis confirmed STRONG password security ({entropy} bits)."
-        recommendation = "Password meets enterprise security standards."
+        recommendation = "Password meets enterprise security standards. No action required."
         next_action = "Approve password update."
     else:
-        status = "Fake"
+        status = "Weak (Not Safe)"
         risk_level = "HIGH RISK"
-        overall_score = 30
+        overall_score = 28
         confidence = 0.96
         checks = {
             "entropy_calculation": f"Failed - Low Entropy {entropy} bits (Threshold: 60+ bits required).",
-            "dictionary_exposure": "Failed - Contains common dictionary term or sequential number pattern.",
+            "dictionary_exposure": "Failed - Contains common dictionary term or leetspeak pattern.",
             "breach_database": "Failed - Password appears in known leaked credential breach databases.",
-            "character_diversity": "Warning - Insufficient character pool diversity."
+            "character_diversity": "Warning - Insufficient length or character pool diversity."
         }
-        summary = f"WEAK PASSWORD ALERT: Provided password has low entropy ({entropy} bits) and vulnerable pattern."
-        recommendation = "Enforce 14+ character password with symbols and numbers.",
-        next_action = "Require immediate password change."
+        summary = f"WEAK PASSWORD WARNING: Provided password '{pwd}' has low entropy ({entropy} bits) and vulnerable patterns."
+        recommendation = f"RECOMMENDED STRONG PASSWORD: '{recommended_pwd}' (16 characters, 98+ bits entropy, resistant to dictionary & brute-force attacks)."
+        next_action = "Require immediate password update to recommended strong credentials."
 
     report_id = f"PWD-{uuid.uuid4().hex[:8].upper()}"
     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -86,9 +103,11 @@ def run_password_flow(password: str) -> Dict[str, Any]:
         "entropy_bits": entropy,
         "length": len(pwd),
         "status": status,
+        "verdict": "WEAK PASSWORD - RECOMMENDATION INCLUDED" if is_weak else "SAFE PASSWORD",
         "risk_level": risk_level,
         "confidence": confidence,
         "overall_score": overall_score,
+        "recommended_password": recommended_pwd if is_weak else None,
         "checks": checks,
         "summary": summary,
         "recommendation": recommendation,

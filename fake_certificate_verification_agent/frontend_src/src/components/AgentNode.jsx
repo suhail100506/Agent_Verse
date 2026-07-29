@@ -147,11 +147,11 @@ export default function AgentNode({ id, data, selected }) {
 
                     const tId = targetNode.data.id;
                     if (['agent-doc-ext', 'agent-auth-ver', 'agent-vis-forensics', 'agent-decision'].includes(tId)) {
-                        if (json.status === 'Fake' || json.status === 'Fraudulent') alertType = 'danger';
+                        if (['Fake', 'Not Safe', 'Fake (Not Safe)', 'Fraudulent'].includes(json.status) || (json.verdict && json.verdict.includes('NOT SAFE'))) alertType = 'danger';
                         else if (json.status === 'Suspicious') alertType = 'warning';
                         else alertType = 'safe';
                         
-                        alertTitle = alertType === 'danger' ? "Fake Certificate Detected" : (alertType === 'warning' ? "Suspicious Certificate Flagged" : "Certificate Verified");
+                        alertTitle = alertType === 'danger' ? "Not Safe (Fake Certificate)" : (alertType === 'warning' ? "Suspicious Certificate Flagged" : "Certificate Verified (Safe)");
                         alertSubtitle = json.summary || `Risk: ${json.risk_level}`;
                         strokeColor = alertType === 'danger' ? '#f43f5e' : (alertType === 'warning' ? '#f59e0b' : '#10b981');
                     } else if (tId === 'agent-malware') {
@@ -176,8 +176,8 @@ export default function AgentNode({ id, data, selected }) {
                         alertSubtitle = json.summary || "No PII found";
                         strokeColor = alertType === 'danger' ? '#f43f5e' : '#10b981';
                     } else if (tId === 'agent-password') {
-                        if (json.status === 'Weak' || json.status === 'Vulnerable') alertType = 'danger';
-                        alertTitle = alertType === 'danger' ? "Weak Password" : "Strong Password";
+                        if (['Weak', 'Weak (Not Safe)', 'Vulnerable', 'Fake', 'Not Safe'].includes(json.status)) alertType = 'danger';
+                        alertTitle = alertType === 'danger' ? "Weak Password (Not Safe)" : "Strong Password";
                         alertSubtitle = json.summary || "Password is secure";
                         strokeColor = alertType === 'danger' ? '#f43f5e' : '#10b981';
                     } else if (tId === 'agent-fraud') {
@@ -236,10 +236,17 @@ export default function AgentNode({ id, data, selected }) {
           
           {result && !result.error && (
             <div className="text-[10px] text-slate-300 bg-slate-900 p-2 rounded border border-slate-700 mt-1">
-              <div className="mb-1"><span className="text-slate-500">Status:</span> <strong className={result.status === 'Fake' ? 'text-rose-400' : 'text-emerald-400'}>{result.status}</strong></div>
+              <div className="mb-1"><span className="text-slate-500">Status:</span> <strong className={['Fake', 'Not Safe', 'Weak (Not Safe)', 'Weak', 'Fraudulent'].includes(result.status) || (result.verdict && result.verdict.includes('WEAK')) ? 'text-rose-400 font-extrabold' : (result.status === 'Suspicious' ? 'text-amber-400 font-bold' : 'text-emerald-400 font-bold')}>{result.status}</strong></div>
               <div className="mb-1"><span className="text-slate-500">Risk:</span> <strong>{result.risk_level}</strong></div>
               <div className="mb-1"><span className="text-slate-500">Conf:</span> <strong>{(result.confidence * 100).toFixed(0)}%</strong></div>
               <div className="mb-1"><span className="text-slate-500">Reason:</span> {result.summary}</div>
+              
+              {result.recommendation && (
+                <div className="mt-1.5 pt-1.5 border-t border-slate-800 text-[9.5px] text-sky-300 font-semibold leading-tight">
+                  <span className="text-slate-400 block font-normal">Recommendation:</span>
+                  {result.recommendation}
+                </div>
+              )}
               
               {result.email_delivery_status && (
                 <div className={`mt-2 pt-2 border-t border-slate-700 font-bold ${result.email_delivery_status === 'success' ? 'text-emerald-400' : result.email_delivery_status === 'failed' ? 'text-rose-400' : 'text-slate-400'}`}>
