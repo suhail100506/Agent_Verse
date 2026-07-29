@@ -30,11 +30,14 @@ Paste the output into `VAULT_ENCRYPTION_KEY=` in `backend/.env`. (If you skip th
 
 ## 2. Run the backend
 
+Still inside `backend/` from step 1 (don't `cd backend` again — a second `cd backend` from here will fail with "path does not exist"):
+
 ```bash
-cd backend
 uv sync
-uv run uvicorn src.fake_certificate_verification_agent.main:app --reload --port 8000
+uv run python -m uvicorn src.fake_certificate_verification_agent.main:app --reload --port 8000
 ```
+
+> **Windows/PowerShell note:** use `uv run python -m uvicorn ...`, not `uv run uvicorn ...` — on some `uv` versions, passing `uvicorn` directly hits a bug where the `:` in `main:app` gets misparsed as a script path and fails with `Failed to canonicalize script path`. Routing it through `python -m` avoids that.
 
 Backend will be live at **http://localhost:8000**. Check it with:
 
