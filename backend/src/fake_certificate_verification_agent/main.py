@@ -47,9 +47,14 @@ from src.utils.email_poller import start_email_poller
 def _maybe_notify(report: Dict[str, Any], agent_name: str, notify_email: Optional[str], credential_id: Optional[str]) -> Dict[str, Any]:
     """If a Notify Email was configured on the node, actually send it (not just decorative UI)."""
     if notify_email:
-        result = send_report_email(notify_email, report, agent_name=agent_name, credential_id=credential_id)
-        report["email_delivery_status"] = result["status"]
-        report["email_delivery_error"] = result["error"]
+        status = str(report.get("status", "")).upper()
+        if status in ["SAFE", "VERIFIED", "CLEAN"]:
+            report["email_delivery_status"] = "skipped"
+            report["email_delivery_error"] = "File is safe; email alert skipped."
+        else:
+            result = send_report_email(notify_email, report, agent_name=agent_name, credential_id=credential_id)
+            report["email_delivery_status"] = result["status"]
+            report["email_delivery_error"] = result["error"]
     return report
 
 
