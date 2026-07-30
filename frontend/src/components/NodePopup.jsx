@@ -8,7 +8,19 @@ import {
   ShieldCheck,
   Loader2,
   ChevronDown,
+  Fish,
+  Bug,
+  BadgeCheck,
+  Key,
+  AlertTriangle,
+  CreditCard,
+  FileSearch,
+  Lock,
 } from 'lucide-react';
+
+const ICON_MAP = {
+  Fish, Bug, BadgeCheck, Key, AlertTriangle, CreditCard, FileSearch, Lock
+};
 import { getNodeKind, AGENT_EXTRA_FIELDS } from '../data/nodeSettingsSchema';
 import { MODEL_OPTIONS } from '../data/agentLibrary';
 
@@ -134,7 +146,10 @@ export default function NodePopup({ node, anchor, onUpdateNode, onDeleteNode, on
         <div className="p-3 border-b border-white/10 flex items-center justify-between bg-black/20 shrink-0">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-7 h-7 rounded-lg bg-[#252b36] border border-white/5 flex items-center justify-center text-sm shadow-inner shrink-0">
-              {data.icon || '🤖'}
+              {(() => {
+                const IconComponent = ICON_MAP[data.icon];
+                return IconComponent ? <IconComponent className="w-3.5 h-3.5 text-zinc-300" /> : (data.icon || '🤖');
+              })()}
             </div>
             <div className="flex flex-col min-w-0">
               <h3 className="text-xs font-semibold text-zinc-100 truncate leading-tight">

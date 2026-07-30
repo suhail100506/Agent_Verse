@@ -212,7 +212,4 @@ function buildMasterOrchestrationTemplate() {
   };
 }
 
-export const WORKFLOW_TEMPLATES = [
-  ...SINGLE_AGENT_TEMPLATES,
-  buildMasterOrchestrationTemplate(),
-];
+export const WORKFLOW_TEMPLATES = [];
