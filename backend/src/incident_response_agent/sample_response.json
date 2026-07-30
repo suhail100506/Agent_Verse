@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "agent": "Incident Response Agent",
+  "incident_type": "Business Email Compromise",
+  "severity": "Critical",
+  "business_impact": "High financial and data exposure risk.",
+  "mitre_attack": [
+    {
+      "id": "T1566",
+      "name": "Phishing"
+    }
+  ],
+  "containment": [
+    "Quarantine email",
+    "Block sender",
+    "Isolate affected endpoint"
+  ],
+  "recovery": [
+    "Reset credentials",
+    "Run full malware scan",
+    "Monitor authentication logs"
+  ],
+  "executive_summary": "A high-risk phishing email with a malicious attachment was detected. Immediate containment is recommended to prevent credential compromise and malware execution.",
+  "confidence": 0.95
+}

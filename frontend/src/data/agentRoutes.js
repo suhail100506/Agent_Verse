@@ -14,7 +14,7 @@ export const AGENT_ROUTES = {
   'agent-privacy': { url: '/api/audit/privacy', field: 'text_content', kind: 'text' },
   'agent-password': { url: '/api/advise/password', field: 'password', kind: 'text' },
   'agent-fraud': { url: '/api/detect/fraud', field: 'location', kind: 'text' },
-  'agent-incident': { url: '/api/incident/generate', field: 'title', kind: 'text' },
+  'agent-incident': { url: '/api/incident/respond', field: 'payload', kind: 'text' },
   'agent-social-eng': { url: '/api/analyze/social-engineering', field: 'text', kind: 'text' },
 };
 

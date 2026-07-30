@@ -15,7 +15,7 @@ os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY", "")
 os.environ["GROK_API_KEY"] = os.getenv("GROK_API_KEY", "")
 os.environ["XAI_API_KEY"] = os.getenv("XAI_API_KEY", "")
 
-from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Form, Header
+from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Form, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
@@ -413,6 +413,12 @@ async def analyze_malware(
     report["overall_score"] = threat_score
     
     return _maybe_notify(report, "Malware Analyzer Agent", notify_email, None)
+
+
+@app.post("/api/incident/respond")
+async def incident_respond_wrapper(request: Request):
+    from src.incident_response_agent.main import respond_to_incident
+    return await respond_to_incident(request)
 
 
 @app.post("/api/analyze/threat")

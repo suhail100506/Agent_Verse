@@ -1,0 +1,15 @@
+{
+  "phishing_result": {
+      "risk_score": 94,
+      "attack_type": "Credential Phishing",
+      "findings": [
+          "Fake Microsoft domain",
+          "Suspicious URL"
+      ]
+  },
+  "malware_result": {
+      "malware_detected": true,
+      "malware_family": "Trojan Downloader",
+      "threat_score": 91
+  }
+}
