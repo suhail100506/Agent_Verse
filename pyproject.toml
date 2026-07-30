@@ -1,0 +1,27 @@
+[project]
+name = "cyberverse"
+version = "0.1.0"
+description = "cyberverse using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "crewai[file-processing,litellm,tools]>=1.15.5,<2.0.0",
+]
+
+[project.scripts]
+cyberverse = "cyberverse.main:run"
+run_crew = "cyberverse.main:run"
+train = "cyberverse.main:train"
+replay = "cyberverse.main:replay"
+test = "cyberverse.main:test"
+run_with_trigger = "cyberverse.main:run_with_trigger"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "crew"
+
+[tool.uv]
+override-dependencies = ["litellm<=1.82.6"]

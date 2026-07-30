@@ -1,0 +1,417 @@
+---
+orchestrate_security_analysis:
+  description: |-
+    Analyze the user's request and determine which cybersecurity specialists should handle the task.
+
+    Delegate the work to the appropriate agents.
+
+    Collect all specialist reports.
+
+    Validate consistency between reports.
+
+    Generate one final cybersecurity report containing:
+
+    - Selected Specialists
+    - Workflow
+    - Summary
+    - Overall Risk Level
+    - Confidence Score
+    - Findings
+    - Recommendations
+  expected_output: |-
+    {
+      "workflow": [
+        "Phishing Detection Specialist",
+        "Threat Detection Specialist",
+        "Incident Response Specialist"
+      ],
+      "overall_status": "Completed",
+      "overall_risk": "High",
+      "confidence": 97,
+      "summary": "Suspicious phishing email confirmed with a malicious URL. Threat intelligence identified a known malicious domain. Incident response actions recommended immediate containment and user notification.",
+      "recommendations": [
+        "Block the malicious domain",
+        "Quarantine the email",
+        "Reset affected user credentials",
+        "Monitor for additional compromise"
+      ]
+    }
+  agent: cyberverse_orchestrator
+verify_certificates:
+  description: |-
+    Inspect and validate SSL/TLS certificates
+    and uploaded digital certificates.
+
+    Perform:
+    - OCR
+    - Metadata extraction
+    - Trust chain verification
+    - Signature validation
+    - Tampering detection
+
+    Return a structured report.
+  expected_output: |-
+    Status
+
+    Confidence
+
+    Findings
+
+    Recommendations
+  agent: certificate_verification_specialist
+  context:
+  - orchestrate_security_analysis
+assess_privacy_compliance:
+  description: |-
+    Analyze the provided text, document, or uploaded file for sensitive information, personal data, authentication credentials, secrets, and compliance violations.
+
+    Identify all detected PII, credentials, and confidential information.
+
+    Assess regulatory compliance against GDPR, CCPA, HIPAA, DPDP, PCI-DSS, ISO 27001, SOC 2, and NIST.
+
+    Generate a structured report containing:
+    - Compliance Status
+    - Risk Level
+    - Detected Sensitive Information
+    - Applicable Regulations
+    - Findings
+    - Recommendations
+  expected_output: A privacy compliance report highlighting compliance status, identified
+    risks, and recommended remediation steps.
+  agent: privacy_compliance_analyst
+  context:
+  - orchestrate_security_analysis
+analyze_for_malware:
+  description: |-
+    Analyze the uploaded file for malicious content.
+
+    Perform:
+    - File validation
+    - File type identification
+    - Hash calculation
+    - Static analysis
+    - Metadata analysis
+    - Entropy analysis
+    - YARA rule matching
+    - VirusTotal reputation lookup
+    - IOC extraction
+    - MITRE ATT&CK mapping
+    - Risk assessment
+
+    Generate a structured report containing:
+    - Analysis Status
+    - Malware Classification
+    - Risk Level
+    - Confidence Score
+    - Indicators of Compromise (IOCs)
+    - MITRE ATT&CK Techniques
+    - Findings
+    - Recommendations
+  expected_output: A malware analysis report detailing detected threats, malware families,
+    indicators of compromise (IOCs), and severity ratings.
+  agent: malware_analysis_specialist
+  context:
+  - orchestrate_security_analysis
+advise_on_password_security:
+  description: |-
+    Analyze the provided password for security strength.
+
+    Perform:
+
+    - Password length analysis
+    - Character diversity analysis
+    - Entropy calculation
+    - Dictionary word detection
+    - Sequential character detection
+    - Repeated character detection
+    - Password policy validation
+    - Common password detection
+    - Password breach lookup (if available)
+    - Security score calculation
+
+    Generate a structured report containing:
+
+    - Password Strength
+    - Security Score
+    - Entropy
+    - Policy Compliance
+    - Weaknesses
+    - Improvement Suggestions
+    - Secure Password Recommendations
+  expected_output: |-
+    {
+      "status": "Analysis Complete",
+      "strength": "Strong",
+      "security_score": 91,
+      "entropy": 78.5,
+      "policy_compliance": "Passed",
+      "weaknesses": [
+        "No password breach detected"
+      ],
+      "recommendations": [
+        "Enable Multi-Factor Authentication (MFA)",
+        "Use a password manager",
+        "Avoid reusing this password across multiple accounts"
+      ]
+    }
+  agent: password_security_advisor
+  context:
+  - orchestrate_security_analysis
+detect_threats:
+  description: |-
+    Analyze the provided target for cybersecurity threats.
+
+    Perform:
+
+    - IP reputation analysis
+    - Domain reputation analysis
+    - URL reputation analysis
+    - File hash lookup
+    - IOC correlation
+    - DNS analysis
+    - Threat intelligence lookup
+    - MITRE ATT&CK mapping
+    - Risk assessment
+
+    Generate a structured report containing:
+
+    - Analysis Status
+    - Threat Severity
+    - Confidence Score
+    - Indicators of Compromise (IOCs)
+    - Threat Intelligence Findings
+    - MITRE ATT&CK Techniques
+    - Risk Assessment
+    - Recommendations
+  expected_output: |-
+    {
+      "status": "Threat Detected",
+      "severity": "High",
+      "confidence": 96,
+      "iocs": [
+        "185.220.101.45",
+        "malicious-example.com",
+        "SHA256:xxxxxxxx"
+      ],
+      "mitre_attack": [
+        "T1566",
+        "T1059"
+      ],
+      "findings": [
+        "IP found in threat intelligence feeds",
+        "Domain associated with phishing campaigns"
+      ],
+      "recommendations": [
+        "Block the IP address",
+        "Quarantine affected systems",
+        "Monitor network traffic"
+      ]
+    }
+  agent: threat_detection_specialist
+  context:
+  - analyze_for_malware
+detect_phishing_attempts:
+  description: |-
+    Analyze the provided email, URL, domain, QR code, or attachment for phishing indicators.
+
+    Perform:
+
+    - URL reputation analysis
+    - Domain reputation analysis
+    - WHOIS lookup
+    - DNS analysis
+    - SSL certificate verification
+    - Email header analysis
+    - Sender verification
+    - QR code inspection
+    - Brand impersonation detection
+    - Domain similarity analysis
+    - Social engineering assessment
+    - Risk scoring
+
+    Generate a structured report containing:
+
+    - Analysis Status
+    - Phishing Classification
+    - Risk Level
+    - Confidence Score
+    - Indicators Found
+    - Suspicious Elements
+    - Evidence
+    - Recommendations
+  expected_output: |-
+    {
+      "status": "Phishing Detected",
+      "classification": "Credential Harvesting",
+      "risk": "Critical",
+      "confidence": 97,
+      "findings": [
+        "Domain closely resembles microsoft.com",
+        "URL hosted on recently registered domain",
+        "Email header contains SPF failure",
+        "Fake login page detected"
+      ],
+      "evidence": [
+        "WHOIS age: 3 days",
+        "URL flagged by reputation service"
+      ],
+      "recommendations": [
+        "Block the domain",
+        "Warn affected users",
+        "Quarantine the email",
+        "Reset compromised credentials if entered"
+      ]
+    }
+  agent: phishing_detection_specialist
+  context:
+  - detect_threats
+verify_identities:
+  description: |-
+    Verify the authenticity of the uploaded identity document.
+
+    Perform:
+
+    - OCR extraction
+    - Metadata analysis
+    - Document validation
+    - QR/Barcode verification
+    - MRZ validation (if applicable)
+    - Face matching
+    - Liveness detection
+    - Identity consistency check
+    - Tampering detection
+    - Fraud detection
+    - Confidence score calculation
+
+    Generate a structured report containing:
+
+    - Verification Status
+    - Confidence Score
+    - Extracted Information
+    - Face Match Result
+    - Liveness Result
+    - Fraud Indicators
+    - Findings
+    - Recommendations
+  expected_output: |-
+    {
+      "status": "Verified",
+      "confidence": 96,
+      "document_type": "Passport",
+      "face_match": "Matched",
+      "liveness": "Passed",
+      "fraud_detected": false,
+      "findings": [
+        "Document security features verified",
+        "Face matched successfully",
+        "No tampering detected"
+      ],
+      "recommendations": [
+        "Identity successfully verified"
+      ]
+    }
+  agent: identity_verification_specialist
+  context:
+  - detect_phishing_attempts
+  - advise_on_password_security
+detect_fraud:
+  description: |-
+    Analyze the provided data for fraud indicators.
+
+    Perform:
+
+    - Identity verification
+    - Device fingerprint analysis
+    - IP reputation analysis
+    - Geolocation analysis
+    - Behavioral pattern analysis
+    - Transaction anomaly detection
+    - Duplicate identity detection
+    - Risk score calculation
+
+    Generate a structured report containing:
+
+    - Fraud Status
+    - Fraud Risk Level
+    - Confidence Score
+    - Fraud Indicators
+    - Behavioral Findings
+    - Recommendations
+  expected_output: |-
+    {
+      "status": "Potential Fraud Detected",
+      "risk": "High",
+      "confidence": 94,
+      "fraud_indicators": [
+        "Login from unusual location",
+        "Multiple failed login attempts",
+        "Device fingerprint changed"
+      ],
+      "findings": [
+        "Behavior deviates from historical activity"
+      ],
+      "recommendations": [
+        "Require Multi-Factor Authentication",
+        "Temporarily suspend account",
+        "Initiate manual fraud investigation"
+      ]
+    }
+  agent: fraud_detection_specialist
+  context:
+  - verify_identities
+generate_incident_response_plan:
+  description: |-
+    Investigate the reported cybersecurity incident.
+
+    Perform:
+
+    - Incident classification
+    - Severity assessment
+    - Evidence analysis
+    - IOC identification
+    - MITRE ATT&CK mapping
+    - Containment planning
+    - Eradication planning
+    - Recovery planning
+    - Risk assessment
+
+    Generate a structured report containing:
+
+    - Incident Type
+    - Severity
+    - Confidence Score
+    - Timeline
+    - Findings
+    - Containment Actions
+    - Recovery Recommendations
+    - Lessons Learned
+  expected_output: |-
+    {
+      "status": "Incident Confirmed",
+      "severity": "Critical",
+      "confidence": 96,
+      "incident_type": "Ransomware",
+      "findings": [
+        "Multiple encrypted files detected",
+        "Malicious executable identified"
+      ],
+      "containment": [
+        "Disconnect affected host",
+        "Block malicious IP addresses"
+      ],
+      "recovery": [
+        "Restore from backups",
+        "Rotate credentials"
+      ],
+      "recommendations": [
+        "Enable endpoint detection",
+        "Conduct security awareness training"
+      ]
+    }
+  agent: incident_response_specialist
+  context:
+  - verify_certificates
+  - assess_privacy_compliance
+  - detect_threats
+  - detect_phishing_attempts
+  - detect_fraud
