@@ -184,6 +184,52 @@ const ORCHESTRATION_AGENTS = [
   { agentId: 'agent-social-eng', label: 'Social Engineering', icon: '🎭', y: 1010 },
 ];
 
+const usbTriggerNode = (idSuffix, x, y) => ({
+  id: `t-${idSuffix}-trigger`,
+  type: 'agentNode',
+  position: { x, y },
+  data: {
+    id: 'trigger-usb-media',
+    label: 'Removable Media Trigger',
+    subtitle: 'USB Insertion Auto-Trigger',
+    icon: '💾',
+    isUsbTrigger: true,
+    notifyEmail: '',
+    credential_id: null,
+    armed: true,
+    inputLabel: 'Watches for USB Drive Insertion',
+    status: 'idle'
+  }
+});
+
+function buildRemovableMediaGuardianTemplate() {
+  const trigger = usbTriggerNode('usb', 60, 260);
+  const malware = agentNode('usb-malware', 'agent-malware', 'Malware Analyzer Agent', 'PE & YARA Behavioral Audit', '🦠', 'Auto-Scanned Drive Files', 460, 60);
+  const privacy = agentNode('usb-privacy', 'agent-privacy', 'Privacy Compliance Agent', 'GDPR / DPDP PII Audit', '🔒', 'Auto-Scanned Drive Text', 460, 260);
+  const incident = agentNode('usb-incident', 'agent-incident', 'Incident Response Agent', 'SOC Playbooks & Containment', '🚨', 'Consolidated Drive Verdict', 460, 460);
+  const report = reportNode('usb', 900, 260);
+
+  const nodes = [trigger, malware, privacy, incident, report];
+  const edges = [
+    edge('e-usb-1', trigger.id, malware.id),
+    edge('e-usb-2', trigger.id, privacy.id),
+    edge('e-usb-3', malware.id, incident.id),
+    edge('e-usb-4', privacy.id, incident.id),
+    edge('e-usb-5', incident.id, report.id),
+  ];
+
+  return {
+    id: 'template-removable-media-guardian',
+    title: 'Removable Media Guardian',
+    description: 'Arm it, then plug in a USB drive: real-time OS-level insertion detection auto-runs Malware Analysis -> Privacy Compliance -> Incident Response on the drive contents and emails one consolidated report - no click required.',
+    badge: 'Auto-Trigger',
+    category: 'Automation',
+    nodeCount: nodes.length,
+    nodes,
+    edges,
+  };
+}
+
 function buildMasterOrchestrationTemplate() {
   const ingest = ingestNode('orch', 60, 500);
   const orchestrator = agentNode('orch', 'agent-decision', 'Master Cyber Orchestrator', 'Multi-Agent Intent Router', '🧠', 'Multi-Agent Synthesis', 420, 500);
@@ -212,4 +258,8 @@ function buildMasterOrchestrationTemplate() {
   };
 }
 
-export const WORKFLOW_TEMPLATES = [];
+export const WORKFLOW_TEMPLATES = [
+  ...SINGLE_AGENT_TEMPLATES,
+  buildMasterOrchestrationTemplate(),
+  buildRemovableMediaGuardianTemplate(),
+];
