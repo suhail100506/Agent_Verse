@@ -1,7 +1,11 @@
 import os
 import logging
-from imap_tools import MailBox, AND
-from apscheduler.schedulers.background import BackgroundScheduler
+try:
+    from imap_tools import MailBox, AND
+    from apscheduler.schedulers.background import BackgroundScheduler
+    HAS_IMAP = True
+except ImportError:
+    HAS_IMAP = False
 from src.phishing_detection_agent.flow_runner import run_phishing_flow
 
 logger = logging.getLogger(__name__)
@@ -60,6 +64,9 @@ def start_email_poller():
     """
     Initializes and starts the APScheduler background job.
     """
+    if not HAS_IMAP:
+        logger.info("IMAP polling dependencies not installed; skipping email poller.")
+        return
     scheduler = BackgroundScheduler()
     # Run the poller every 3 minutes (can be adjusted)
     scheduler.add_job(check_new_emails_and_analyze, 'interval', minutes=3)

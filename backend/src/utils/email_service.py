@@ -44,7 +44,7 @@ def send_report_email(recipient_email: str, report: dict, agent_name: str, crede
         return {"status": "failed", "error": "No recipient email provided."}
 
     status_label = report.get("status", "Flagged")
-    subject = f"⚠ CyberVerse Alert [{agent_name}]: {status_label}"
+    subject = f"⚠️ CyberVerse Alert [{agent_name}]: {status_label}"
 
     html_body = f"""
     <html>
@@ -113,3 +113,110 @@ def send_report_email(recipient_email: str, report: dict, agent_name: str, crede
 def send_alert(recipient_email: str, report: dict) -> dict:
     """Backward-compatible wrapper used by phishing_detection_agent's existing call site."""
     return send_report_email(recipient_email, report, agent_name="Phishing Detection Agent")
+
+
+def send_success_email(recipient_email: str, report: dict, agent_name: str = "CyberVerse Document Forensics") -> dict:
+    """
+    Sends a green verified/success email when all agents approve the submitted documents.
+    Uses the same SMTP credentials as send_report_email.
+    """
+    smtp_host = "smtp.gmail.com"
+    smtp_port = 587
+    email_user = os.getenv("EMAIL_USER")
+    email_pass = os.getenv("EMAIL_PASS")
+
+    if not email_user or not email_pass:
+        logger.warning("SMTP credentials not found for success email (EMAIL_USER/EMAIL_PASS not set).")
+        return {"status": "failed", "error": "SMTP credentials not configured."}
+
+    if not recipient_email:
+        return {"status": "failed", "error": "No recipient email provided."}
+
+    trust_score = report.get("confidence", "N/A")
+    subject = f"✅ CyberVerse [{agent_name}]: Documents VERIFIED & APPROVED"
+
+    html_body = f"""
+    <html>
+      <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; background-color: #f4f9f4;">
+        <div style="max-width: 620px; margin: 30px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+
+          <!-- Header -->
+          <div style="background: linear-gradient(135deg, #1a7a4a, #27ae60); padding: 30px 24px; text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 8px;">✅</div>
+            <h1 style="color: #fff; margin: 0; font-size: 22px; font-weight: 700;">Documents Verified &amp; Approved</h1>
+            <p style="color: rgba(255,255,255,0.85); margin: 6px 0 0; font-size: 13px;">CyberVerse AI Multi-Agent Verification Platform</p>
+          </div>
+
+          <!-- Body -->
+          <div style="padding: 28px 24px;">
+            <p style="font-size: 15px; color: #2d6a4f; font-weight: 600;">All agents have completed verification. The submitted documents have passed all security checks.</p>
+
+            <table style="border-collapse: collapse; width: 100%; margin: 20px 0; border-radius: 8px; overflow: hidden;">
+              <tr style="background-color: #f0fdf4;">
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5; font-weight: 600; width: 40%;">📋 Report ID</td>
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5; font-family: monospace;">{report.get('report_id', 'N/A')}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5; font-weight: 600;">🏆 Status</td>
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5; color: #16a34a; font-weight: 700; font-size: 15px;">✅ VERIFIED &amp; APPROVED</td>
+              </tr>
+              <tr style="background-color: #f0fdf4;">
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5; font-weight: 600;">🔒 Trust Score</td>
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5; color: #15803d; font-weight: 700;">{trust_score}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5; font-weight: 600;">📁 Drive Source</td>
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5; font-size: 12px; word-break: break-all;">{report.get('drive_url', 'N/A')}</td>
+              </tr>
+              <tr style="background-color: #f0fdf4;">
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5; font-weight: 600;">🤖 Agents Run</td>
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5;">{report.get('agents_run', 'Identity · Document · Fraud Detection')}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5; font-weight: 600;">🕐 Timestamp</td>
+                <td style="padding: 12px 16px; border: 1px solid #d1fae5;">{report.get('created_at', 'N/A')}</td>
+              </tr>
+            </table>
+
+            <div style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 14px 18px; border-radius: 6px; margin: 20px 0;">
+              <strong style="color: #15803d;">📝 Summary:</strong>
+              <p style="margin: 6px 0 0; color: #166534; font-size: 14px;">{report.get('summary', 'All documents successfully verified by CyberVerse AI agents.')}</p>
+            </div>
+
+            <div style="background: #ecfdf5; border: 1px solid #bbf7d0; padding: 14px 18px; border-radius: 6px; margin-top: 16px;">
+              <strong style="color: #15803d;">✔ Recommendation:</strong>
+              <p style="margin: 6px 0 0; color: #166534; font-size: 14px;">{report.get('recommendation', 'Documents are authentic. Safe to proceed.')}</p>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div style="background: #f8fffe; border-top: 1px solid #d1fae5; padding: 16px 24px; text-align: center;">
+            <p style="font-size: 11px; color: #6b7280; margin: 0;">
+              Automated verification notification by <strong>CyberVerse AI Multi-Agent Platform</strong><br/>
+              This is a system-generated email — do not reply.
+            </p>
+          </div>
+        </div>
+      </body>
+    </html>
+    """
+
+    msg = MIMEMultipart()
+    msg['From'] = email_user
+    msg['To'] = recipient_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(html_body, 'html'))
+
+    try:
+        server = smtplib.SMTP(smtp_host, smtp_port, timeout=10)
+        server.ehlo()
+        server.starttls()
+        server.login(email_user, email_pass)
+        server.sendmail(email_user, recipient_email, msg.as_string())
+        server.quit()
+        logger.info(f"Successfully sent SUCCESS verification email to {recipient_email}")
+        return {"status": "success", "error": None}
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"Failed to send success email to {recipient_email}: {error_msg}")
+        return {"status": "failed", "error": error_msg}

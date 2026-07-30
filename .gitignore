@@ -4,3 +4,5 @@ __pycache__/
 .crewai/
 output/
 node_modules
+credentials.json
+temp_downloads/

@@ -52,15 +52,13 @@ def _maybe_notify(report: Dict[str, Any], agent_name: str, notify_email: Optiona
     return report
 
 
+from src.fake_certificate_verification_agent.routes.verify import router as verify_router
+
 app = FastAPI(
     title="CyberVerse AI 10-Agent Platform API",
     description="Full 10-Agent Multi-Agent Cybersecurity Platform with Master Orchestrator, JWT Auth, JSON/HTML Exporters, Admin Analytics, and Agent Monitoring.",
     version="5.0.0"
 )
-
-@app.on_event("startup")
-def startup_event():
-    start_email_poller()
 
 # Enable CORS
 app.add_middleware(
@@ -70,6 +68,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(verify_router)
 
 # Directories
 BASE_DIR = Path(__file__).parent.parent.parent
@@ -273,7 +273,6 @@ async def master_orchestrator_analyze(
         raise HTTPException(status_code=500, detail=f"Orchestration failed: {str(e)}")
 
 
-@app.post("/api/verify")
 @app.post("/api/verify/certificate")
 async def verify_certificate(
     file: UploadFile = File(...),
@@ -591,4 +590,4 @@ if FRONTEND_DIR.exists():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("src.fake_certificate_verification_agent.main:app", host="0.0.0.0", port=8000, reload=True)
-# Trigger reload
+# Trigger uvicorn reload for Google Drive verification routes

@@ -47,7 +47,7 @@ const ICON_MAP = {
 };
 
 export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed }) {
-  const [activeTab, setActiveTab] = useState('palette'); // 'palette', 'agents', 'templates', 'credentials'
+  const [activeTab, setActiveTab] = useState('templates'); // 'agents', 'templates', 'credentials'
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -176,15 +176,6 @@ export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed })
       {/* COLLAPSED STATE */}
       {isCollapsed ? (
         <div className="flex-1 flex flex-col items-center py-4 space-y-4">
-          <button 
-            title="Nodes" 
-            onClick={() => { setActiveTab('palette'); setIsCollapsed(false); }} 
-            className={`p-2.5 rounded-xl border transition-all ${
-              activeTab === 'palette' ? 'bg-[#3B3B3B] border-white/10 text-zinc-100 shadow-sm' : 'bg-transparent border-transparent text-zinc-500 hover:text-zinc-300 hover:bg-black/10'
-            }`}
-          >
-            <Layers className="w-5 h-5" />
-          </button>
           
           <button
             title="Agents"
@@ -221,17 +212,6 @@ export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed })
         <>
           {/* TOP NAVIGATION TABS FOR SIDEBAR */}
           <div className="p-2 border-b border-black/20 flex items-center justify-around gap-1 shrink-0 bg-[#252525]">
-            <button
-              onClick={() => setActiveTab('palette')}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all flex-1 justify-center ${
-                activeTab === 'palette' 
-                  ? 'bg-[#3B3B3B] text-zinc-100 shadow-sm border border-white/5' 
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-black/10 border border-transparent'
-              }`}
-            >
-              <Layers className="w-4 h-4" />
-              <span>Nodes</span>
-            </button>
 
             <button
               onClick={() => setActiveTab('agents')}
@@ -270,90 +250,7 @@ export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed })
             </button>
           </div>
 
-          {activeTab === 'palette' ? (
-            <div className="flex-1 flex flex-col overflow-hidden">
-              {/* SEARCH & FILTER */}
-              <div className="p-3 border-b border-black/20 flex flex-col gap-3 bg-[#2B2B2B]">
-                <div className="relative group">
-                  <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-2.5 group-focus-within:text-indigo-400 transition-colors" />
-                  <input
-                    type="text"
-                    placeholder="Filter 30+ components..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-[#1E1E1E] border border-black/20 rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all shadow-inner"
-                  />
-                </div>
-
-                {/* CATEGORY SCROLL PILLS */}
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 custom-scrollbar">
-                  {NODE_CATEGORIES.map((cat) => {
-                    const IconComp = ICON_MAP[cat.icon] || Layers;
-                    const isSelected = selectedCategory === cat.id;
-                    return (
-                      <button
-                        key={cat.id}
-                        onClick={() => setSelectedCategory(cat.id)}
-                        className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-medium whitespace-nowrap transition-all ${
-                          isSelected 
-                            ? 'bg-[#3B3B3B] text-zinc-100 border border-white/10 shadow-sm' 
-                            : 'bg-transparent border border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-black/10'
-                        }`}
-                      >
-                        <IconComp className="w-3 h-3" />
-                        <span>{cat.name}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* DRAGGABLE NODE CARDS LIST */}
-              <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
-                <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 px-1 flex justify-between items-center mb-1">
-                  <span>Components ({filteredNodes.length})</span>
-                </div>
-
-                {filteredNodes.map((node) => (
-                  <div
-                    key={node.id}
-                    draggable
-                    onDragStart={(e) => onDragStart(e, node)}
-                    className="p-3 rounded-xl bg-[#333333] border border-white/5 hover:border-white/20 hover:bg-[#3B3B3B] transition-all cursor-grab active:cursor-grabbing group select-none relative overflow-hidden"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-[#252525] border border-black/20 flex items-center justify-center text-sm shadow-inner group-hover:scale-105 transition-transform text-zinc-200">
-                          {node.defaultData.icon || '⚡'}
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-semibold text-zinc-200 group-hover:text-zinc-50 transition-colors leading-tight">
-                            {node.name}
-                          </h4>
-                          <span className="text-[10px] text-zinc-400 font-medium block truncate max-w-[170px] mt-0.5">
-                            {node.subtitle}
-                          </span>
-                        </div>
-                      </div>
-
-                      <GripVertical className="w-4 h-4 text-zinc-500 group-hover:text-zinc-300 shrink-0 transition-colors" />
-                    </div>
-
-                    <p className="text-[10px] text-zinc-400 line-clamp-2 leading-relaxed mb-3">
-                      {node.description}
-                    </p>
-
-                    <div className="flex items-center justify-between pt-2 text-[10px] font-mono text-zinc-500 border-t border-white/5">
-                      <span className="px-1.5 py-0.5 rounded bg-black/20 text-zinc-300 font-medium">
-                        {node.badge}
-                      </span>
-                      <span>{node.inputs.length} in • {node.outputs.length} out</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : activeTab === 'agents' ? (
+          {activeTab === 'agents' ? (
             /* AGENTS PLAYGROUND VIEW */
             <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
               <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 px-1 mb-1">
