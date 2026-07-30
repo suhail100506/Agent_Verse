@@ -67,3 +67,54 @@ export function loadWorkflowTemplate(templateName: string, startPosition: {x: nu
   
   return { nodes, edges };
 }
+
+export function generateSingleAgentWorkflow(agentData: any, startPosition: {x: number, y: number}) {
+  const uniquePrefix = `agent-flow-${Date.now()}`;
+  
+  // Find ingest and report templates to get their default data
+  const ingestEntry = NODE_LIBRARY.find((n: any) => n.id === 'node-file-upload');
+  const reportEntry = NODE_LIBRARY.find((n: any) => n.defaultData && n.defaultData.id === 'node-final-report');
+
+  const ingestData = ingestEntry?.defaultData ? { ...ingestEntry.defaultData, label: 'Payload Ingest', status: 'idle' } : { label: 'Payload Ingest', status: 'idle' };
+  const reportData = reportEntry?.defaultData ? { ...reportEntry.defaultData, status: 'idle' } : { label: 'Final Security Report', status: 'idle' };
+  
+  const nodes = [
+    {
+      id: `${uniquePrefix}-0`,
+      type: 'agentNode',
+      position: { x: startPosition.x, y: startPosition.y },
+      data: ingestData
+    },
+    {
+      id: `${uniquePrefix}-1`,
+      type: 'agentNode',
+      position: { x: startPosition.x + 380, y: startPosition.y },
+      data: { ...agentData, status: 'idle' }
+    },
+    {
+      id: `${uniquePrefix}-2`,
+      type: 'agentNode',
+      position: { x: startPosition.x + 760, y: startPosition.y },
+      data: reportData
+    }
+  ];
+
+  const edges = [
+    {
+      id: `edge-${uniquePrefix}-0`,
+      source: `${uniquePrefix}-0`,
+      target: `${uniquePrefix}-1`,
+      animated: true,
+      style: { stroke: '#71717a', strokeWidth: 1.5 }
+    },
+    {
+      id: `edge-${uniquePrefix}-1`,
+      source: `${uniquePrefix}-1`,
+      target: `${uniquePrefix}-2`,
+      animated: true,
+      style: { stroke: '#71717a', strokeWidth: 1.5 }
+    }
+  ];
+
+  return { nodes, edges };
+}

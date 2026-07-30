@@ -1,8 +1,9 @@
 import time
 import logging
-from typing import Dict, Any
-from fastapi import FastAPI, HTTPException, Request
+from typing import Dict, Any, Optional
+from fastapi import FastAPI, HTTPException, Request, Form
 from fastapi.responses import JSONResponse
+import json
 from pydantic import ValidationError
 
 from src.phishing_detection_agent.models import PhishingAnalyzeRequest, PhishingAnalyzeResponse
@@ -15,6 +16,10 @@ from src.phishing_detection_agent.services import (
 )
 from src.phishing_detection_agent.crew import run_ai_analysis
 from src.phishing_detection_agent.database import log_analysis_request
+from dotenv import load_dotenv
+import os
+
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -24,6 +29,16 @@ app = FastAPI(
     title="Phishing Detection Agent",
     description="Standalone AI Agent for detecting phishing emails using heuristics and Gemini.",
     version="1.0.0"
+)
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.exception_handler(ValidationError)
@@ -45,18 +60,31 @@ async def global_exception_handler(request: Request, exc: Exception):
 async def health_check():
     return {"status": "ok", "service": "Phishing Detection Agent"}
 
-@app.post("/api/phishing/analyze", response_model=PhishingAnalyzeResponse)
-async def analyze_phishing(request: PhishingAnalyzeRequest):
+@app.post("/api/analyze/phishing")
+async def analyze_phishing(url_or_text: str = Form(..., alias="url_or_text")):
     start_time = time.time()
     
-    logger.info(f"Received phishing analysis request for sender: {request.sender}")
+    logger.info(f"Received phishing analysis request")
     
+    # Try to parse as JSON if the user pasted JSON in the frontend box
+    req_data = {}
+    try:
+        req_data = json.loads(url_or_text)
+    except:
+        req_data = {"body": url_or_text}
+
+    sender = req_data.get("sender", "unknown@example.com")
+    subject = req_data.get("subject", "No Subject")
+    body = req_data.get("body", "")
+    urls = req_data.get("urls", [])
+    headers = req_data.get("headers", "")
+
     try:
         # Heuristics
-        sender_score, sender_findings = analyze_sender(request.sender)
-        subject_score, subject_findings = analyze_subject(request.subject)
-        url_score, url_findings = analyze_urls(request.urls)
-        header_score, header_findings = analyze_headers(request.headers or "")
+        sender_score, sender_findings = analyze_sender(sender)
+        subject_score, subject_findings = analyze_subject(subject)
+        url_score, url_findings = analyze_urls(urls)
+        header_score, header_findings = analyze_headers(headers or "")
         
         # Combine static findings
         findings = sender_findings + subject_findings + url_findings + header_findings
@@ -64,10 +92,10 @@ async def analyze_phishing(request: PhishingAnalyzeRequest):
         # CrewAI Gemini reasoning
         try:
             ai_result = run_ai_analysis(
-                sender=request.sender,
-                subject=request.subject,
-                body=request.body,
-                urls=request.urls
+                sender=sender,
+                subject=subject,
+                body=body,
+                urls=urls
             )
             
             ai_score = ai_result.confidence // 3  # E.g. 90% confidence = 30 points
@@ -104,7 +132,7 @@ async def analyze_phishing(request: PhishingAnalyzeRequest):
         
         # Log to MongoDB
         await log_analysis_request(
-            input_data=request.model_dump(),
+            input_data=req_data,
             output_data=response_data.model_dump(),
             execution_time_ms=execution_time_ms,
             status="success"
@@ -118,7 +146,7 @@ async def analyze_phishing(request: PhishingAnalyzeRequest):
         logger.error(f"Analysis failed: {e}")
         
         await log_analysis_request(
-            input_data=request.model_dump(),
+            input_data=req_data,
             output_data={"error": str(e)},
             execution_time_ms=execution_time_ms,
             status="error"

@@ -163,6 +163,11 @@ export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed })
     event.dataTransfer.effectAllowed = 'move';
   };
 
+  const onTemplateDragStart = (event, templateName) => {
+    event.dataTransfer.setData('application/reactflow/template', templateName);
+    event.dataTransfer.effectAllowed = 'move';
+  };
+
   const filteredNodes = NODE_LIBRARY.filter((node) => {
     const matchesCategory = selectedCategory === 'all' || node.category === selectedCategory;
     const matchesSearch = searchQuery === '' || 
@@ -346,6 +351,8 @@ export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed })
                 <div
                   key={tmpl.id}
                   onClick={() => onLoadTemplate(tmpl.id)}
+                  draggable={true}
+                  onDragStart={(e) => onTemplateDragStart(e, tmpl.title)}
                   className="p-3.5 rounded-xl bg-[#333333] border border-white/5 hover:border-indigo-500/50 hover:bg-[#3B3B3B] cursor-pointer transition-all group"
                 >
                   <div className="flex items-center justify-between mb-2">

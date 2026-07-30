@@ -15,7 +15,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import AgentNode from './AgentNode';
-import { loadWorkflowTemplate } from '../utils/loadWorkflowTemplate';
+import { loadWorkflowTemplate, generateSingleAgentWorkflow } from '../utils/loadWorkflowTemplate';
 
 const nodeTypes = { agentNode: AgentNode };
 
@@ -160,39 +160,57 @@ export default function WorkflowCanvas({
     (event) => {
       event.preventDefault();
 
-      const type = event.dataTransfer.getData('application/reactflow/agent');
-      if (!type) return;
+      const agentType = event.dataTransfer.getData('application/reactflow/agent');
+      const templateType = event.dataTransfer.getData('application/reactflow/template');
 
-      const agentData = JSON.parse(type);
+      if (!agentType && !templateType) return;
+
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
 
-      // Intercept specific agents for Auto Workflow Templates
-      if (agentData.label === "Phishing Detection Agent") {
-        const templateData = loadWorkflowTemplate("Phishing Detection Agent", position, agentData);
+      if (templateType) {
+        const templateName = templateType;
+        const templateData = loadWorkflowTemplate(templateName, position, null);
+        
         if (templateData) {
           setNodes((nds) => nds.concat(templateData.nodes));
           setEdges((eds) => eds.concat(templateData.edges));
           
-          // Fit the viewport after the nodes render
           setTimeout(() => {
             fitView({ padding: 0.2, duration: 800 });
           }, 50);
-          return;
         }
+        return;
       }
 
-      // Default behavior for other agents
-      const newNode = {
-        id: `node-${Date.now()}`,
-        type: 'agentNode',
-        position,
-        data: { ...agentData, status: 'idle' },
-      };
+      if (agentType) {
+        const agentData = JSON.parse(agentType);
+        
+        const targetAgents = ['agent-phishing', 'agent-malware', 'agent-incident'];
 
-      setNodes((nds) => nds.concat(newNode));
+        if (targetAgents.includes(agentData.id)) {
+          const workflowData = generateSingleAgentWorkflow(agentData, position);
+          
+          setNodes((nds) => nds.concat(workflowData.nodes));
+          setEdges((eds) => eds.concat(workflowData.edges));
+          
+          setTimeout(() => {
+            fitView({ padding: 0.2, duration: 800 });
+          }, 50);
+        } else {
+          // Default behavior for all other agents: drop just the single node
+          const newNode = {
+            id: `node-${Date.now()}`,
+            type: 'agentNode',
+            position,
+            data: { ...agentData, status: 'idle' },
+          };
+
+          setNodes((nds) => nds.concat(newNode));
+        }
+      }
     },
     [screenToFlowPosition, setNodes, setEdges, fitView],
   );
