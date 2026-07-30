@@ -15,6 +15,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import AgentNode from './AgentNode';
+import { loadWorkflowTemplate } from '../utils/loadWorkflowTemplate';
 
 const nodeTypes = { agentNode: AgentNode };
 
@@ -168,6 +169,22 @@ export default function WorkflowCanvas({
         y: event.clientY,
       });
 
+      // Intercept specific agents for Auto Workflow Templates
+      if (agentData.label === "Phishing Detection Agent") {
+        const templateData = loadWorkflowTemplate("Phishing Detection Agent", position, agentData);
+        if (templateData) {
+          setNodes((nds) => nds.concat(templateData.nodes));
+          setEdges((eds) => eds.concat(templateData.edges));
+          
+          // Fit the viewport after the nodes render
+          setTimeout(() => {
+            fitView({ padding: 0.2, duration: 800 });
+          }, 50);
+          return;
+        }
+      }
+
+      // Default behavior for other agents
       const newNode = {
         id: `node-${Date.now()}`,
         type: 'agentNode',
@@ -177,7 +194,7 @@ export default function WorkflowCanvas({
 
       setNodes((nds) => nds.concat(newNode));
     },
-    [screenToFlowPosition, setNodes],
+    [screenToFlowPosition, setNodes, setEdges, fitView],
   );
 
   const onNodeClick = useCallback((event, node) => {
