@@ -418,7 +418,25 @@ async def analyze_malware(
 @app.post("/api/incident/respond")
 async def incident_respond_wrapper(request: Request):
     from src.incident_response_agent.main import respond_to_incident
-    return await respond_to_incident(request)
+    
+    notify_email = None
+    credential_id = None
+    try:
+        form = await request.form()
+        notify_email = form.get("notify_email")
+        credential_id = form.get("credential_id")
+    except Exception:
+        pass
+        
+    result = await respond_to_incident(request)
+    
+    # Map severity to status so _maybe_notify triggers properly
+    if "severity" in result:
+        severity = result.get("severity", "").upper()
+        # Only skip if it's explicitly low severity
+        result["status"] = "CRITICAL" if severity in ["HIGH", "CRITICAL"] else severity
+        
+    return _maybe_notify(result, "Incident Response Agent", notify_email, credential_id)
 
 
 @app.post("/api/analyze/threat")
