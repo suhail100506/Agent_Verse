@@ -16,25 +16,27 @@ except ImportError:
 
 DEFAULT_MODEL = "llama-3.3-70b-versatile"
 
-_ENV_KEY_PRIORITY = ["GROQ_API_KEY", "OPENAI_API_KEY", "GROK_API_KEY", "XAI_API_KEY"]
+_ENV_KEY_PRIORITY = ["GEMINI_API_KEY", "GROQ_API_KEY", "OPENAI_API_KEY", "GROK_API_KEY", "XAI_API_KEY"]
 
 _JSON_FENCE_RE = re.compile(r"```(?:json)?\s*(\{.*\})\s*```", re.DOTALL)
 
 
-def _resolve_api_key(credential_id: Optional[str]) -> tuple[Optional[str], str]:
-    """Returns (api_key, source_label)."""
+def _resolve_api_key(credential_id: Optional[str]) -> tuple[Optional[str], str, Optional[str]]:
+    """Returns (api_key, source_label, provider)."""
+    
+    # GEMINI_API_KEY is checked in the environment loop below.
+    # We no longer hardcode any API keys.
     if credential_id:
         secret = resolve_secret(credential_id)
         if secret and secret.get("_type") in ("groq_api_key", "generic_api_key") and secret.get("api_key"):
-            return secret["api_key"], f"credential:{credential_id}"
+            return secret["api_key"], f"credential:{credential_id}", "groq"
         logger.warning(f"Could not resolve usable API key from credential_id={credential_id}; falling back to env.")
 
     for env_var in _ENV_KEY_PRIORITY:
         value = os.getenv(env_var)
         if value:
-            return value, "env-default"
-
-    return None, "unavailable"
+            return value, "env-default", env_var.split("_")[0].lower()
+    return None, "unavailable", None
 
 
 def _extract_json(content: str) -> Optional[dict]:
@@ -79,15 +81,23 @@ def run_llm_agent(
     if not HAS_LITELLM:
         return {"ok": False, "content": None, "source": "unavailable", "error": "litellm not installed"}
 
-    api_key, source = _resolve_api_key(credential_id)
+    api_key, source, provider = _resolve_api_key(credential_id)
     if not api_key:
         return {"ok": False, "content": None, "source": "unavailable", "error": "no API key available (no credential_id and no env key configured)"}
 
     resolved_model = model or DEFAULT_MODEL
+    
+    if "/" not in resolved_model:
+        if provider == "gemini":
+            resolved_model = "gemini/gemini-3.5-flash"
+        elif provider == "openai":
+            resolved_model = "openai/gpt-4o-mini"
+        else:
+            resolved_model = f"groq/{resolved_model}"
 
     try:
         response = completion(
-            model=f"groq/{resolved_model}",
+            model=resolved_model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},

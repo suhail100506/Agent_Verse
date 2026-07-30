@@ -33,7 +33,7 @@ export function buildAgentFormData(route, targetData, val, fileVal) {
       formData.append(route.field, blob, route.fileName || 'payload.txt');
     }
   } else {
-    formData.append(route.field, val || fileVal?.name || '');
+    formData.append(route.field, val || fileVal?.name || targetData?.targetUrl || '');
   }
 
   if (targetData?.credential_id) formData.append('credential_id', targetData.credential_id);

@@ -353,12 +353,14 @@ async def analyze_threat(
 
 @app.post("/api/analyze/phishing")
 async def analyze_phishing(
-    url_or_text: str = Form(...),
+    url_or_text: str = Form(""),
     credential_id: Optional[str] = Form(None),
     system_prompt: Optional[str] = Form(None),
     model: Optional[str] = Form(None),
     notify_email: Optional[str] = Form(None),
 ):
+    if not url_or_text and system_prompt:
+        url_or_text = system_prompt
     report = run_phishing_flow(url_or_text, credential_id=credential_id, system_prompt=system_prompt, model=model)
     return _maybe_notify(report, "Phishing Detection Agent", notify_email, credential_id)
 

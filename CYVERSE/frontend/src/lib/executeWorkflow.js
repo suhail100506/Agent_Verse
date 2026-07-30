@@ -144,8 +144,15 @@ export async function executeWorkflowGraph({ nodes, edges, setNodes, setEdges, a
           const statusVal = (json.status || '').toUpperCase();
           if (FLAGGED_STATUSES.includes(statusVal)) flaggedCount++;
           else if (statusVal === 'VERIFIED' || statusVal === 'SAFE') verifiedCount++;
-          setNodeStatus(nodeId, 'completed');
-          addLog('success', `${step} ${data.label}: ${json.status || 'done'} (${json.risk_level || json.overall_score || ''}) - ${truncate(json.summary, 90)}`);
+          
+          if (json.email_delivery_status === 'failed') {
+            errorCount++;
+            setNodeStatus(nodeId, 'error');
+            addLog('error', `${step} ${data.label}: Analysis complete, but EMAIL FAILED - ${json.email_delivery_error}`);
+          } else {
+            setNodeStatus(nodeId, 'completed');
+            addLog('success', `${step} ${data.label}: ${json.status || 'done'} (${json.risk_level || json.overall_score || ''}) - ${truncate(json.summary, 90)}`);
+          }
         }
       } else if (kind === 'report') {
         const upstreamIds = edges.filter((e) => e.target === nodeId).map((e) => e.source);

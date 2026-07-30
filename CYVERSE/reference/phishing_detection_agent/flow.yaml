@@ -1,0 +1,52 @@
+schema: crewai.flow/v1
+name: PhishingDetectionFlow
+state:
+  type: json_schema
+  json_schema:
+    type: object
+    properties:
+      url_or_text:
+        type: string
+    required:
+      - url_or_text
+methods:
+  analyze_phishing:
+    start: true
+    do:
+      call: crew
+      with:
+        agents:
+          analyst:
+            role: Cybersecurity Phishing Analyst
+            goal: Analyze {url_or_text} for phishing indicators and credential harvesting attempts.
+            backstory: Expert cybersecurity analyst specializing in identifying deceptive URLs, typosquatting, and malicious payloads.
+            settings:
+              llm: openai/gpt-4o-mini
+        tasks:
+          - name: analyze_task
+            agent: analyst
+            description: |
+              Examine the provided text or URL: {url_or_text}.
+              Analyze it for typosquatting, domain age probability, and credential harvesting indicators.
+              Determine if it is a legitimate site or a phishing attempt.
+              Output MUST be a valid raw JSON object. Do not include markdown code block syntax (like ```json).
+            expected_output: |
+              A valid JSON object with the following structure:
+              {
+                "target_url": "the extracted URL or 'No link detected'",
+                "status": "Fake" or "Verified",
+                "risk_level": "HIGH RISK" or "LOW RISK",
+                "confidence": 0.95,
+                "overall_score": 32,
+                "checks": {
+                  "url_typosquatting": "Failed - Domain ... / Passed - Domain ...",
+                  "ssl_certificate": "Failed - ... / Passed - ...",
+                  "email_header_dkim": "Failed - ... / Passed - ...",
+                  "credential_harvesting": "Failed - ... / Passed - ..."
+                },
+                "summary": "A 1-2 sentence summary of the findings.",
+                "recommendation": "What the user should do.",
+                "next_action": "What the system should do next."
+              }
+      inputs:
+        url_or_text: "${state.url_or_text}"

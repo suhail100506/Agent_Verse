@@ -24,4 +24,7 @@ export const AGENT_EXTRA_FIELDS = {
   'agent-incident': [
     { key: 'severity', label: 'Incident Severity', type: 'select', options: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL', 'EMERGENCY'], default: 'HIGH' },
   ],
+  'agent-phishing': [
+    { key: 'targetUrl', label: 'Target URL', type: 'text', placeholder: 'https://paypal-security-verify.tmp/login' },
+  ],
 };

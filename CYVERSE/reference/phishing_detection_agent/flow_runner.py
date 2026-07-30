@@ -8,11 +8,11 @@ from pathlib import Path
 import logging
 
 from src.utils.email_service import send_alert
-from src.utils.mongo_client import save_report
 
 logger = logging.getLogger(__name__)
 
 PHISHING_REPORTS_DB_PATH = Path(__file__).parent / "phishing_reports_db.json"
+
 
 def load_local_phishing_reports() -> list:
     if PHISHING_REPORTS_DB_PATH.exists():
@@ -23,19 +23,15 @@ def load_local_phishing_reports() -> list:
             return []
     return []
 
+
 def save_local_phishing_report(report: dict) -> None:
     reports = load_local_phishing_reports()
     reports.insert(0, report)
     with open(PHISHING_REPORTS_DB_PATH, "w", encoding="utf-8") as f:
         json.dump(reports, f, indent=2)
 
-def run_phishing_flow(
-    url_or_text: str,
-    credential_id: Optional[str] = None,
-    system_prompt: Optional[str] = None,
-    model: Optional[str] = None,
-    event_id: Optional[str] = None
-) -> Dict[str, Any]:
+
+def run_phishing_flow(url_or_text: str, event_id: Optional[str] = None) -> Dict[str, Any]:
     url_match = re.search(r"https?://[^\s]+", url_or_text)
     target_url = url_match.group(0) if url_match else "No link detected"
 
@@ -44,16 +40,13 @@ def run_phishing_flow(
 
     try:
         from crewai import Agent, Task, Crew, Process
-        
-        # We allow overriding with the passed model if available, otherwise default to gemini
-        # Using 1.5-flash as 3.5-flash doesn't exist in standard litellm yet.
-        model_name = model or "gemini/gemini-1.5-flash"
-        
-        # Ensure API key is set if not already in environment
+        import os
+        # Ensure API key is set
         gemini_api_key = os.getenv("GEMINI_API_KEY")
         if not gemini_api_key:
             raise ValueError("GEMINI_API_KEY environment variable is not set. Please provide a valid key.")
         os.environ["GEMINI_API_KEY"] = gemini_api_key
+        model_name = "gemini/gemini-3.5-flash"
         
         analyst = Agent(
             role='Cybersecurity Phishing Analyst',
@@ -67,7 +60,6 @@ def run_phishing_flow(
         analyze_task = Task(
             description=(
                 f"Examine the provided text or URL: {url_or_text}\n"
-                f"{'System Prompt Override: ' + system_prompt if system_prompt else ''}\n"
                 "Analyze it for typosquatting, domain age probability, and credential harvesting indicators.\n"
                 "Determine if it is a legitimate site or a phishing attempt.\n"
                 "Output MUST be a valid raw JSON object. Do not include markdown code block syntax (like ```json)."
@@ -121,7 +113,6 @@ def run_phishing_flow(
         summary = parsed_result.get("summary", "Analysis completed.")
         recommendation = parsed_result.get("recommendation", "")
         next_action = parsed_result.get("next_action", "")
-        llm_used = True
         
     except Exception as e:
         logger.error(f"CrewAI execution failed: {e}")
@@ -133,7 +124,6 @@ def run_phishing_flow(
         summary = f"Error during AI analysis: {e}"
         recommendation = "Manual review required due to analysis error."
         next_action = "Investigate system error."
-        llm_used = False
 
     final_report = {
         "report_id": report_id,
@@ -151,23 +141,27 @@ def run_phishing_flow(
         "recommendation": recommendation,
         "next_action": next_action,
         "email_delivery_status": "skipped",
-        "email_delivery_error": None,
-        "llm_reasoning_used": llm_used,
-        "llm_source": "CrewAI"
+        "email_delivery_error": None
     }
 
     if status == "Fake":
-        email_match = re.search(r"[\w\.-]+@[\w\.-]+\.\w+", url_or_text)
-        recipient_email = email_match.group(0) if email_match else os.getenv("EMAIL_USER", "kavin88701@gmail.com")
-        
-        logger.info(f"Phishing detected! Triggering email alert to {recipient_email}")
-        email_result = send_alert(recipient_email, final_report)
-        final_report["email_delivery_status"] = email_result["status"]
-        final_report["email_delivery_error"] = email_result["error"]
+        logger.info("Phishing detected! Report generated. Notification Agent will handle the alert.")
+        final_report["email_delivery_status"] = "pending_notification_agent"
+        final_report["email_delivery_error"] = None
 
     save_local_phishing_report(final_report)
 
-    # Use the existing mongo client utility to be consistent with the backend architecture
-    final_report["mongodb_saved"] = save_report("phishing_detection_reports", final_report)
+    mongodb_uri = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
+    try:
+        from pymongo import MongoClient
+        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=1200)
+        client.admin.command('ping')
+        db = client[os.getenv("DATABASE_NAME", "certificate_verifier")]
+        collection = db["phishing_detection_reports"]
+        collection.insert_one(final_report.copy())
+        client.close()
+        final_report["mongodb_saved"] = True
+    except Exception:
+        final_report["mongodb_saved"] = False
 
     return final_report
