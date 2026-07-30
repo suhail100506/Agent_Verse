@@ -1,5 +1,25 @@
 [
   {
+    "report_id": "PHISH-0BDFD1C6",
+    "event_id": null,
+    "created_at": "2026-07-30T16:24:45.814258+00:00",
+    "agent": "Phishing Detection Agent",
+    "type": "phishing",
+    "target_url": "http://github.com",
+    "status": "Fake",
+    "risk_level": "HIGH RISK",
+    "confidence": 0.95,
+    "overall_score": 32,
+    "checks": {},
+    "summary": "Error during AI analysis: Google Gen AI native provider not available, to install: uv add \"crewai[google-genai]\"",
+    "recommendation": "Manual review required due to analysis error.",
+    "next_action": "Investigate system error.",
+    "email_delivery_status": "success",
+    "email_delivery_error": null,
+    "llm_reasoning_used": false,
+    "llm_source": "CrewAI"
+  },
+  {
     "report_id": "PHISH-4443A382",
     "event_id": null,
     "created_at": "2026-07-30T07:09:04.323323+00:00",

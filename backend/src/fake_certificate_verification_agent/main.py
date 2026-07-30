@@ -40,6 +40,7 @@ from src.fraud_detection_agent.flow_runner import run_fraud_flow, load_local_fra
 from src.incident_response_agent.flow_runner import run_incident_response_flow, load_local_incident_reports
 from src.social_engineering_agent.flow_runner import run_social_engineering_flow, load_local_social_engineering_reports
 from src.utils.email_service import send_report_email
+from src.utils.email_poller import start_email_poller
 
 
 def _maybe_notify(report: Dict[str, Any], agent_name: str, notify_email: Optional[str], credential_id: Optional[str]) -> Dict[str, Any]:
@@ -56,6 +57,10 @@ app = FastAPI(
     description="Full 10-Agent Multi-Agent Cybersecurity Platform with Master Orchestrator, JWT Auth, JSON/HTML Exporters, Admin Analytics, and Agent Monitoring.",
     version="5.0.0"
 )
+
+@app.on_event("startup")
+def startup_event():
+    start_email_poller()
 
 # Enable CORS
 app.add_middleware(
