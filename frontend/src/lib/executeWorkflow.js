@@ -131,7 +131,10 @@ export async function executeWorkflowGraph({ nodes, edges, setNodes, setEdges, a
 
         const route = AGENT_ROUTES[data.id] || DEFAULT_ROUTE;
         const formData = buildAgentFormData(route, data, payload.text, payload.file);
-        const res = await fetch(API_BASE + route.url, { method: 'POST', body: formData });
+        
+        // Use the absolute URL if provided, otherwise prefix with API_BASE
+        const fetchUrl = route.url.startsWith('http') ? route.url : API_BASE + route.url;
+        const res = await fetch(fetchUrl, { method: 'POST', body: formData });
         const json = await res.json();
         resultByNode.set(nodeId, json);
         setNodeData(nodeId, { lastResult: json });

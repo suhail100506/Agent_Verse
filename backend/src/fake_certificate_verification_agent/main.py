@@ -6,7 +6,8 @@ from typing import List, Dict, Any, Optional
 
 try:
     from dotenv import load_dotenv
-    load_dotenv()
+    env_path = Path(__file__).parent.parent / ".env"
+    load_dotenv(env_path)
 except ImportError:
     pass
 
@@ -328,20 +329,85 @@ async def verify_identity(
 
 @app.post("/api/analyze/malware")
 async def analyze_malware(
-    file: UploadFile = File(...),
-    credential_id: Optional[str] = Form(None),
-    system_prompt: Optional[str] = Form(None),
-    model: Optional[str] = Form(None),
+    file: Optional[UploadFile] = File(None),
+    hash: Optional[str] = Form(None),
     notify_email: Optional[str] = Form(None),
 ):
-    filename = file.filename or "suspicious_payload.bin"
-    file_id = str(uuid.uuid4())[:8]
-    saved_file_path = UPLOAD_DIR / f"malware_{file_id}_{filename}"
-    with open(saved_file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    report = run_malware_flow(str(saved_file_path), "binary", credential_id=credential_id, system_prompt=system_prompt, model=model)
-    return _maybe_notify(report, "Malware Analyzer Agent", notify_email, credential_id)
+    from src.malware_analyzer_agent.services import (
+        validate_file, generate_hashes, analyze_virustotal, 
+        analyze_yara, static_inspection, calculate_threat_score
+    )
+    from src.malware_analyzer_agent.crew import run_ai_analysis
+    import time
+    start_time = time.time()
+    
+    if not file and not hash:
+        raise HTTPException(status_code=400, detail="Must provide either a file or a hash.")
+        
+    filename = file.filename if file else f"hash_{hash}"
+    
+    if file:
+        file_content = await file.read()
+        file_size = len(file_content)
+        mime_type = file.content_type or "application/octet-stream"
+        
+        is_valid, validation_msg = validate_file(filename, file_size, mime_type)
+        if not is_valid:
+            raise HTTPException(status_code=400, detail=validation_msg)
+            
+        hashes = generate_hashes(file_content)
+        target_hash = hashes["sha256"]
+        yara_matches = analyze_yara(file_content)
+        static_findings = static_inspection(file_content, filename)
+    else:
+        file_size = 0
+        hashes = {"sha256": hash}
+        target_hash = hash
+        yara_matches = []
+        static_findings = {}
+        
+    vt_result = analyze_virustotal(target_hash)
+    
+    try:
+        ai_result = run_ai_analysis(
+            filename=filename,
+            vt_result=vt_result,
+            yara_matches=yara_matches,
+            static_findings=static_findings
+        )
+        ai_score = ai_result.confidence // 4
+        malware_family = ai_result.malware_family
+        confidence = ai_result.confidence
+        recommendations = ai_result.recommendations
+    except Exception as e:
+        ai_score = 0
+        malware_family = "Unknown"
+        confidence = 0
+        recommendations = ["Manual analysis required"]
+        
+    threat_score, threat_level, is_malware = calculate_threat_score(
+        vt_result, yara_matches, static_findings, ai_score
+    )
+    
+    report = {
+        "success": True,
+        "agent": "Malware Analysis Agent",
+        "threat_score": threat_score,
+        "threat_level": threat_level,
+        "malware_detected": is_malware,
+        "malware_family": malware_family,
+        "confidence": confidence,
+        "hashes": hashes,
+        "yara_matches": yara_matches,
+        "recommendations": recommendations,
+        "next_step": "Incident Response Agent"
+    }
+    
+    # Just to fit the existing UI mapping expectations if they look for status/overall_score
+    report["status"] = "FAKE" if is_malware else "SAFE"
+    report["overall_score"] = threat_score
+    
+    return _maybe_notify(report, "Malware Analyzer Agent", notify_email, None)
 
 
 @app.post("/api/analyze/threat")
