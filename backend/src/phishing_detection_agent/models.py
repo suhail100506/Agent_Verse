@@ -18,6 +18,8 @@ class PhishingAnalyzeResponse(BaseModel):
     findings: List[str]
     recommendations: List[str]
     next_step: str = "Malware Analysis Agent"
+    email_delivery_status: Optional[str] = None
+    email_delivery_error: Optional[str] = None
 
 class AIAnalysisResult(BaseModel):
     attack_type: str

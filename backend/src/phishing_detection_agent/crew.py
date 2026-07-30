@@ -1,5 +1,6 @@
 import os
 import json
+import re
 from crewai import Agent, Task, Crew, Process
 from src.phishing_detection_agent.models import AIAnalysisResult
 from typing import Dict, Any
@@ -63,16 +64,16 @@ def run_ai_analysis(sender: str, subject: str, body: str, urls: list[str]) -> AI
     result_raw = crew.kickoff()
     
     try:
-        # Clean up potential markdown formatting from Gemini
-        clean_result = str(result_raw).strip()
-        if clean_result.startswith("```json"):
-            clean_result = clean_result[7:]
-        if clean_result.startswith("```"):
-            clean_result = clean_result[3:]
-        if clean_result.endswith("```"):
-            clean_result = clean_result[:-3]
+        clean_result = str(result_raw)
+        
+        # Use regex to find the JSON object to bypass any conversational text
+        json_match = re.search(r'\{[\s\S]*\}', clean_result)
+        
+        if not json_match:
+            raise ValueError(f"No JSON object found in output.")
             
-        result_json = json.loads(clean_result.strip())
+        json_str = json_match.group(0)
+        result_json = json.loads(json_str)
         return AIAnalysisResult(**result_json)
     except Exception as e:
         # Fallback if parsing fails

@@ -121,3 +121,51 @@ def calculate_overall_risk(
         return total_score, "High"
     else:
         return total_score, "Critical"
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import os
+
+def send_alert_email(to_email: str, risk_level: str, findings: List[str]) -> Tuple[bool, str]:
+    smtp_user = os.getenv("EMAIL_USER")
+    smtp_pass = os.getenv("EMAIL_PASS")
+    
+    if not smtp_user or not smtp_pass:
+        return False, "SMTP credentials not configured in .env"
+        
+    try:
+        msg = MIMEMultipart()
+        msg["From"] = smtp_user
+        msg["To"] = to_email
+        
+        # Add emojis based on risk level
+        alert_emoji = "🚨" if risk_level in ["Critical", "High"] else "⚠️"
+        msg["Subject"] = f"{alert_emoji} SECURITY ALERT: {risk_level} Risk Phishing Email Detected {alert_emoji}"
+        
+        body = f"""
+Hello, 👋
+
+Our security system has analyzed an email you recently received and flagged it as SUSPICIOUS.
+
+🛑 Risk Level: {risk_level}
+
+🔍 Findings:
+"""
+        for f in findings:
+            body += f" ❌ {f}\n"
+            
+        body += "\n⚠️ Please DO NOT click any links, DO NOT download attachments, and DO NOT reply to this email.\n\nStay safe! 🛡️\nCyberverse Security Team"
+        
+        msg.attach(MIMEText(body, "plain"))
+        
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.send_message(msg)
+        server.quit()
+        
+        return True, ""
+    except Exception as e:
+        return False, str(e)
+

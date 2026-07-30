@@ -12,7 +12,8 @@ from src.phishing_detection_agent.services import (
     analyze_subject, 
     analyze_urls, 
     analyze_headers, 
-    calculate_overall_risk
+    calculate_overall_risk,
+    send_alert_email
 )
 from src.phishing_detection_agent.crew import run_ai_analysis
 from src.phishing_detection_agent.database import log_analysis_request
@@ -61,7 +62,10 @@ async def health_check():
     return {"status": "ok", "service": "Phishing Detection Agent"}
 
 @app.post("/api/analyze/phishing")
-async def analyze_phishing(url_or_text: str = Form(..., alias="url_or_text")):
+async def analyze_phishing(
+    url_or_text: str = Form(..., alias="url_or_text"),
+    notify_email: Optional[str] = Form(None, alias="notify_email")
+):
     start_time = time.time()
     
     logger.info(f"Received phishing analysis request")
@@ -78,6 +82,9 @@ async def analyze_phishing(url_or_text: str = Form(..., alias="url_or_text")):
     body = req_data.get("body", "")
     urls = req_data.get("urls", [])
     headers = req_data.get("headers", "")
+    
+    # Target email to alert (frontend sets notify_email, or fallback to JSON payload)
+    target_email = notify_email or req_data.get("recipient")
 
     try:
         # Heuristics
@@ -117,6 +124,20 @@ async def analyze_phishing(url_or_text: str = Form(..., alias="url_or_text")):
             sender_score, subject_score, url_score, header_score, ai_score
         )
         
+        email_status = None
+        email_error = None
+        
+        # If it's suspicious (not Safe) and we have an email address to notify
+        if risk_level != "Safe" and target_email:
+            success, err_msg = send_alert_email(target_email, risk_level, findings)
+            if success:
+                email_status = "sent"
+                logger.info(f"Sent alert email to {target_email}")
+            else:
+                email_status = "failed"
+                email_error = err_msg
+                logger.warning(f"Failed to send alert email: {err_msg}")
+        
         response_data = PhishingAnalyzeResponse(
             success=True,
             risk_score=risk_score,
@@ -125,7 +146,9 @@ async def analyze_phishing(url_or_text: str = Form(..., alias="url_or_text")):
             confidence=confidence,
             findings=findings,
             recommendations=recommendations,
-            next_step="Malware Analysis Agent"
+            next_step="Malware Analysis Agent",
+            email_delivery_status=email_status,
+            email_delivery_error=email_error
         )
         
         execution_time_ms = (time.time() - start_time) * 1000
