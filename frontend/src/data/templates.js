@@ -258,8 +258,10 @@ function buildMasterOrchestrationTemplate() {
   };
 }
 
+// Only this session's actual new work (Removable Media Guardian) is exposed in the
+// Templates list. SINGLE_AGENT_TEMPLATES and buildMasterOrchestrationTemplate() above
+// are pre-existing, fully-built templates from before this work - left defined but
+// unused here rather than deleted, in case they're re-enabled later.
 export const WORKFLOW_TEMPLATES = [
-  ...SINGLE_AGENT_TEMPLATES,
-  buildMasterOrchestrationTemplate(),
   buildRemovableMediaGuardianTemplate(),
 ];

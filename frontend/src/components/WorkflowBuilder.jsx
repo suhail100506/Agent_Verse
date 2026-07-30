@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   useNodesState,
   useEdgesState,
@@ -93,10 +93,42 @@ const INITIAL_EDGES = [
   { id: 'edge-4-5', source: 'node-malware-scan', target: 'node-report', animated: true, style: { stroke: '#10b981', strokeWidth: 2 } }
 ];
 
+// Persists the canvas (nodes/edges - including per-node config like Notify Email,
+// bound credentials, and system prompt overrides) to localStorage, so a browser
+// refresh restores exactly what was on the canvas instead of resetting to the
+// default starter graph.
+const CANVAS_STORAGE_KEY = 'cyberverse.canvas.v1';
+
+function loadPersistedCanvas() {
+  try {
+    const raw = localStorage.getItem(CANVAS_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed?.nodes) || parsed.nodes.length === 0) return null;
+    // Reset transient execution state (running/error spinners, stale USB status text)
+    // on load - only the node's actual configuration needs to survive a refresh.
+    const nodes = parsed.nodes.map((n) => ({ ...n, data: { ...n.data, status: 'idle', usbStatusText: undefined } }));
+    return { nodes, edges: Array.isArray(parsed.edges) ? parsed.edges : [] };
+  } catch {
+    return null;
+  }
+}
+
 function WorkflowBuilderContent() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(INITIAL_NODES);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(INITIAL_EDGES);
-  
+  const persistedCanvas = loadPersistedCanvas(); // only the initial value matters - read once per mount
+  const [nodes, setNodes, onNodesChange] = useNodesState(persistedCanvas?.nodes || INITIAL_NODES);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(persistedCanvas?.edges || INITIAL_EDGES);
+
+  // Save the canvas back to localStorage on every change (node config edits, drags,
+  // template loads, new connections) so it survives a refresh.
+  useEffect(() => {
+    try {
+      localStorage.setItem(CANVAS_STORAGE_KEY, JSON.stringify({ nodes, edges }));
+    } catch {
+      // localStorage unavailable/full - silently skip persistence, canvas still works in-memory
+    }
+  }, [nodes, edges]);
+
   const [selection, setSelection] = useState({ node: null, anchor: null });
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isConsoleOpen, setIsConsoleOpen] = useState(true);
@@ -133,6 +165,112 @@ function WorkflowBuilderContent() {
       fetch('http://localhost:8000/api/triggers/register', { method: 'POST', body: formData }).catch(() => {});
     });
   }, [nodes, edges]);
+
+  // Removable Media Guardian: whenever a USB-trigger node is on canvas, arm the real
+  // backend watcher (ctypes-based removable-drive polling - see usb_guardian.py) with
+  // this node's Notify Email / bound SMTP credential.
+  const usbTriggerNode = nodes.find((n) => n.data?.isUsbTrigger) || null;
+  const usbNodeId = usbTriggerNode?.id || null;
+  const usbNotifyEmail = usbTriggerNode?.data?.notifyEmail || '';
+  const usbCredentialId = usbTriggerNode?.data?.credential_id || '';
+  const usbArmedFlag = usbTriggerNode?.data?.armed;
+  const usbPrevStageRef = useRef(null);
+
+  useEffect(() => {
+    if (!usbNodeId || usbArmedFlag === false) return;
+    const formData = new FormData();
+    formData.append('node_id', usbNodeId);
+    if (usbNotifyEmail) formData.append('notify_email', usbNotifyEmail);
+    if (usbCredentialId) formData.append('credential_id', usbCredentialId);
+    fetch('http://localhost:8000/api/triggers/usb/arm', { method: 'POST', body: formData }).catch(() => {});
+  }, [usbNodeId, usbNotifyEmail, usbCredentialId, usbArmedFlag]);
+
+  // Poll the real backend pipeline status (~1.5s) and mirror each stage transition onto
+  // the matching canvas nodes - this is what makes plugging in a real USB drive animate
+  // the workflow with zero clicks, instead of only the manual "Run Workflow" button path.
+  useEffect(() => {
+    if (!usbNodeId) {
+      usbPrevStageRef.current = null;
+      return;
+    }
+
+    const setAgentStatus = (agentId, status, lastResult) => {
+      setNodes((nds) => nds.map((n) => (
+        n.data?.id === agentId ? { ...n, data: { ...n.data, status, ...(lastResult !== undefined ? { lastResult } : {}) } } : n
+      )));
+    };
+
+    const setUsbStatusText = (text) => {
+      setNodes((nds) => nds.map((n) => (n.id === usbNodeId ? { ...n, data: { ...n.data, usbStatusText: text } } : n)));
+    };
+
+    const STATUS_LABELS = {
+      idle: 'Not armed yet.',
+      watching: 'Armed - watching for USB drive insertion...',
+      scanning: 'Drive detected - scanning files...',
+      malware: 'Running Malware Analyzer on drive contents...',
+      privacy: 'Running Privacy Compliance audit on drive text...',
+      incident: 'Running Incident Response playbook...',
+      emailing: 'Compiling consolidated report & sending email...',
+      completed: 'Pipeline complete - report emailed.',
+      error: 'Pipeline failed - see console.',
+    };
+
+    const poll = async () => {
+      let status;
+      try {
+        const res = await fetch('http://localhost:8000/api/triggers/usb/status');
+        status = await res.json();
+      } catch {
+        return; // backend unreachable this tick - next poll retries
+      }
+
+      setUsbStatusText(
+        status.status === 'scanning' && status.drive
+          ? `Drive ${status.drive} detected - scanning files...`
+          : (STATUS_LABELS[status.status] || status.status)
+      );
+
+      if (status.status === usbPrevStageRef.current) return; // only act on real stage transitions
+      const prevStage = usbPrevStageRef.current;
+      usbPrevStageRef.current = status.status;
+
+      if (status.status === 'watching' && prevStage !== null) {
+        addLog('info', '[USB Guardian] Armed - watching for a removable drive insertion...');
+      } else if (status.status === 'scanning') {
+        ['agent-malware', 'agent-privacy', 'agent-incident', 'node-final-report'].forEach((aid) => setAgentStatus(aid, 'idle'));
+        addLog('success', `[USB Guardian] Drive ${status.drive} inserted - scanning ${status.files_found?.length ?? '...'} file(s).`);
+      } else if (status.status === 'malware') {
+        setAgentStatus('agent-malware', 'running');
+        addLog('info', `[USB Guardian] Found ${status.files_found?.length || 0} file(s). Running Malware Analyzer...`);
+      } else if (status.status === 'privacy') {
+        setAgentStatus('agent-malware', 'completed', status.results?.malware?.[0]);
+        setAgentStatus('agent-privacy', 'running');
+        addLog('success', `[USB Guardian] Malware Analyzer: ${status.results?.malware?.[0]?.status || 'done'}. Running Privacy Compliance...`);
+      } else if (status.status === 'incident') {
+        setAgentStatus('agent-privacy', 'completed', status.results?.privacy);
+        setAgentStatus('agent-incident', 'running');
+        addLog('success', `[USB Guardian] Privacy audit: ${status.results?.privacy?.status || 'done'}. Running Incident Response...`);
+      } else if (status.status === 'emailing') {
+        setAgentStatus('agent-incident', 'completed', status.results?.incident);
+        setAgentStatus('node-final-report', 'running');
+        addLog('success', '[USB Guardian] Incident Response complete. Compiling report & sending email...');
+      } else if (status.status === 'completed') {
+        setAgentStatus('node-final-report', 'completed', status.final_report);
+        const emailStatus = status.final_report?.email_delivery_status;
+        const emailNote = emailStatus === 'success'
+          ? 'Email sent.'
+          : `Email ${emailStatus || 'not sent'}${status.final_report?.email_delivery_error ? ` - ${status.final_report.email_delivery_error}` : ''}.`;
+        addLog('success', `[USB Guardian] Workflow complete: ${status.final_report?.status || 'done'}. ${emailNote}`);
+      } else if (status.status === 'error') {
+        addLog('error', `[USB Guardian] Pipeline failed: ${status.error}`);
+      }
+    };
+
+    poll();
+    const interval = setInterval(poll, 1500);
+    return () => clearInterval(interval);
+  }, [usbNodeId, setNodes, addLog]);
 
   // Update selected node data
   const handleUpdateNode = useCallback((nodeId, updatedData) => {
