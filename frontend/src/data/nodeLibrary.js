@@ -53,6 +53,29 @@ export const NODE_LIBRARY = [
     }
   },
   {
+    id: 'trigger-usb-media',
+    category: 'triggers',
+    name: 'Removable Media Trigger',
+    subtitle: 'USB Insertion Auto-Trigger',
+    icon: 'Usb',
+    badge: 'Trigger',
+    badgeColor: 'indigo',
+    description: 'Watches for a real USB drive insertion (Windows) and auto-fires the connected agent chain against the drive contents - no click required.',
+    inputs: [],
+    outputs: ['files', 'driveLetter'],
+    defaultData: {
+      id: 'trigger-usb-media',
+      label: 'Removable Media Trigger',
+      subtitle: 'USB Insertion Auto-Trigger',
+      icon: '💾',
+      isUsbTrigger: true,
+      notifyEmail: '',
+      credential_id: null,
+      armed: true,
+      inputLabel: 'Watches for USB Drive Insertion'
+    }
+  },
+  {
     id: 'trigger-schedule',
     category: 'triggers',
     name: 'Cron Scheduler',

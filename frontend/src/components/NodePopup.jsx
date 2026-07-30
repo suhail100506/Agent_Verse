@@ -75,7 +75,7 @@ export default function NodePopup({ node, anchor, onUpdateNode, onDeleteNode, on
   const { id, data } = node;
   const kind = getNodeKind(data);
   const extraFields = kind === 'agent' ? (AGENT_EXTRA_FIELDS[data.id] || []) : [];
-  const tabs = kind === 'agent' ? ['config', 'credentials', 'json', 'logs'] : ['config', 'json', 'logs'];
+  const tabs = (kind === 'agent' || kind === 'trigger-usb') ? ['config', 'credentials', 'json', 'logs'] : ['config', 'json', 'logs'];
 
   const handleCopyJson = () => {
     navigator.clipboard.writeText(JSON.stringify(data, null, 2));
@@ -354,6 +354,43 @@ export default function NodePopup({ node, anchor, onUpdateNode, onDeleteNode, on
                     </button>
                   </div>
                   <p className="text-[9.5px] text-zinc-500 leading-relaxed">Arming only marks this node as active - real background scheduling isn't implemented yet; trigger it manually via the Run button or the webhook endpoint.</p>
+                </div>
+              )}
+
+              {/* USB TRIGGER: notify email + armed toggle + live backend-driven status */}
+              {kind === 'trigger-usb' && (
+                <div className="p-2.5 rounded-xl bg-black/20 border border-white/10 space-y-2">
+                  <div>
+                    <label className="block text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1">Notify Email</label>
+                    <input
+                      type="email"
+                      placeholder="Leave blank to notify backend/.env's EMAIL_USER"
+                      value={data.notifyEmail || ''}
+                      onChange={(e) => onUpdateNode(id, { notifyEmail: e.target.value })}
+                      className="w-full bg-black/30 border border-white/10 rounded-lg px-2.5 py-1.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all"
+                    />
+                    <p className="text-[9.5px] text-zinc-500 leading-relaxed mt-1">
+                      Left blank, the alert still sends - to whichever account is configured as <code className="text-zinc-400">EMAIL_USER</code> in <code className="text-zinc-400">backend/.env</code> (or a bound SMTP credential's default recipient).
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-[10px] font-semibold text-zinc-400">Armed (watching for USB insertion)</span>
+                    <button
+                      onClick={() => onUpdateNode(id, { armed: !data.armed })}
+                      className={`w-9 h-5 rounded-full transition-colors relative ${data.armed ? 'bg-emerald-500' : 'bg-zinc-700'}`}
+                    >
+                      <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${data.armed ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                    </button>
+                  </div>
+                  <div className="pt-1.5 border-t border-white/5">
+                    <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest block mb-1">Live Status (from backend)</span>
+                    <p className="text-[10.5px] text-indigo-300 leading-relaxed">
+                      {data.usbStatusText || 'Not armed yet - stay on this canvas and it will auto-arm.'}
+                    </p>
+                  </div>
+                  <p className="text-[9.5px] text-zinc-500 leading-relaxed">
+                    Real OS-level detection (Windows): insert any USB drive and this chain runs automatically end-to-end, no click required. Use the backend's <code className="text-zinc-400">/api/triggers/usb/simulate</code> endpoint to test without physical hardware.
+                  </p>
                 </div>
               )}
 
