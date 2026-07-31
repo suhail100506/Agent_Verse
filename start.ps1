@@ -21,7 +21,7 @@ Write-Host ""
 # versions, passing uvicorn directly hits a bug where the `:` in `main:app` gets
 # misparsed as a script path and fails with "Failed to canonicalize script path".
 $backend = Start-Process -FilePath "cmd.exe" `
-    -ArgumentList "/c", "uv run python -m uvicorn src.fake_certificate_verification_agent.main:app --reload --port 8000" `
+    -ArgumentList "/c", "python -m uvicorn src.fake_certificate_verification_agent.main:app --reload --port 8000" `
     -WorkingDirectory (Join-Path $root "backend") `
     -NoNewWindow -PassThru
 

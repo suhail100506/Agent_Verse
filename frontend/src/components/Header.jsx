@@ -11,7 +11,8 @@ import {
   Rocket,
   CheckCircle2, 
   FolderGit2,
-  Sliders
+  Sliders,
+  Trash2
 } from 'lucide-react';
 
 export default function Header({ 
@@ -20,7 +21,9 @@ export default function Header({
   onOpenCommandPalette, 
   onOpenAiCopilot,
   onOpenTemplates,
+  onOpenGDriveModal,
   onSaveWorkflow,
+  onClearCanvas,
   isSaved,
   nodeCount,
   edgeCount
@@ -102,6 +105,27 @@ export default function Header({
         >
           <Sliders className="w-3.5 h-3.5 text-zinc-400" />
           <span>Templates</span>
+        </button>
+
+        {/* Clear Canvas Button */}
+        {onClearCanvas && (
+          <button
+            onClick={onClearCanvas}
+            title="Clear canvas to blank playground"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-rose-500/10 text-zinc-400 hover:text-rose-400 transition-all text-xs font-medium border border-transparent hover:border-rose-500/20"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            <span>Clear Canvas</span>
+          </button>
+        )}
+
+        {/* Google Drive Verification Button */}
+        <button
+          onClick={onOpenGDriveModal}
+          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/20 transition-all text-xs font-medium"
+        >
+          <FolderGit2 className="w-3.5 h-3.5 text-indigo-400" />
+          <span>Google Drive Verification</span>
         </button>
 
         {/* Save Button */}

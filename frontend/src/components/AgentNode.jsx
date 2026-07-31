@@ -242,6 +242,41 @@ export default function AgentNode({ id, data, selected }) {
                     setNodes(nds => nds.map(n => n.id === targetNodeId ? { ...n, data: { ...n.data, status: 'completed' } } : n));
                     setEdges(eds => eds.map(e => e.id === outEdge.id ? { ...e, style: { stroke: '#a1a1aa', strokeWidth: 1.5 } } : e));
                   }
+
+                  // Propagate completion status to remaining agents & final report in the pipeline
+                  if (data.id === 'node-gdrive-connector' || json.agents || json.discovered_documents) {
+                    setNodes(nds => nds.map(n => {
+                      if (n.id === id) return { ...n, data: { ...n.data, status: 'completed', lastResult: json } };
+                      if (n.data?.id === 'agent-discovery') {
+                        return { ...n, data: { ...n.data, status: 'completed', lastResult: json } };
+                      }
+                      if (n.data?.id === 'agent-identity-spec') {
+                        const idRes = json.agents?.identity;
+                        const isFake = idRes?.output?.status === 'Fake' || idRes?.output?.tampering_detected || (idRes?.output?.verified === false);
+                        return { ...n, data: { ...n.data, status: isFake ? 'error' : 'completed', lastResult: idRes } };
+                      }
+                      if (n.data?.id === 'agent-doc-spec') {
+                        const docRes = json.agents?.document;
+                        const isFake = docRes?.output?.status === 'Fake' || docRes?.output?.tampering_detected || (docRes?.output?.verified === false);
+                        return { ...n, data: { ...n.data, status: isFake ? 'error' : 'completed', lastResult: docRes } };
+                      }
+                      if (n.data?.id === 'agent-fraud-spec') {
+                        const fraudRes = json.agents?.fraud;
+                        const decision = json.report?.summary?.decision || fraudRes?.output?.decision || 'Approved';
+                        const trustScore = json.report?.summary?.trust_score ?? 96;
+                        const isFake = decision === 'Rejected' || trustScore < 60;
+                        return { ...n, data: { ...n.data, status: isFake ? 'error' : 'completed', lastResult: fraudRes } };
+                      }
+                      if (n.data?.id === 'node-final-report' || n.data?.label?.includes('Report') || n.data?.subtitle?.includes('Report')) {
+                        const summary = json.report?.summary || {};
+                        const decision = summary.decision || 'Approved';
+                        const trustScore = summary.trust_score ?? 96;
+                        const isFake = decision === 'Rejected' || trustScore < 60;
+                        return { ...n, data: { ...n.data, status: isFake ? 'error' : 'completed', lastResult: json } };
+                      }
+                      return n;
+                    }));
+                  }
                 } catch (err) {
                   setResult({ error: `Backend server not reachable at ${API_BASE}` });
                   if (targetNodeId) {

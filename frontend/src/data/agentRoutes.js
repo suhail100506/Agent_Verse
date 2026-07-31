@@ -16,6 +16,10 @@ export const AGENT_ROUTES = {
   'agent-fraud': { url: '/api/detect/fraud', field: 'location', kind: 'text' },
   'agent-incident': { url: '/api/incident/generate', field: 'title', kind: 'text' },
   'agent-social-eng': { url: '/api/analyze/social-engineering', field: 'text', kind: 'text' },
+  'agent-identity-spec': { url: '/api/verify/identity', field: 'document_file', kind: 'file', fileMime: 'text/plain', fileName: 'id_document.txt' },
+  'agent-doc-spec': { url: '/api/verify/certificate', field: 'file', kind: 'file', fileMime: 'text/plain', fileName: 'certificate.pdf' },
+  'agent-fraud-spec': { url: '/api/detect/fraud', field: 'location', kind: 'text' },
+  'node-gdrive-connector': { url: '/api/verify/gdrive', field: 'drive_url', kind: 'text' },
 };
 
 export const DEFAULT_ROUTE = { url: '/api/analyze/phishing', field: 'url_or_text', kind: 'text' };

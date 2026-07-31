@@ -1,20 +1,4 @@
-// Real, loadable {nodes, edges} graphs for each of the 11 templates:
-// 10 single-agent workflows (trigger -> agent -> report) + 1 full master orchestration.
-
-const ingestNode = (idSuffix, x, y) => ({
-  id: `t-${idSuffix}-in`,
-  type: 'agentNode',
-  position: { x, y },
-  data: {
-    id: 'node-user-upload',
-    label: 'Payload Ingest',
-    subtitle: 'Payload Trigger Input',
-    icon: '📄',
-    isTextBox: true,
-    inputLabel: 'User Payload',
-    status: 'idle'
-  }
-});
+// 3-Agent Multi-Agent Google Drive Verification Template
 
 const reportNode = (idSuffix, x, y) => ({
   id: `t-${idSuffix}-out`,
@@ -45,6 +29,21 @@ const edge = (id, source, target) => ({
   style: { stroke: '#6366f1', strokeWidth: 2 }
 });
 
+function buildDocumentTrustTemplate() {
+  const driveNode = {
+    id: 't-gdrive-in',
+    type: 'agentNode',
+    position: { x: 60, y: 250 },
+    data: {
+      id: 'node-gdrive-connector',
+      label: 'Google Drive Connector',
+      subtitle: 'Service Account Folder Importer',
+      icon: '📂',
+      isTextBox: true,
+      inputLabel: 'Google Drive Folder URL',
+      status: 'idle'
+    }
+  };
 function singleAgentTemplate({ id, title, description, badge, agentId, agentLabel, agentSubtitle, icon, inputLabel }) {
   const nodes = [
     ingestNode(id, 80, 150),
@@ -235,23 +234,28 @@ function buildMasterOrchestrationTemplate() {
   const orchestrator = agentNode('orch', 'agent-decision', 'Master Cyber Orchestrator', 'Multi-Agent Intent Router', '🧠', 'Multi-Agent Synthesis', 420, 500);
   const report = reportNode('orch', 1440, 500);
 
-  const agentNodes = ORCHESTRATION_AGENTS.map((a) =>
-    agentNode(`orch-${a.agentId}`, a.agentId, a.label, 'Specialized Agent', a.icon, 'Dispatched by Orchestrator', 900, a.y)
-  );
+  const discoveryNode = agentNode('gdrive-disc', 'agent-discovery', 'Document Discovery Service', 'Classification & Preview', '🔍', 'Document Discovery', 420, 250);
+  const identityNode = agentNode('gdrive-id', 'agent-identity-spec', 'Identity Verification Specialist', 'Passport, Aadhaar & Biometric Match', '🪪', 'Identity Verification', 800, 100);
+  const documentNode = agentNode('gdrive-doc', 'agent-doc-spec', 'Fake Certificate Verification Agent', 'OCR & PKI Forensics', '🤖', 'Document Verification', 800, 400);
+  const fraudNode = agentNode('gdrive-fraud', 'agent-fraud-spec', 'Fraud Detection Specialist', 'Cross-Document Anomaly Reasoning', '🛡️', 'Fraud Analysis', 1180, 250);
+  const reportNodeObj = reportNode('gdrive-out', 1560, 250);
 
-  const nodes = [ingest, orchestrator, ...agentNodes, report];
+  const nodes = [driveNode, discoveryNode, identityNode, documentNode, fraudNode, reportNodeObj];
   const edges = [
-    edge('e-orch-in', ingest.id, orchestrator.id),
-    ...agentNodes.map((n, i) => edge(`e-orch-fan-${i}`, orchestrator.id, n.id)),
-    ...agentNodes.map((n, i) => edge(`e-orch-report-${i}`, n.id, report.id)),
+    edge('e-gd-1', driveNode.id, discoveryNode.id),
+    edge('e-gd-2a', discoveryNode.id, identityNode.id),
+    edge('e-gd-2b', discoveryNode.id, documentNode.id),
+    edge('e-gd-3a', identityNode.id, fraudNode.id),
+    edge('e-gd-3b', documentNode.id, fraudNode.id),
+    edge('e-gd-4', fraudNode.id, reportNodeObj.id),
   ];
 
   return {
-    id: 'template-master-orchestration',
-    title: 'CyberVerse Complete Multi-Agent Orchestration',
-    description: 'The full 11-node pipeline: ingest -> Master Orchestrator -> all 10 specialized agents in parallel -> unified SOC report.',
-    badge: 'Enterprise Standard',
-    category: 'Orchestration',
+    id: 'template-document-trust',
+    title: 'AI Document Trust & Verification Workflow',
+    description: 'Enterprise 3-agent Google Drive document trust and verification workflow with parallel agent execution and MongoDB Compass storage.',
+    badge: '3-Agent Multi-Agent',
+    category: 'Verification',
     nodeCount: nodes.length,
     nodes,
     edges,
@@ -263,5 +267,6 @@ function buildMasterOrchestrationTemplate() {
 // are pre-existing, fully-built templates from before this work - left defined but
 // unused here rather than deleted, in case they're re-enabled later.
 export const WORKFLOW_TEMPLATES = [
+  buildDocumentTrustTemplate(),
   buildRemovableMediaGuardianTemplate(),
 ];

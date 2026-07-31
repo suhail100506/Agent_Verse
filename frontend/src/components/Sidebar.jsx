@@ -62,6 +62,7 @@ const ICON_MAP = {
 };
 
 export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed }) {
+  const [activeTab, setActiveTab] = useState('templates'); // 'agents', 'templates', 'credentials'
   const [activeTab, setActiveTab] = useState('agents'); // 'agents', 'templates', 'credentials'
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
