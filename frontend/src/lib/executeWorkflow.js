@@ -258,10 +258,13 @@ export async function executeWorkflowGraph({ nodes, edges, setNodes, setEdges, a
         payloadByNode.set(nodeId, { text, file });
         addLog('success', `${step} ${data.label || 'Ingest'}: received ${file ? `file "${file.name}"` : text ? `"${truncate(text, 60)}"` : 'no payload (empty)'}.`);
         setNodeStatus(nodeId, 'completed');
-      } else if (kind === 'trigger-webhook' || kind === 'trigger-schedule') {
+      } else if (kind === 'trigger-webhook' || kind === 'trigger-schedule' || kind === 'trigger-usb') {
         const srcId = incomingSourceOf(nodeId);
         payloadByNode.set(nodeId, srcId ? payloadByNode.get(srcId) || { text: '', file: null } : { text: '', file: null });
-        addLog('info', `${step} ${data.label || 'Trigger'}: passive trigger, marked ready (arm/fire it externally to run automatically).`);
+        const note = kind === 'trigger-usb'
+          ? 'passive trigger, marked ready (it fires for real on an actual USB insertion, or via /api/triggers/usb/simulate).'
+          : 'passive trigger, marked ready (arm/fire it externally to run automatically).';
+        addLog('info', `${step} ${data.label || 'Trigger'}: ${note}`);
         setNodeStatus(nodeId, 'completed');
       } else if (kind === 'logic') {
         const srcId = incomingSourceOf(nodeId);

@@ -41,6 +41,7 @@ from src.incident_response_agent.flow_runner import run_incident_response_flow, 
 from src.social_engineering_agent.flow_runner import run_social_engineering_flow, load_local_social_engineering_reports
 from src.utils.email_service import send_report_email
 from src.utils.email_poller import start_email_poller
+from src.cyberverse_orchestrator import usb_guardian
 
 
 def _maybe_notify(report: Dict[str, Any], agent_name: str, notify_email: Optional[str], credential_id: Optional[str]) -> Dict[str, Any]:
@@ -59,6 +60,11 @@ app = FastAPI(
     description="Full 10-Agent Multi-Agent Cybersecurity Platform with Master Orchestrator, JWT Auth, JSON/HTML Exporters, Admin Analytics, and Agent Monitoring.",
     version="5.0.0"
 )
+
+@app.on_event("startup")
+def startup_event():
+    start_email_poller()
+    usb_guardian.start_usb_monitor()
 
 # Enable CORS
 app.add_middleware(
@@ -580,6 +586,32 @@ async def fire_webhook_trigger(
             shutil.copyfileobj(file.file, buffer)
 
     return _dispatch_agent_by_id(agent_id, text, saved_path, credential_id)
+
+
+# Removable Media Guardian: real Windows USB-insertion detection running a background
+# Malware Analyzer -> Privacy Compliance -> Incident Response chain (see usb_guardian.py).
+@app.post("/api/triggers/usb/arm")
+async def arm_usb_guardian(
+    node_id: str = Form(...),
+    notify_email: Optional[str] = Form(None),
+    credential_id: Optional[str] = Form(None),
+):
+    return usb_guardian.arm_guardian(node_id, notify_email, credential_id)
+
+
+@app.post("/api/triggers/usb/disarm")
+async def disarm_usb_guardian():
+    return usb_guardian.disarm_guardian()
+
+
+@app.get("/api/triggers/usb/status")
+def usb_guardian_status():
+    return usb_guardian.get_status()
+
+
+@app.post("/api/triggers/usb/simulate")
+async def simulate_usb_insertion(root_path: Optional[str] = Form(None)):
+    return usb_guardian.simulate_insertion(root_path)
 
 
 # Serve static frontend

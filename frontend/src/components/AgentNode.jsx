@@ -11,8 +11,20 @@ import {
   Terminal,
   Settings2,
   Upload,
-  FileText
+  FileText,
+  Fish,
+  Bug,
+  BadgeCheck,
+  Key,
+  AlertTriangle,
+  CreditCard,
+  FileSearch,
+  Lock
 } from 'lucide-react';
+
+const ICON_MAP = {
+  Fish, Bug, BadgeCheck, Key, AlertTriangle, CreditCard, FileSearch, Lock
+};
 import { AGENT_ROUTES, DEFAULT_ROUTE, buildAgentFormData } from '../data/agentRoutes';
 
 const API_BASE = 'http://localhost:8000';
@@ -78,7 +90,10 @@ export default function AgentNode({ id, data, selected }) {
       <div className="p-3 border-b border-white/5 flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-zinc-800/80 border border-white/5 flex items-center justify-center text-sm shadow-inner shrink-0">
-            {data.icon || '🤖'}
+            {(() => {
+              const IconComponent = ICON_MAP[data.icon];
+              return IconComponent ? <IconComponent className="w-4 h-4 text-zinc-300" /> : (data.icon || '🤖');
+            })()}
           </div>
           <div className="flex flex-col justify-center">
             <h3 className="font-semibold text-[13px] text-zinc-100 leading-tight">

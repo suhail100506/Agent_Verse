@@ -1,0 +1,24 @@
+CONFIDENTIAL - HR Employee Export (sample data for testing only)
+==================================================================
+
+Name: John A. Doe
+Employee ID: EMP-10234
+SSN: 123-45-6789
+Email: john.doe@example.com
+Phone: (555) 019-2837
+
+Name: Priya Sharma
+Employee ID: EMP-10235
+SSN: 987-65-4321
+Email: priya.sharma@example.com
+Payroll Card: 4111-1111-1111-1111
+
+Name: Wei Zhang
+Employee ID: EMP-10236
+SSN: 555-12-3456
+Email: wei.zhang@example.com
+Reimbursement Card: 4916-2375-8391-0028
+
+Note: all names, numbers, and emails above are synthetic sample data
+generated for testing the Privacy Compliance Agent's PII detection - not
+real personal information.

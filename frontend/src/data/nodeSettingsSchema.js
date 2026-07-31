@@ -5,6 +5,7 @@ import { AGENT_ROUTES } from './agentRoutes';
 export function getNodeKind(data) {
   if (!data) return 'generic';
   if (data.isTextBox) return 'trigger-text';
+  if (data.isUsbTrigger) return 'trigger-usb';
   if (data.isWebhookTrigger) return 'trigger-webhook';
   if (data.cron !== undefined) return 'trigger-schedule';
   if (data.isLogicNode) return 'logic';

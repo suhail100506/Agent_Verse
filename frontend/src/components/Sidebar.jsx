@@ -29,7 +29,14 @@ import {
   ArrowRight,
   Pencil,
   Loader2,
-  Trash2
+  Trash2,
+  Fish,
+  Bug,
+  BadgeCheck,
+  AlertTriangle,
+  CreditCard,
+  FileSearch,
+  Lock
 } from 'lucide-react';
 
 const API_BASE = 'http://localhost:8000';
@@ -43,11 +50,20 @@ const ICON_MAP = {
   Send,
   Code2,
   UserCheck,
-  Layers
+  Layers,
+  Fish,
+  Bug,
+  BadgeCheck,
+  Key,
+  AlertTriangle,
+  CreditCard,
+  FileSearch,
+  Lock
 };
 
 export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed }) {
   const [activeTab, setActiveTab] = useState('templates'); // 'agents', 'templates', 'credentials'
+  const [activeTab, setActiveTab] = useState('agents'); // 'agents', 'templates', 'credentials'
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -270,7 +286,10 @@ export default function Sidebar({ onLoadTemplate, isCollapsed, setIsCollapsed })
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-8 h-8 rounded-lg bg-[#252525] border border-black/20 flex items-center justify-center text-sm shadow-inner shrink-0">
-                          {agent.icon}
+                          {(() => {
+                            const IconComponent = ICON_MAP[agent.icon];
+                            return IconComponent ? <IconComponent className="w-4 h-4 text-zinc-300" /> : agent.icon;
+                          })()}
                         </div>
                         <div className="min-w-0">
                           <h4 className="text-xs font-semibold text-zinc-200 leading-tight truncate">{agent.name}</h4>

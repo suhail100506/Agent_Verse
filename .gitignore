@@ -6,3 +6,5 @@ output/
 node_modules
 credentials.json
 temp_downloads/
+backend/temp_uploads/*
+!backend/temp_uploads/.gitkeep

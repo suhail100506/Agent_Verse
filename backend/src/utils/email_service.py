@@ -36,12 +36,19 @@ def send_report_email(recipient_email: str, report: dict, agent_name: str, crede
         email_user = email_user or os.getenv("EMAIL_USER")
         email_pass = email_pass or os.getenv("EMAIL_PASS")
 
+    # No recipient configured anywhere (node's Notify Email left blank, and no bound
+    # SMTP credential's recipient_default either) - fall back to notifying the
+    # account owner themselves via the same EMAIL_USER already in backend/.env,
+    # rather than silently skipping the alert.
+    if not recipient_email:
+        recipient_email = os.getenv("EMAIL_USER")
+
     if not email_user or not email_pass:
         logger.warning("SMTP credentials not found (no bound credential and no EMAIL_USER/EMAIL_PASS env vars).")
         return {"status": "failed", "error": "SMTP credentials not configured."}
 
     if not recipient_email:
-        return {"status": "failed", "error": "No recipient email provided."}
+        return {"status": "failed", "error": "No recipient email provided, and no EMAIL_USER fallback set in backend/.env."}
 
     status_label = report.get("status", "Flagged")
     subject = f"⚠️ CyberVerse Alert [{agent_name}]: {status_label}"

@@ -37,7 +37,12 @@ export function buildAgentFormData(route, targetData, val, fileVal) {
       formData.append(route.field, blob, route.fileName || 'payload.txt');
     }
   } else {
-    formData.append(route.field, val || fileVal?.name || targetData?.targetUrl || '');
+    // Never send a truly empty string: this backend's Form(...)-required fields
+    // (e.g. /api/audit/privacy's text_content, /api/analyze/threat's query,
+    // /api/advise/password's password) treat an empty multipart value as absent
+    // and 422 - a single space is a harmless stand-in when a node has no real
+    // upstream payload yet (e.g. a trigger with no text, like the USB trigger).
+    formData.append(route.field, val || fileVal?.name || targetData?.targetUrl || ' ');
   }
 
   if (targetData?.credential_id) formData.append('credential_id', targetData.credential_id);

@@ -132,7 +132,7 @@ With both servers running, open **http://localhost:5173** and verify:
 1. **Node popup** — click any node on the canvas. A small floating card should appear anchored near where you clicked (not a full-height side panel). Try the **Config**, **Credentials**, **Payload**, and **Logs** tabs.
 2. **Credential binding** — in a node's popup, go to the Credentials tab, add a new Groq API key credential, and confirm it appears in the dropdown and gets bound to that node. Reload the page and confirm the credential still exists (it's stored server-side).
 3. **Agents playground** — open the left Sidebar's **Agents** tab, expand an agent card, edit its system prompt or model, then drag it onto the canvas. Click the new node and confirm the popup's Config tab shows your edited prompt.
-4. **Templates** — open the Sidebar's **Templates** tab (or the header's Templates button) and load a few of the 11 templates. You should see 10 single-agent pipelines (one per specialist agent) plus one **Master Orchestration** template wiring all 10 agents behind the orchestrator.
+4. **Templates** — open the Sidebar's **Templates** tab (or the header's Templates button) and load a few of the 12 templates. You should see 10 single-agent pipelines (one per specialist agent), one **Master Orchestration** template wiring all 10 agents behind the orchestrator, and one **Removable Media Guardian** template (real USB-insertion auto-trigger — see [`backend/GUARDIAN.md`](backend/GUARDIAN.md) for how it works and how to test it).
 5. **Run a workflow** — wire (or load a template with) an ingest node → an agent node → the report node, type a payload into the ingest node, and click **Run Node**. Watch the edge animate and the target node's status update to Running → Completed, with the result panel showing the agent's response.
 6. **Vault tab** — open the Sidebar's **Credentials/Vault** tab and confirm it shows your real saved credentials (masked), not placeholder data.
 
@@ -145,6 +145,14 @@ curl -X POST http://localhost:8000/api/triggers/webhook/<webhook-node-id> -F tex
 ```
 
 The node's popup shows the exact URL to use (Config tab, when a Webhook Listener node is selected).
+
+### D. Removable Media Guardian (real USB auto-trigger)
+
+See [`backend/GUARDIAN.md`](backend/GUARDIAN.md) for the full write-up — how the
+Windows USB-detection pipeline works, the stage-by-stage flow, and step-by-step
+instructions for testing it both without hardware (`/api/triggers/usb/simulate`)
+and with a real pendrive (using the sample files in
+[`removable_media_guardian_test_kit/`](removable_media_guardian_test_kit/)).
 
 ---
 
