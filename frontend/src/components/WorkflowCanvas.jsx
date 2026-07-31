@@ -16,6 +16,8 @@ import {
 import '@xyflow/react/dist/style.css';
 import AgentNode from './AgentNode';
 import { loadWorkflowTemplate, generateSingleAgentWorkflow } from '../utils/loadWorkflowTemplate';
+import { getLayoutedElements } from '../utils/layoutUtils';
+import { Wand2 } from 'lucide-react';
 
 const nodeTypes = { agentNode: AgentNode };
 
@@ -137,6 +139,19 @@ export default function WorkflowCanvas({
 }) {
   const { screenToFlowPosition, fitView } = useReactFlow();
 
+  const handleAutoLayout = useCallback(() => {
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+      nodes,
+      edges,
+      'LR'
+    );
+    setNodes([...layoutedNodes]);
+    setEdges([...layoutedEdges]);
+    setTimeout(() => {
+      fitView({ padding: 0.25, duration: 800 });
+    }, 50);
+  }, [nodes, edges, setNodes, setEdges, fitView]);
+
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge({ 
       ...params, 
@@ -225,7 +240,7 @@ export default function WorkflowCanvas({
 
   const displayEdges = edges.map(edge => ({
     ...edge,
-    type: 'default',
+    type: 'smoothstep',
     animated: edge.animated || !edge.selected,
     style: {
       ...edge.style,
@@ -272,6 +287,16 @@ export default function WorkflowCanvas({
           maskColor="rgba(31, 31, 31, 0.7)" 
           style={{ backgroundColor: 'rgba(43, 43, 43, 0.8)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }} 
         />
+        
+        <div className="absolute top-4 right-4 z-50 flex gap-2">
+          <button
+            onClick={handleAutoLayout}
+            className="flex items-center gap-2 px-3 py-1.5 bg-[#2B2B2B]/80 hover:bg-[#3B3B3B] text-zinc-300 hover:text-white rounded-lg shadow-xl border border-white/10 backdrop-blur-md transition-all font-medium text-xs"
+          >
+            <Wand2 className="w-3.5 h-3.5 text-indigo-400" />
+            Auto Layout
+          </button>
+        </div>
       </ReactFlow>
     </div>
   );

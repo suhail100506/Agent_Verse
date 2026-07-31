@@ -212,4 +212,63 @@ function buildMasterOrchestrationTemplate() {
   };
 }
 
-export const WORKFLOW_TEMPLATES = [];
+function buildEmailThreatTemplate() {
+  const ingest = ingestNode('eti', 60, 150);
+  ingest.data.label = 'Email Input';
+  ingest.data.subtitle = 'Suspicious Email (.eml, .msg, text)';
+
+  const phishing = agentNode('eti', 'agent-phishing', 'Phishing Detection Agent', 'SSL & Typosquatting Check', '🎣', 'Email content & Headers', 400, 150);
+  
+  const extract = {
+    id: 't-eti-extract',
+    type: 'agentNode',
+    position: { x: 740, y: 150 },
+    data: {
+      id: 'node-logic-extract',
+      label: 'Extract Attachment',
+      subtitle: 'Parse payload for files',
+      icon: '📎',
+      conditionField: 'has_attachment',
+      conditionOperator: '==',
+      conditionValue: 'true',
+      status: 'idle',
+      isLogicNode: true
+    }
+  };
+
+  const malware = agentNode('eti', 'agent-malware', 'Malware Analysis Agent', 'PE & YARA Behavioral Audit', '🦠', 'Extracted Attachment', 1080, 150);
+  
+  const incident = agentNode('eti', 'agent-incident', 'Incident Response Agent', 'SOC Playbooks & Containment', '🚨', 'Phishing + Malware Reports', 1420, 150);
+  
+  const report = reportNode('eti', 1760, 150);
+  report.data.label = 'Final Investigation Report';
+
+  const nodes = [ingest, phishing, extract, malware, incident, report];
+  const edges = [
+    edge('e-eti-1', ingest.id, phishing.id),
+    edge('e-eti-2', phishing.id, extract.id),
+    edge('e-eti-3', extract.id, malware.id),
+    edge('e-eti-4', malware.id, incident.id),
+    edge('e-eti-5', phishing.id, incident.id),
+    edge('e-eti-6', incident.id, report.id),
+  ];
+
+  return {
+    id: 'template-email-threat-investigation',
+    title: 'Email Threat Investigation',
+    description: 'Automatically analyzes suspicious emails, scans attachments for malware, performs AI-driven incident response, and sends a security alert when a threat is detected.',
+    badge: 'Email Threat',
+    category: 'Cyber Security',
+    icon: 'ShieldAlert',
+    color: 'blue',
+    nodeCount: nodes.length,
+    nodes,
+    edges,
+  };
+}
+
+export const WORKFLOW_TEMPLATES = [
+  ...SINGLE_AGENT_TEMPLATES,
+  buildMasterOrchestrationTemplate(),
+  buildEmailThreatTemplate(),
+];

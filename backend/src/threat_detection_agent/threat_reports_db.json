@@ -1,5 +1,53 @@
 [
   {
+    "report_id": "THR-869CB86B",
+    "created_at": "2026-07-31T03:54:59.810723+00:00",
+    "agent": "Cyber Threat Detection Agent",
+    "type": "threat",
+    "target_analyzed": "185.220.101.5",
+    "query": "URGENT: Your account access has been suspended due to unauthorized login attempts.  Please verify your identity immediately by clicking here: http://secure-update-paypa1.com/login.php If you do not verify within 24 hours, your account will be permanently closed.",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 28,
+    "checks": {
+      "ip_reputation": "Failed - Target IP '185.220.101.5' listed on 12 global botnet blacklists.",
+      "abuseipdb_score": "Failed - Abuse Confidence Score 96%. 1,420 malicious reports in last 14 days.",
+      "threat_category": "Failed - Categorized as 'Tor Exit Node / SSH Brute-Force Bot / Scanner'.",
+      "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+      "geolocation": "Passed - Country: Seychelles (AS62005)."
+    },
+    "summary": "CRITICAL THREAT ALERT: Target '185.220.101.5' confirmed active malicious scanner and botnet node.",
+    "recommendation": "Block IP address across all Perimeter Firewalls and Web Application Firewalls.",
+    "next_action": "Add '{target}' to Automated Network Blocklist and trigger Incident Alert.",
+    "llm_reasoning_used": false,
+    "llm_source": "env-default"
+  },
+  {
+    "report_id": "THR-AE5D93E3",
+    "created_at": "2026-07-31T03:53:34.871913+00:00",
+    "agent": "Cyber Threat Detection Agent",
+    "type": "threat",
+    "target_analyzed": "185.220.101.5",
+    "query": "URGENT: Your account access has been suspended due to unauthorized login attempts.  Please verify your identity immediately by clicking here: http://secure-update-paypa1.com/login.php If you do not verify within 24 hours, your account will be permanently closed.",
+    "status": "Fake",
+    "risk_level": "CRITICAL RISK",
+    "confidence": 0.96,
+    "overall_score": 28,
+    "checks": {
+      "ip_reputation": "Failed - Target IP '185.220.101.5' listed on 12 global botnet blacklists.",
+      "abuseipdb_score": "Failed - Abuse Confidence Score 96%. 1,420 malicious reports in last 14 days.",
+      "threat_category": "Failed - Categorized as 'Tor Exit Node / SSH Brute-Force Bot / Scanner'.",
+      "shodan_port_scan": "Warning - Open Ports detected: 22 (SSH), 80 (HTTP), 443 (HTTPS), 8080 (Proxy).",
+      "geolocation": "Passed - Country: Seychelles (AS62005)."
+    },
+    "summary": "CRITICAL THREAT ALERT: Target '185.220.101.5' confirmed active malicious scanner and botnet node.",
+    "recommendation": "Block IP address across all Perimeter Firewalls and Web Application Firewalls.",
+    "next_action": "Add '{target}' to Automated Network Blocklist and trigger Incident Alert.",
+    "llm_reasoning_used": false,
+    "llm_source": "env-default"
+  },
+  {
     "report_id": "THR-485C9A15",
     "created_at": "2026-07-29T07:20:43.731086+00:00",
     "agent": "Cyber Threat Detection Agent",
