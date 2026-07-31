@@ -52,7 +52,7 @@ def send_alert_email_if_needed(
     msg = MIMEMultipart()
     msg['From'] = smtp_email
     msg['To'] = target_email
-    msg['Subject'] = "🚨 Cyberverse Security Alert – Suspicious Email Detected"
+    msg['Subject'] = "Phising / suspicious email detected"
 
     body = f"""Hello,
 

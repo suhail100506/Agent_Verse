@@ -44,12 +44,12 @@ def send_report_email(recipient_email: str, report: dict, agent_name: str, crede
         return {"status": "failed", "error": "No recipient email provided."}
 
     status_label = report.get("status", "Flagged")
-    subject = f"⚠ CyberVerse Alert [{agent_name}]: {status_label}"
+    subject = "Phising / suspicious email detected"
 
     html_body = f"""
     <html>
       <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-        <h2 style="color: #d9534f;">⚠ {agent_name} Alert</h2>
+        <h2 style="color: #d9534f;">Phising / suspicious email detected</h2>
         <p>The CyberVerse AI Security Platform flagged the following result.</p>
 
         <table style="border-collapse: collapse; width: 100%; max-width: 600px; margin-bottom: 20px;">
