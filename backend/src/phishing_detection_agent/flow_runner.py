@@ -47,7 +47,7 @@ def run_phishing_flow(
         
         # We allow overriding with the passed model if available, otherwise default to gemini
         # Using 1.5-flash as 3.5-flash doesn't exist in standard litellm yet.
-        model_name = model or "gemini/gemini-1.5-flash"
+        model_name = model or os.getenv("GEMINI_MODEL", "gemini/gemini-1.5-flash-latest")
         
         # Ensure API key is set if not already in environment
         gemini_api_key = os.getenv("GEMINI_API_KEY")

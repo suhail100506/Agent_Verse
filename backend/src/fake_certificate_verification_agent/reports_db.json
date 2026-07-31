@@ -1,5 +1,34 @@
 [
   {
+    "report_id": "REP-0AF304E9",
+    "created_at": "2026-07-31T04:31:21.972646+00:00",
+    "certificate_file_name": "4ba853a2_test_certificate.txt",
+    "file_type": "image",
+    "status": "Verified",
+    "confidence": 0.97,
+    "overall_score": 96,
+    "certificate_holder": "4Ba853A2 Test",
+    "certificate_number": "CERT-2026-2DEE25",
+    "institution": "Global Accredited Institution",
+    "raw_text_excerpt": "Direct Visual Parsing",
+    "checks": {
+      "ocr": "Passed - Successfully extracted candidate '4Ba853A2 Test', Certificate ID 'CERT-2026-2DEE25', and Institution 'Global Accredited Institution'.",
+      "qr": "Passed - Valid QR code verified linking to official registry (https://verify.global.edu/cert/CERT-2026-2DEE25).",
+      "metadata": "Passed - Clean document metadata. Official Publisher with zero post-issue edit artifacts.",
+      "template": "Passed - 97% layout match with authentic template database for 'Global Accredited Institution'.",
+      "logo": "Passed - High-resolution crest for 'Global Accredited Institution' authenticated (99% match).",
+      "seal": "Passed - Official embossed seal correctly placed with valid opacity and border.",
+      "digital_signature": "Passed - PKI Digital Signature valid, timestamp verified by accredited Root CA.",
+      "certificate_number": "Passed - Record 'CERT-2026-2DEE25' confirmed in central registry for holder '4Ba853A2 Test'.",
+      "tampering": "Passed - Clean forensic scan. Zero font splicing, pixel cloning, or layer manipulation detected."
+    },
+    "summary": "Certificate for '4Ba853A2 Test' (ID: CERT-2026-2DEE25) fully authenticated across all 9 forensic verification layers.",
+    "recommendation": "Accept certificate as authentic proof of qualification.",
+    "next_action": "Archive report and issue verified credential badge.",
+    "llm_reasoning_used": false,
+    "llm_source": "env-default"
+  },
+  {
     "report_id": "REP-EBDAFE15",
     "created_at": "2026-07-31T03:55:15.753648+00:00",
     "certificate_file_name": "ffe28538_test_certificate.txt",

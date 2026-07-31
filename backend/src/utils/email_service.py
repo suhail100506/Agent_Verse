@@ -43,19 +43,25 @@ def send_report_email(recipient_email: str, report: dict, agent_name: str, crede
     if not recipient_email:
         return {"status": "failed", "error": "No recipient email provided."}
 
-    status_label = report.get("status", "Flagged")
-    subject = "Phising / suspicious email detected"
+    status_label = report.get("status") or (report.get("sub_agent_report") or {}).get("status", "Flagged")
+    subject = "Phishing / suspicious email detected"
+    
+    sub_report = report.get("sub_agent_report", report)
+    report_id = report.get("report_id") or sub_report.get("report_id", "N/A")
+    risk_level = report.get("risk_level") or sub_report.get("risk_level", "N/A")
+    confidence = report.get("confidence") or sub_report.get("confidence", "N/A")
+    created_at = report.get("created_at", "N/A")
 
     html_body = f"""
     <html>
       <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-        <h2 style="color: #d9534f;">Phising / suspicious email detected</h2>
+        <h2 style="color: #d9534f;">Phishing / suspicious email detected</h2>
         <p>The CyberVerse AI Security Platform flagged the following result.</p>
 
         <table style="border-collapse: collapse; width: 100%; max-width: 600px; margin-bottom: 20px;">
             <tr style="background-color: #f9f9f9;">
                 <td style="padding: 10px; border: 1px solid #ddd;"><strong>Report ID:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">{report.get('report_id', 'N/A')}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{report_id}</td>
             </tr>
             <tr>
                 <td style="padding: 10px; border: 1px solid #ddd;"><strong>Status:</strong></td>
@@ -63,15 +69,15 @@ def send_report_email(recipient_email: str, report: dict, agent_name: str, crede
             </tr>
             <tr style="background-color: #f9f9f9;">
                 <td style="padding: 10px; border: 1px solid #ddd;"><strong>Risk Level:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">{report.get('risk_level', 'N/A')}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{risk_level}</td>
             </tr>
             <tr>
                 <td style="padding: 10px; border: 1px solid #ddd;"><strong>Confidence Score:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">{report.get('confidence', 'N/A')}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{confidence}</td>
             </tr>
             <tr style="background-color: #f9f9f9;">
                 <td style="padding: 10px; border: 1px solid #ddd;"><strong>Timestamp:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">{report.get('created_at', 'N/A')}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{created_at}</td>
             </tr>
         </table>
 

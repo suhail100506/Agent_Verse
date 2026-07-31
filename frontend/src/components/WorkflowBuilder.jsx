@@ -102,6 +102,7 @@ function WorkflowBuilderContent() {
   const [isConsoleOpen, setIsConsoleOpen] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
   const [isSaved, setIsSaved] = useState(true);
+  const [hasMailAlert, setHasMailAlert] = useState(false);
 
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isAiCopilotOpen, setIsAiCopilotOpen] = useState(false);
@@ -170,8 +171,9 @@ function WorkflowBuilderContent() {
     }
     setIsRunning(true);
     setIsConsoleOpen(true);
+    setHasMailAlert(false); // Reset mail alert on new run
     try {
-      await executeWorkflowGraph({ nodes, edges, setNodes, setEdges, addLog });
+      await executeWorkflowGraph({ nodes, edges, setNodes, setEdges, addLog, setHasMailAlert });
     } finally {
       setIsRunning(false);
     }
@@ -226,6 +228,7 @@ function WorkflowBuilderContent() {
         isSaved={isSaved}
         nodeCount={nodes.length}
         edgeCount={edges.length}
+        hasMailAlert={hasMailAlert}
       />
 
       {/* MAIN BODY AREA: Sidebar + Canvas + Inspector */}

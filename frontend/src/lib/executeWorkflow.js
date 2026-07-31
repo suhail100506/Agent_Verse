@@ -47,7 +47,7 @@ function topologicalOrder(nodes, edges) {
  * endpoint with its resolved payload, credential, and per-node settings - replacing
  * the old fixed 4-step simulated animation.
  */
-export async function executeWorkflowGraph({ nodes, edges, setNodes, setEdges, addLog }) {
+export async function executeWorkflowGraph({ nodes, edges, setNodes, setEdges, addLog, setHasMailAlert }) {
   const order = topologicalOrder(nodes, edges);
   const nodeById = new Map(nodes.map((n) => [n.id, n]));
   const payloadByNode = new Map(); // nodeId -> { text, file }
@@ -148,6 +148,10 @@ export async function executeWorkflowGraph({ nodes, edges, setNodes, setEdges, a
           if (FLAGGED_STATUSES.includes(statusVal)) flaggedCount++;
           else if (statusVal === 'VERIFIED' || statusVal === 'SAFE') verifiedCount++;
           
+          if (json.email_delivery_status && json.email_delivery_status !== 'skipped') {
+            if (setHasMailAlert) setHasMailAlert(true);
+          }
+
           if (json.email_delivery_status === 'failed') {
             errorCount++;
             setNodeStatus(nodeId, 'error');

@@ -14,7 +14,7 @@ def run_ai_analysis(sender: str, subject: str, body: str, urls: list[str]) -> AI
         raise ValueError("GEMINI_API_KEY environment variable is not set.")
     os.environ["GEMINI_API_KEY"] = gemini_api_key
     
-    model_name = os.getenv("GEMINI_MODEL", "gemini/gemini-1.5-flash")
+    model_name = os.getenv("GEMINI_MODEL", "gemini/gemini-1.5-flash-latest")
     
     phishing_analyst = Agent(
         role='Cybersecurity Phishing Analyst',

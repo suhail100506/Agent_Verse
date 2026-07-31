@@ -23,7 +23,8 @@ export default function Header({
   onSaveWorkflow,
   isSaved,
   nodeCount,
-  edgeCount
+  edgeCount,
+  hasMailAlert
 }) {
   const [workspace, setWorkspace] = useState('Production');
 
@@ -39,6 +40,7 @@ export default function Header({
           <div className="flex flex-col">
             <span className="font-semibold text-xs tracking-tight text-white flex items-center gap-1.5">
               CYBERVERSE
+              {hasMailAlert && <span className="text-sm ml-1 animate-pulse" title="Mail Alert Occurred">🚨</span>}
             </span>
           </div>
         </div>
